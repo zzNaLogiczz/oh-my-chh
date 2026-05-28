@@ -1,0 +1,31 @@
+{
+  "id": "liquid-glass",
+  "name": "Liquid Glass",
+  "version": "0.1.0",
+  "description": "Latest modern-minimal liquid glass redesign with reconstructed Chiphell header, search and quick navigation surfaces.",
+  "styleFamily": "liquid-glass",
+  "entrypoints": {
+    "index": "./index.css",
+    "tokens": "./tokens.css",
+    "routes": "./routes.css",
+    "preview": "./preview.html"
+  },
+  "tokens": {},
+  "capabilities": {
+    "scopedSelectors": true,
+    "crossThemeImports": false,
+    "responsive": true,
+    "reducedMotion": true,
+    "glassReductionAttribute": "data-omchh-reduce-glass"
+  },
+  "routes": [
+    "portal-home",
+    "forum-index",
+    "thread-list",
+    "thread-detail",
+    "article-view",
+    "profile",
+    "compose",
+    "unknown"
+  ]
+}

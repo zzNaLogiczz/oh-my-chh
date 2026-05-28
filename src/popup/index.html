@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>oh-my-chh 设置</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="popup-shell" aria-labelledby="popup-title">
+      <header class="hero-card" aria-describedby="popup-subtitle">
+        <p class="eyebrow">OH-MY-CHH</p>
+        <h1 id="popup-title">Chiphell 美化设置</h1>
+        <p id="popup-subtitle">
+          默认启用 Liquid Glass；设置只保存在浏览器内。
+        </p>
+      </header>
+
+      <form class="settings-card" id="settings-form">
+        <section class="section" aria-labelledby="appearance-title">
+          <div class="section-heading">
+            <p class="eyebrow">风格</p>
+            <h2 id="appearance-title">外观</h2>
+          </div>
+
+          <label class="field-row" for="theme-id">
+            <span>
+              <strong>当前主题</strong>
+              <small>Liquid Glass：新版页头、快捷导航和整体视觉风格。</small>
+            </span>
+            <select id="theme-id" name="themeId" aria-label="选择主题">
+              <option value="liquid-glass">Liquid Glass（新版）</option>
+            </select>
+          </label>
+
+          <label class="field-row" for="density">
+            <span>
+              <strong>阅读密度</strong>
+              <small>调整帖子列表行间距，Liquid Glass 主题生效。</small>
+            </span>
+            <select id="density" name="density" aria-label="选择阅读密度">
+              <option value="compact">紧凑</option>
+              <option value="comfortable">舒适</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="section" aria-labelledby="patches-title">
+          <div class="section-heading">
+            <p class="eyebrow">页面增强</p>
+            <h2 id="patches-title">行为</h2>
+          </div>
+
+          <label class="switch-row" for="enhance-quick-reply">
+            <span>
+              <strong>快速回复增强</strong>
+              <small>保留引用、图片、代码等常用操作入口。</small>
+            </span>
+            <input id="enhance-quick-reply" name="enhanceQuickReply" type="checkbox" role="switch" />
+          </label>
+
+          <label class="switch-row" for="hide-ubb-emoji">
+            <span>
+              <strong>隐藏 UBB 表情</strong>
+              <small>减少长帖阅读时的视觉噪音。</small>
+            </span>
+            <input id="hide-ubb-emoji" name="hideUbbEmoji" type="checkbox" role="switch" />
+          </label>
+
+          <label class="switch-row" for="reduce-glass">
+            <span>
+              <strong>减弱玻璃效果</strong>
+              <small>关闭 backdrop-filter，性能较低设备可开启。</small>
+            </span>
+            <input id="reduce-glass" name="reduceGlass" type="checkbox" role="switch" />
+          </label>
+
+          <label class="switch-row" for="reduce-motion">
+            <span>
+              <strong>减少动效</strong>
+              <small>禁用 hover 过渡和弹性动画。</small>
+            </span>
+            <input id="reduce-motion" name="reduceMotion" type="checkbox" role="switch" />
+          </label>
+        </section>
+      </form>
+
+      <aside class="health-card" aria-labelledby="health-title">
+        <div class="section-heading compact">
+          <p class="eyebrow">选择器健康状态</p>
+          <h2 id="health-title">最近一次检测</h2>
+        </div>
+        <dl class="health-grid" aria-live="polite">
+          <div>
+            <dt>路由</dt>
+            <dd id="health-route">尚未检测</dd>
+          </div>
+          <div>
+            <dt>命中</dt>
+            <dd id="health-hit">0</dd>
+          </div>
+          <div>
+            <dt>缺失</dt>
+            <dd id="health-missing">0</dd>
+          </div>
+        </dl>
+      </aside>
+
+      <footer class="privacy-note">
+        <strong>隐私：</strong>主题设置保存在 Chrome 同步存储，选择器健康状态只保存在本机；插件不会向远程服务发送页面内容或账号数据。
+      </footer>
+
+      <p class="save-status" id="save-status" role="status" aria-live="polite">就绪</p>
+    </main>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
