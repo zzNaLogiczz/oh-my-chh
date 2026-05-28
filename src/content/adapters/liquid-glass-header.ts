@@ -2,6 +2,8 @@ import type { ContentAdapter } from "./types";
 
 const HEADER_READY_ATTR = "data-omchh-liquid-header-ready";
 const QUICK_MENU_BOUND_ATTR = "data-omchh-liquid-qmenu-bound";
+const NAV_PILL_BOUND_ATTR = "data-chh-lg-pill-bound";
+const NAV_HOVER_ATTR = "data-chh-lg-nav-hover";
 const HEADER_ID = "chh-lg-header";
 const NAV_ACTIVE_ATTR = "data-chh-lg-active";
 
@@ -423,6 +425,72 @@ function bindGlobalState(): void {
   syncScrollState();
 }
 
+function getNavPill(): HTMLElement | null {
+  const ul = document.querySelector<HTMLElement>(`#${HEADER_ID} #nv > ul`);
+  if (!ul) return null;
+
+  const existing = ul.querySelector<HTMLElement>(".chh-lg-nav-pill");
+  if (existing) return existing;
+
+  const pill = makeNode("div", "chh-lg-nav-pill");
+  ul.prepend(pill);
+  return pill;
+}
+
+function bindNavHoverPill(): void {
+  const ul = document.querySelector<HTMLElement>(`#${HEADER_ID} #nv > ul`);
+  if (!ul || ul.getAttribute(NAV_PILL_BOUND_ATTR) === "true") return;
+
+  const pill = getNavPill();
+  if (!pill) return;
+
+  let isVisible = false;
+  let hideTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function showPillAt(li: HTMLLIElement): void {
+    if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+
+    const anchor = li.querySelector<HTMLAnchorElement>("a");
+    const target = anchor ?? li;
+    const ulRect = ul!.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+
+    if (!isVisible) {
+      // 首次进入：先无动画定位，再 fade in
+      pill.style.transition = "opacity 140ms ease";
+      pill.style.left = (targetRect.left - ulRect.left) + "px";
+      pill.style.width = targetRect.width + "px";
+    } else {
+      // 已显示：恢复完整过渡，平滑滑动
+      pill.style.transition = "";
+      pill.style.left = (targetRect.left - ulRect.left) + "px";
+      pill.style.width = targetRect.width + "px";
+    }
+
+    pill.setAttribute("data-chh-lg-pill-visible", "true");
+    isVisible = true;
+
+    ul!.querySelectorAll<HTMLLIElement>("li").forEach((l) => l.removeAttribute(NAV_HOVER_ATTR));
+    li.setAttribute(NAV_HOVER_ATTR, "true");
+  }
+
+  function schedulePillHide(): void {
+    hideTimer = setTimeout(() => {
+      pill.removeAttribute("data-chh-lg-pill-visible");
+      isVisible = false;
+      ul!.querySelectorAll<HTMLLIElement>("li").forEach((l) => l.removeAttribute(NAV_HOVER_ATTR));
+    }, 80);
+  }
+
+  ul.querySelectorAll<HTMLLIElement>("li").forEach((li) => {
+    li.addEventListener("pointerenter", () => showPillAt(li), { passive: true });
+  });
+
+  ul.addEventListener("pointerleave", schedulePillHide, { passive: true });
+
+  ul.setAttribute(NAV_PILL_BOUND_ATTR, "true");
+}
+
 export const enhanceLiquidGlassHeader: ContentAdapter = ({ settings }) => {
   if (settings.themeId !== "liquid-glass") return;
 
@@ -433,6 +501,7 @@ export const enhanceLiquidGlassHeader: ContentAdapter = ({ settings }) => {
   syncNavActiveState();
   relocateHeaderMenus();
   bindQuickMenuPlacement();
+  bindNavHoverPill();
   markPromoArea();
   enhanceForumDirectory();
   enhanceFooterRail();
