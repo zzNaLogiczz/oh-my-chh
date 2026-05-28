@@ -10129,7 +10129,7 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-gl
   margin-right: 6px !important;
 }
 
-/* collapsed: hide 我的 / 设置 / 安全中心 / 退出, collapse with 0.5 s delay on mouse-leave */
+/* collapsed: hide 我的 / 设置 / 安全中心 / 退出, collapse with 0.1 s delay on mouse-leave */
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #um #myitem,
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #um p:nth-of-type(1) > a[href*="spacecp"],
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #um p:nth-of-type(1) > a[href*="security"],
@@ -10142,11 +10142,11 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-gl
   margin-right: 0 !important;
   border-width: 0 !important;
   transition:
-    max-width   0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s,
-    opacity     0.35s ease                              0.5s,
-    padding     0.5s ease                               0.5s,
-    margin      0.5s ease                               0.5s,
-    border-width 0.1s ease                              0.5s !important;
+    max-width   0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s,
+    opacity     0.35s ease                              0.1s,
+    padding     0.5s ease                               0.1s,
+    margin      0.5s ease                               0.1s,
+    border-width 0.1s ease                              0.1s !important;
 }
 
 /* expanded: reveal all chips immediately on hover */
@@ -10184,4 +10184,373 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-gl
     0 0 0 1px oklch(100% 0 0 / 0.12) !important;
   transition: backdrop-filter 0.45s ease, box-shadow 0.45s ease !important;
 }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   首页 热门 / 快讯 — liquid-glass card style (matches portal_block_676 pattern)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── chip_topmain → flex for equal-height cards ──
+   DOM order: cleft(热门) first, cright(快讯) second.
+   Original: cright float:left (快讯 on left), cleft float:right (热门 on right).
+   Fix: flex + order to restore visual order without touching DOM.
+── */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain::before,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain::after {
+  display: none !important;
+  content: none !important;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  gap: 16px !important;
+  overflow: visible !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .cleft {
+  float: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+  min-width: 0 !important;
+  flex: 1 1 0% !important;
+  order: 2 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .cright {
+  float: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+  min-width: 0 !important;
+  flex: 1 1 0% !important;
+  order: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* ── wrapper resets ── */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_box {
+  margin: 0 !important;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chiphell_index_news {
+  height: auto !important;
+  overflow: visible !important;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #diy_xw,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #diy_xw .cl_frame_bm,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #diy_xw .column,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #diy_xw .cl_block_bm {
+  margin: 0 !important;
+  padding: 0 !important;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673_content {
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* ── 快讯 glass card ── */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 {
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  margin: 0 !important;
+  border: 1px solid var(--chh-lg-border) !important;
+  border-radius: var(--chh-lg-radius-lg) !important;
+  background: var(--chh-lg-panel) !important;
+  box-shadow: var(--chh-lg-shadow-soft);
+  backdrop-filter: blur(24px) saturate(1.7);
+  -webkit-backdrop-filter: blur(24px) saturate(1.7);
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: calc(var(--chh-lg-radius-lg) - 1px);
+  background:
+    linear-gradient(135deg, oklch(100% 0 0 / 0.54), transparent 34%),
+    linear-gradient(315deg, color-mix(in oklch, var(--accent) 14%, transparent), transparent 38%);
+  opacity: 0.56;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 快讯 title ── */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .atit::after,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .atit::before {
+  display: none !important;
+  content: none !important;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .atit {
+  display: flex !important;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  margin: 0 !important;
+  min-height: 40px;
+  padding: 8px 16px !important;
+  border: 0 !important;
+  border-bottom: 1px solid color-mix(in oklch, var(--accent) 12%, var(--chh-lg-border)) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(180deg, oklch(100% 0 0 / 0.36), oklch(100% 0 0 / 0.12)),
+    radial-gradient(circle at 0 0, color-mix(in oklch, var(--accent) 15%, transparent), transparent 18rem) !important;
+  box-shadow:
+    inset 0 1px 0 oklch(100% 0 0 / 0.58),
+    0 1px 0 oklch(100% 0 0 / 0.12);
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .atit span {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 9px;
+  float: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: var(--chh-lg-ink) !important;
+  font-family: var(--font-display) !important;
+  font-size: 15px !important;
+  font-weight: 750 !important;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .atit span::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow:
+    0 0 0 4px color-mix(in oklch, var(--accent) 14%, transparent),
+    0 0 20px color-mix(in oklch, var(--accent) 36%, transparent);
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .atit span a {
+  background: transparent !important;
+  color: var(--chh-lg-ink) !important;
+  text-decoration: none !important;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .atit span a:hover {
+  color: color-mix(in oklch, var(--accent) 76%, var(--chh-lg-ink)) !important;
+  text-decoration: underline !important;
+  text-decoration-color: color-mix(in oklch, var(--accent) 54%, transparent) !important;
+}
+
+/* ── 快讯 content area ── */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .acon {
+  padding: 12px 14px !important;
+  margin: 0 !important;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .acon ul {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ── 热门 glass card ── */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home {
+  position: relative;
+  overflow: hidden;
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+  margin: 0 !important;
+  border: 1px solid var(--chh-lg-border) !important;
+  border-radius: var(--chh-lg-radius-lg) !important;
+  background: var(--chh-lg-panel) !important;
+  box-shadow: var(--chh-lg-shadow-soft);
+  backdrop-filter: blur(24px) saturate(1.7);
+  -webkit-backdrop-filter: blur(24px) saturate(1.7);
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: calc(var(--chh-lg-radius-lg) - 1px);
+  background:
+    linear-gradient(135deg, oklch(100% 0 0 / 0.54), transparent 34%),
+    linear-gradient(315deg, color-mix(in oklch, var(--accent) 14%, transparent), transparent 38%);
+  opacity: 0.56;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 热门 title ── */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home .atit::after,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home .atit::before {
+  display: none !important;
+  content: none !important;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home .atit {
+  display: flex !important;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  margin: 0 !important;
+  min-height: 40px;
+  padding: 8px 16px !important;
+  border: 0 !important;
+  border-bottom: 1px solid color-mix(in oklch, var(--accent) 12%, var(--chh-lg-border)) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(180deg, oklch(100% 0 0 / 0.36), oklch(100% 0 0 / 0.12)),
+    radial-gradient(circle at 0 0, color-mix(in oklch, var(--accent) 15%, transparent), transparent 18rem) !important;
+  box-shadow:
+    inset 0 1px 0 oklch(100% 0 0 / 0.58),
+    0 1px 0 oklch(100% 0 0 / 0.12);
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home .atit span {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 9px;
+  float: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: var(--chh-lg-ink) !important;
+  font-family: var(--font-display) !important;
+  font-size: 15px !important;
+  font-weight: 750 !important;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home .atit span::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow:
+    0 0 0 4px color-mix(in oklch, var(--accent) 14%, transparent),
+    0 0 20px color-mix(in oklch, var(--accent) 36%, transparent);
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home .atit span a {
+  background: transparent !important;
+  color: var(--chh-lg-ink) !important;
+  text-decoration: none !important;
+}
+
+/* ── 热门 banner fills card with rounded bottom ── */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home .acon {
+  padding: 0 !important;
+  margin: 0 !important;
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0;
+  border-radius: 0 0 calc(var(--chh-lg-radius-lg) - 1px) calc(var(--chh-lg-radius-lg) - 1px);
+  overflow: hidden;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .area,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .cl_frame_bm,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .column,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .cl_block_bm,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .dxb_bc {
+  margin: 0 !important;
+  padding: 0 !important;
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .swiper-container {
+  flex: 1 !important;
+  height: 100% !important;
+  border-radius: 0 !important;
+  min-height: 0;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .swiper-wrapper {
+  height: 100% !important;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .swiper-slide {
+  height: 100% !important;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .swiper-slide .img-cover,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .swiper-slide img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+/* ── Fix: 快讯/热门 card — header edge alignment, bottom alignment, title height ── */
+
+/* chip_topmain: compensate 20px internal flex offset so cright aligns with header-glass left edge */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain {
+  width: calc(100% + 20px) !important;
+  max-width: calc(100% + 20px) !important;
+  margin-left: -20px !important;
+  margin-right: 0 !important;
+}
+
+/* Fix 1: bottom alignment.
+   Root cause: swiper uses height:100% throughout the chain, and all ancestors use
+   flex:1 with no definite height anchor → circular dependency → 14M-px height bug.
+   Fix: give the swiper-container a definite pixel height (380px ≈ original site value).
+   This anchors the entire flex chain, chip_topmain height = ~407px, both columns stretch
+   to equal height, and the 快讯 card fills the column cleanly.
+   Also neutralize clearfix ::after pseudo-elements inside flex columns in this section
+   to eliminate the 14px gap they create as unwanted flex items. */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .swiper-container {
+  height: 380px !important;
+}
+
+/* Kill clearfix ::after nodes that become rogue flex items inside column containers */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .cl_frame_bm::after,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_box::after,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_index_news::after {
+  display: none !important;
+  content: none !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+}
+
+/* Fix 3: title bar height reduced by 1/3 (40px → ~27px; padding 8px → 3px) */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .atit {
+  min-height: 27px !important;
+  padding: 3px 16px !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home .atit {
+  min-height: 27px !important;
+  padding: 3px 16px !important;
 }
