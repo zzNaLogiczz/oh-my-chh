@@ -443,6 +443,8 @@ function bindNavHoverPill(): void {
 
   const pill = getNavPill();
   if (!pill) return;
+  const navList = ul;
+  const navPill = pill;
 
   let isVisible = false;
   let hideTimer: ReturnType<typeof setTimeout> | null = null;
@@ -452,33 +454,33 @@ function bindNavHoverPill(): void {
 
     const anchor = li.querySelector<HTMLAnchorElement>("a");
     const target = anchor ?? li;
-    const ulRect = ul!.getBoundingClientRect();
+    const ulRect = navList.getBoundingClientRect();
     const targetRect = target.getBoundingClientRect();
 
     if (!isVisible) {
       // 首次进入：先无动画定位，再 fade in
-      pill.style.transition = "opacity 140ms ease";
-      pill.style.left = (targetRect.left - ulRect.left) + "px";
-      pill.style.width = targetRect.width + "px";
+      navPill.style.transition = "opacity 140ms ease";
+      navPill.style.left = (targetRect.left - ulRect.left) + "px";
+      navPill.style.width = targetRect.width + "px";
     } else {
       // 已显示：恢复完整过渡，平滑滑动
-      pill.style.transition = "";
-      pill.style.left = (targetRect.left - ulRect.left) + "px";
-      pill.style.width = targetRect.width + "px";
+      navPill.style.transition = "";
+      navPill.style.left = (targetRect.left - ulRect.left) + "px";
+      navPill.style.width = targetRect.width + "px";
     }
 
-    pill.setAttribute("data-chh-lg-pill-visible", "true");
+    navPill.setAttribute("data-chh-lg-pill-visible", "true");
     isVisible = true;
 
-    ul!.querySelectorAll<HTMLLIElement>("li").forEach((l) => l.removeAttribute(NAV_HOVER_ATTR));
+    navList.querySelectorAll<HTMLLIElement>("li").forEach((l) => l.removeAttribute(NAV_HOVER_ATTR));
     li.setAttribute(NAV_HOVER_ATTR, "true");
   }
 
   function schedulePillHide(): void {
     hideTimer = setTimeout(() => {
-      pill.removeAttribute("data-chh-lg-pill-visible");
+      navPill.removeAttribute("data-chh-lg-pill-visible");
       isVisible = false;
-      ul!.querySelectorAll<HTMLLIElement>("li").forEach((l) => l.removeAttribute(NAV_HOVER_ATTR));
+      navList.querySelectorAll<HTMLLIElement>("li").forEach((l) => l.removeAttribute(NAV_HOVER_ATTR));
     }, 80);
   }
 

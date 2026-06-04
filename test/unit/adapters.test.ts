@@ -44,6 +44,76 @@ describe("content adapters", () => {
     expect(enhancedTokens.filter((token) => token === "thread-list")).toHaveLength(1);
   });
 
+  it("marks forumdisplay subforum tables without treating them as forum-index cards", () => {
+    document.body.innerHTML = `
+      <div id="wp">
+        <div id="ct">
+          <div class="bm bml pbn">
+            <div class="bm_h cl">
+              <span class="y"><a id="a_favorite" href="/favorite">收藏本版 <strong>(<span>30</span>)</strong></a><span class="pipe">|</span><a class="fa_rss" href="/rss">订阅</a></span>
+              <h1 class="xs2"><a href="/forum-99-1.html">活动区归档</a><span class="xs1 xw0 i">今日: <strong>0</strong><span class="pipe">|</span>主题: <strong>164</strong><span class="pipe">|</span>排名: <strong>13</strong></span></h1>
+            </div>
+          </div>
+          <div class="bm bmw fl">
+            <div class="bm_h cl"><span class="o"><em class="tg_no" id="subforum_99_img" onclick="toggle_collapse('subforum_99');" title="收起/展开"></em></span><h2>子版块</h2></div>
+            <div class="bm_c" id="subforum_99">
+              <table class="fl_tb">
+                <tbody>
+                  <tr>
+                    <td class="fl_icn"><a href="/forum-296-1.html">icon</a></td>
+                    <td><h2><a href="/forum-296-1.html">评选你心目中的2016年最佳品牌</a></h2></td>
+                    <td class="fl_i"><span>14</span><span> / 143</span></td>
+                    <td class="fl_by"><div><a href="/thread-1.html">主板</a> <cite>2016-12-30 ztzbenben</cite></div></td>
+                  </tr>
+                  <tr>
+                    <td class="fl_icn"></td>
+                    <td></td>
+                    <td class="fl_i"></td>
+                    <td class="fl_by"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div id="threadlist">
+            <table id="threadlisttableid">
+              <tbody><tr><th>公告: Chiphell社区积分等级规则2013版.</th><td class="by">nApoleon</td></tr></tbody>
+              <tbody id="separatorline"><tr class="ts"><th>&nbsp;</th></tr></tbody>
+              <tbody id="normalthread_2"><tr><td class="icn">icon</td><th class="new"><a href="/thread-2-1-1.html">普通主题</a></th><td class="by">作者</td><td class="num">1/20</td><td class="by">最后回复</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+
+    runAdapters("thread-list", DEFAULT_SETTINGS);
+
+    expect(document.querySelector("#ct")?.classList.contains("omchh-thread-list-route")).toBe(true);
+    expect(document.querySelector(".omchh-forum-heading .bm_h")?.classList.contains("omchh-forum-heading-layout")).toBe(true);
+    expect(document.querySelector(".omchh-forum-heading .bm_h > .y")?.classList.contains("omchh-forum-heading-actions")).toBe(true);
+    expect(document.querySelector(".omchh-forum-heading-title")?.classList.contains("omchh-forum-heading-title-row")).toBe(true);
+    expect(document.querySelector(".omchh-forum-heading .bm_h > .xs1")?.classList.contains("omchh-forum-heading-meta-row")).toBe(true);
+    expect(document.querySelector(".omchh-forum-heading-title .xs1")).toBeNull();
+    expect(document.querySelector(".fl.bmw")?.classList.contains("omchh-subforum-section")).toBe(true);
+    expect(document.querySelector(".bm_h .o")?.classList.contains("omchh-subforum-collapse")).toBe(true);
+    expect(document.querySelector(".bm_h .o em")?.getAttribute("role")).toBe("button");
+    expect(document.querySelector(".bm_h .o em")?.getAttribute("tabindex")).toBe("0");
+    expect(document.querySelector(".bm_h .o em")?.getAttribute("aria-controls")).toBe("subforum_99");
+    expect(document.querySelector(".bm_h .o em")?.getAttribute("aria-expanded")).toBe("true");
+    expect(document.querySelector(".fl_tb")?.classList.contains("omchh-subforum-table")).toBe(true);
+    expect(document.querySelectorAll(".fl_tb tr.omchh-subforum-row")).toHaveLength(1);
+    expect(document.querySelector(".fl_tb tr")?.classList.contains("omchh-subforum-row")).toBe(true);
+    expect(document.querySelector(".fl_tb tr")?.getAttribute("data-omchh-subforum-index")).toBe("0");
+    expect(document.querySelectorAll(".fl_tb tr.omchh-subforum-empty")).toHaveLength(1);
+    expect(document.querySelector(".fl_i")?.classList.contains("omchh-subforum-stats")).toBe(true);
+    expect(document.querySelector(".fl_by")?.classList.contains("omchh-subforum-lastpost")).toBe(true);
+    expect(document.querySelector(".fl_tb td")?.classList.contains("omchh-board-card")).toBe(false);
+    expect(document.querySelector("#threadlisttableid > tbody:not([id])")?.classList.contains("omchh-thread-notice-row")).toBe(true);
+    expect(document.querySelector("#separatorline")?.classList.contains("omchh-thread-separator")).toBe(true);
+    expect(document.querySelector(".omchh-thread-row .icn")?.classList.contains("omchh-thread-icon")).toBe(true);
+    expect(document.querySelector(".omchh-thread-row .by:last-child")?.classList.contains("omchh-thread-lastpost")).toBe(true);
+  });
+
   it("marks forum index board cards and common page chrome", () => {
     document.body.innerHTML = `
       <div id="toptb"></div>
@@ -231,6 +301,138 @@ describe("content adapters", () => {
     expect(document.querySelector(".chiphell_box")?.classList.contains("omchh-portal-card")).toBe(true);
     expect(document.querySelector(".block")?.classList.contains("omchh-board-card")).toBe(false);
     expect(document.querySelector(".chiphell_box")?.classList.contains("omchh-board-card")).toBe(false);
+  });
+
+  it("adds stable image title data for portal-home banner slides", () => {
+    document.body.innerHTML = `
+      <div id="wp">
+        <div id="diy_banner">
+          <div id="portal_block_672">
+            <div class="swiper-slide">
+              <img class="img-cover" src="/banner.jpg" />
+              <a href="/article-1.html" title="完整标题"><p>截断标题</p></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    runAdapters("portal-home", DEFAULT_SETTINGS);
+
+    expect(document.querySelector("#portal_block_672 .swiper-slide")?.getAttribute("data-chh-lg-title")).toBe("完整标题");
+  });
+
+  it("adds stable semantic hooks for portal-home latest article cards", () => {
+    document.body.innerHTML = `
+      <div id="wp">
+        <div class="chip_index_pingce cl">
+          <div class="atit cl">
+            <span>最新文章</span>
+            <div class="fra"><a class="a" href="javascript:;" caid="0">全部</a><a href="javascript:;" caid="2">电脑</a></div>
+          </div>
+          <div class="acon cl">
+            <ul id="threadulid">
+              <section id="normalthread_1">
+                <li>
+                  <a class="tm01 cl" href="/article-1.html"><img src="/cover.jpg" /></a>
+                  <div class="tmpad cl">
+                    <a class="tm03 cl" href="/article-1.html">标题</a>
+                    <div class="avart">
+                      <a class="tmava" href="/space.html"><img src="/avatar.jpg" /></a>
+                      <div class="avimain cl"><a href="/space.html">作者</a></div>
+                      <div class="avimain2 cl">2026/06/03 <span class="aview">123</span><span class="arep">4</span><a class="asort cl" href="/portal.php?mod=list&catid=2">电脑</a></div>
+                    </div>
+                    <div class="tm04 cl">摘要</div>
+                  </div>
+                </li>
+              </section>
+            </ul>
+          </div>
+        </div>
+      </div>
+    `;
+
+    runAdapters("portal-home", DEFAULT_SETTINGS);
+    runAdapters("portal-home", DEFAULT_SETTINGS);
+
+    expect(document.querySelector(".chip_index_pingce")?.classList.contains("omchh-portal-latest")).toBe(true);
+    expect(document.querySelector(".fra")?.classList.contains("omchh-portal-latest-filters")).toBe(true);
+    expect(document.querySelector("#threadulid")?.classList.contains("omchh-portal-latest-list")).toBe(true);
+    expect(document.querySelector("li")?.classList.contains("omchh-portal-latest-card")).toBe(true);
+    expect(document.querySelector(".tm01")?.classList.contains("omchh-portal-latest-thumb")).toBe(true);
+    expect(document.querySelector(".tm03")?.classList.contains("omchh-portal-latest-title")).toBe(true);
+    expect(document.querySelector(".avart")?.classList.contains("omchh-portal-latest-meta")).toBe(true);
+    expect(document.querySelector(".avimain")?.classList.contains("omchh-portal-latest-author")).toBe(true);
+    expect(document.querySelector(".avimain2")?.classList.contains("omchh-portal-latest-stats")).toBe(true);
+    expect(document.querySelector(".tm04")?.classList.contains("omchh-portal-latest-summary")).toBe(true);
+    expect(document.querySelector(".asort")?.classList.contains("omchh-portal-latest-category")).toBe(true);
+    expect(document.querySelector("li")?.getAttribute("data-omchh-portal-article-index")).toBe("0");
+    expect(document.querySelector("li")?.getAttribute("data-omchh-portal-article-category")).toBe("电脑");
+
+    const enhancedTokens = document.querySelector("li")?.getAttribute("data-omchh-enhanced")?.split(/\s+/).filter(Boolean) ?? [];
+    expect(enhancedTokens.filter((token) => token === "portal-home")).toHaveLength(1);
+  });
+
+  it("adds stable semantic hooks for portal category list content without replacing articles", () => {
+    document.body.className = "pg_list pg_list_2";
+    document.body.id = "nv_portal";
+    document.body.innerHTML = `
+      <div id="wp">
+        <div id="ct" class="ct2 wp cl">
+          <div class="mn">
+            <div class="bm">
+              <div class="bm_h cl"><a class="y xi2 rss" href="/portal.php?mod=rss&catid=2">订阅</a><h1 class="xs2">电脑</h1></div>
+              <div class="bm_c bbda">
+                下级分类:
+                <a class="xi2" href="/portal.php?mod=list&catid=99">整机搭建</a>
+                <span class="pipe">|</span>
+                <a class="xi2" href="/portal.php?mod=list&catid=101">桌面书房</a>
+              </div>
+              <div class="bm_c xld">
+                <dl class="bbda cl">
+                  <dt class="xs2"><a class="xi2" href="/article-34989-1.html" target="_blank">银色战机装机分享</a></dt>
+                  <dd class="xs2 cl"><div class="atc"><a href="/article-34989-1.html"><img class="tn" src="/cover.jpg" /></a></div>前言摘要</dd>
+                  <dd><label><a href="/portal.php?mod=list&catid=99">整机搭建</a></label><span class="xg1">2026-5-25 08:06</span></dd>
+                </dl>
+              </div>
+            </div>
+            <div class="pgs cl"><div class="pg"><strong>1</strong><a href="/portal.php?mod=list&catid=2&page=2">2</a></div></div>
+          </div>
+          <div class="sd pph">
+            <div class="bm"><div class="bm_h cl"><h2>相关分类</h2></div><div class="bm_c"><ul class="xl xl2 cl"><li>• <a href="/portal.php?mod=list&catid=1">评测</a></li><li>• <a href="/portal.php?mod=list&catid=2">电脑</a></li></ul></div></div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const article = document.querySelector("dl.bbda") as HTMLElement;
+    const titleLink = document.querySelector("dt a") as HTMLAnchorElement;
+
+    runAdapters("portal-home", DEFAULT_SETTINGS);
+    runAdapters("portal-home", DEFAULT_SETTINGS);
+
+    expect(document.querySelector("#ct")?.classList.contains("omchh-portal-list-route")).toBe(true);
+    expect(document.querySelector("#ct .mn")?.classList.contains("omchh-portal-list-main")).toBe(true);
+    expect(document.querySelector("#ct .sd")?.classList.contains("omchh-portal-list-sidebar")).toBe(true);
+    expect(document.querySelector("#ct .mn > .bm")?.classList.contains("omchh-portal-list-shell")).toBe(true);
+    expect(document.querySelector("#ct .mn > .bm > .bm_h")?.classList.contains("omchh-portal-list-header")).toBe(true);
+    expect(document.querySelector("#ct .mn > .bm > .bm_c.bbda")?.classList.contains("omchh-portal-list-subcats")).toBe(true);
+    expect(document.querySelector("#ct .mn > .bm > .bm_c.xld")?.classList.contains("omchh-portal-list-stream")).toBe(true);
+    expect(article.classList.contains("omchh-portal-list-card")).toBe(true);
+    expect(document.querySelector("dt")?.classList.contains("omchh-portal-list-title")).toBe(true);
+    expect(document.querySelector(".atc")?.classList.contains("omchh-portal-list-thumb")).toBe(true);
+    expect(document.querySelector("dd.xs2")?.classList.contains("omchh-portal-list-summary")).toBe(true);
+    expect(document.querySelector("dd:not(.xs2)")?.classList.contains("omchh-portal-list-meta")).toBe(true);
+    expect(document.querySelector("label")?.classList.contains("omchh-portal-list-category")).toBe(true);
+    expect(document.querySelector("span.xg1")?.classList.contains("omchh-portal-list-date")).toBe(true);
+    expect(document.querySelector("#ct .sd .bm")?.classList.contains("omchh-portal-list-side-card")).toBe(true);
+    expect(article.getAttribute("data-omchh-portal-list-index")).toBe("0");
+    expect(article.getAttribute("data-omchh-portal-list-category")).toBe("整机搭建");
+    expect(article).toBe(document.querySelector("dl.bbda"));
+    expect(document.querySelector("dt a")).toBe(titleLink);
+
+    const enhancedTokens = article.getAttribute("data-omchh-enhanced")?.split(/\s+/).filter(Boolean) ?? [];
+    expect(enhancedTokens.filter((token) => token === "portal-home")).toHaveLength(1);
   });
 });
 
