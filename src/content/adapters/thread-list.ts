@@ -54,6 +54,100 @@ function enhanceSubforumCollapse(section: Element, adapter: string): void {
   });
 }
 
+function getThreadTableColspan(table: Element): number {
+  const firstRow = table.querySelector("tbody > tr");
+  const cellCount = firstRow ? Array.from(firstRow.children).filter((cell) => cell.matches("td, th")).length : 0;
+  return Math.max(cellCount, 1);
+}
+
+function createStickyCardHeader(table: HTMLElement, adapter: string): HTMLTableSectionElement {
+  const doc = table.ownerDocument;
+  const card = doc.createElement("tbody");
+  const row = doc.createElement("tr");
+  const cell = doc.createElement("td");
+  const button = doc.createElement("button");
+  const title = doc.createElement("span");
+  const count = doc.createElement("span");
+  const state = doc.createElement("span");
+
+  markElement(card, "omchh-thread-sticky-card", adapter);
+  setData(card, "omchhStickyCard", "header");
+  cell.className = "omchh-thread-sticky-card-cell";
+  cell.colSpan = getThreadTableColspan(table);
+  button.type = "button";
+  button.className = "omchh-thread-sticky-toggle";
+  title.className = "omchh-thread-sticky-title";
+  title.textContent = "置顶主题";
+  count.className = "omchh-thread-sticky-count";
+  state.className = "omchh-thread-sticky-state";
+  button.append(title, count, state);
+  cell.appendChild(button);
+  row.appendChild(cell);
+  card.appendChild(row);
+  return card;
+}
+
+function getStickyRows(table: Element): HTMLElement[] {
+  return directChildrenMatching(table, "tbody[id^='stickthread_']").filter((row): row is HTMLElement => row instanceof HTMLElement);
+}
+
+function syncStickyCard(table: HTMLElement, adapter: string): void {
+  const stickyRows = getStickyRows(table);
+  const card = firstDirectChild(table, "tbody.omchh-thread-sticky-card") as HTMLElement | null;
+  const button = card?.querySelector<HTMLButtonElement>(".omchh-thread-sticky-toggle") ?? null;
+  const count = card?.querySelector<HTMLElement>(".omchh-thread-sticky-count") ?? null;
+  const state = card?.querySelector<HTMLElement>(".omchh-thread-sticky-state") ?? null;
+  const collapsed = table.getAttribute("data-omchh-sticky-card-collapsed") === "true";
+
+  table.setAttribute("data-omchh-sticky-card-collapsed", collapsed ? "true" : "false");
+  stickyRows.forEach((row, index) => {
+    markElement(row, "omchh-thread-sticky-card-item", adapter);
+    setData(row, "omchhStickyCardIndex", String(index));
+    row.classList.toggle("omchh-thread-sticky-card-first", index === 0);
+    row.classList.toggle("omchh-thread-sticky-card-last", index === stickyRows.length - 1);
+    row.hidden = collapsed;
+    row.setAttribute("aria-hidden", collapsed ? "true" : "false");
+  });
+
+  if (!button) return;
+  button.setAttribute("aria-controls", table.id);
+  button.setAttribute("aria-expanded", collapsed ? "false" : "true");
+  button.setAttribute("aria-label", collapsed ? "展开置顶主题" : "收起置顶主题");
+  if (count) count.textContent = `${stickyRows.length} 条`;
+  if (state) state.textContent = collapsed ? "展开" : "收起";
+}
+
+function enhanceStickyThreadCard(table: Element | null, adapter: string): void {
+  if (!(table instanceof HTMLElement)) return;
+
+  const stickyRows = getStickyRows(table);
+  const existingCard = firstDirectChild(table, "tbody.omchh-thread-sticky-card") as HTMLTableSectionElement | null;
+  if (stickyRows.length === 0) {
+    existingCard?.remove();
+    table.removeAttribute("data-omchh-sticky-card-collapsed");
+    return;
+  }
+
+  const card = existingCard ?? createStickyCardHeader(table, adapter);
+  markElement(card, "omchh-thread-sticky-card", adapter);
+  setData(card, "omchhStickyCard", "header");
+  const cell = card.querySelector<HTMLTableCellElement>(".omchh-thread-sticky-card-cell");
+  if (cell) cell.colSpan = getThreadTableColspan(table);
+  if (card.nextElementSibling !== stickyRows[0]) table.insertBefore(card, stickyRows[0]);
+
+  const button = card.querySelector<HTMLButtonElement>(".omchh-thread-sticky-toggle");
+  if (button && button.dataset.omchhStickyToggleReady !== "1") {
+    button.dataset.omchhStickyToggleReady = "1";
+    button.addEventListener("click", () => {
+      const nextCollapsed = table.getAttribute("data-omchh-sticky-card-collapsed") !== "true";
+      table.setAttribute("data-omchh-sticky-card-collapsed", nextCollapsed ? "true" : "false");
+      syncStickyCard(table, adapter);
+    });
+  }
+
+  syncStickyCard(table, adapter);
+}
+
 export const enhanceThreadList: ContentAdapter = ({ root, settings }) => {
   const adapter = "thread-list";
   const selectors: Array<[string, string, boolean]> = [
@@ -61,6 +155,10 @@ export const enhanceThreadList: ContentAdapter = ({ root, settings }) => {
     [".bml.pbn .bm_h h1", "omchh-forum-heading-title", false],
     [".bml.pbn .bm_h .y", "omchh-forum-heading-actions", false],
     ["#pgt", "omchh-list-toolbar", false],
+    ["#fd_page_top", "omchh-thread-top-pagination", false],
+    ["#fd_page_bottom", "omchh-thread-bottom-pagination", false],
+    ["#visitedforums, #visitedforumstmp", "omchh-thread-back-action", false],
+    ["#newspecial, #newspecialtmp", "omchh-thread-new-action", false],
     ["#thread_types", "omchh-thread-types", false],
     ["#threadlist", "omchh-thread-list", true],
     ["#threadlisttableid", "omchh-thread-table", false],
@@ -77,6 +175,10 @@ export const enhanceThreadList: ContentAdapter = ({ root, settings }) => {
     [".bm.bmw.fl .fl_by", "omchh-subforum-lastpost", false]
   ];
   selectors.forEach(([selector, className, required]) => trackSelector(adapter, selector, markAll(root, selector, className, adapter), required));
+
+  const bottomPagination = root.querySelector("#fd_page_bottom");
+  const bottomToolbar = bottomPagination?.closest(".pgs") ?? bottomPagination?.parentElement ?? null;
+  trackSelector(adapter, "#fd_page_bottom closest .pgs", markElement(bottomToolbar, "omchh-thread-bottom-toolbar", adapter) ? 1 : 0);
 
   const headingLayouts = root.querySelectorAll(".bml.pbn .bm_h");
   headingLayouts.forEach((layout) => markElement(layout, "omchh-forum-heading-layout", adapter));
@@ -134,7 +236,7 @@ export const enhanceThreadList: ContentAdapter = ({ root, settings }) => {
   });
   trackSelector(adapter, "#threadlisttableid tbody[id^='stickthread_'], #threadlisttableid tbody[id^='normalthread_']", rows.length, true);
 
-  const noticeRows = root.querySelectorAll("#threadlisttableid > tbody:not([id])");
+  const noticeRows = root.querySelectorAll("#threadlisttableid > tbody:not([id]):not(.omchh-thread-sticky-card)");
   noticeRows.forEach((row, index) => {
     if (!row.textContent?.trim()) return;
     markElement(row, "omchh-thread-notice-row", adapter);
@@ -148,6 +250,9 @@ export const enhanceThreadList: ContentAdapter = ({ root, settings }) => {
   separatorRows.forEach((row) => markElement(row, "omchh-thread-separator", adapter));
   trackSelector(adapter, "#threadlisttableid > tbody#separatorline", separatorRows.length);
 
-  if (settings.enhanceQuickReply) trackSelector(adapter, "#f_pst", markAll(root, "#f_pst", "omchh-quick-reply", adapter));
+  enhanceStickyThreadCard(root.querySelector("#threadlisttableid"), adapter);
+  trackSelector(adapter, "#threadlisttableid > .omchh-thread-sticky-card", root.querySelectorAll("#threadlisttableid > .omchh-thread-sticky-card").length);
+
+  trackSelector(adapter, "#f_pst", markAll(root, "#f_pst", "omchh-quick-reply", adapter));
   markElement(document.querySelector("#ct"), "omchh-thread-list-route", adapter);
 };
