@@ -10301,7 +10301,7 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-gl
   background:
     linear-gradient(135deg, oklch(100% 0 0 / 0.54), transparent 34%),
     linear-gradient(315deg, color-mix(in oklch, var(--accent) 14%, transparent), transparent 38%);
-  opacity: 0.56;
+  opacity: 0.3;
 }
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 > * {
   position: relative;
@@ -10722,7 +10722,9 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-gl
   box-sizing: border-box !important;
   width: 100% !important;
   max-width: 100% !important;
-  gap: 5px !important;
+  gap: 2px !important;
+  /* 序号计数器：真实 DOM 无序号节点，用 counter 生成 */
+  counter-reset: chhnews !important;
 }
 
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .acon li {
@@ -10737,6 +10739,7 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-gl
   background: transparent !important;
   border: 0 !important;
   line-height: normal !important;
+  counter-increment: chhnews !important;
 }
 
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .acon li a {
@@ -10746,66 +10749,66 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-gl
   width: 100% !important;
   max-width: 100% !important;
   min-width: 0 !important;
-  min-height: 32px !important;
+  min-height: 30px !important;
   margin: 0 !important;
-  padding: 0 34px 0 13px !important;
+  padding: 0 12px 0 32px !important;
   overflow: hidden;
-  border: 1px solid oklch(100% 0 0 / 0.5) !important;
-  border-radius: 11px !important;
-  background:
-    linear-gradient(135deg, oklch(100% 0 0 / 0.52), oklch(100% 0 0 / 0.24)),
-    radial-gradient(circle at 0 50%, color-mix(in oklch, var(--accent) 15%, transparent), transparent 12rem) !important;
-  box-shadow:
-    inset 2px 0 0 color-mix(in oklch, var(--accent) 58%, transparent),
-    inset 0 1px 0 oklch(100% 0 0 / 0.7),
-    0 5px 14px oklch(30% 0.04 250 / 0.08) !important;
-  backdrop-filter: blur(14px) saturate(1.35);
-  -webkit-backdrop-filter: blur(14px) saturate(1.35);
-  color: color-mix(in oklch, var(--chh-lg-ink) 94%, var(--accent)) !important;
+  /* 去堆叠：无边框、无每行渐变、无 inset accent 条、无多层阴影、无 blur */
+  border: 0 !important;
+  border-radius: 9px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: color-mix(in oklch, var(--chh-lg-ink) 92%, var(--accent)) !important;
   font-family: var(--font-body) !important;
   font-size: 13px !important;
-  font-weight: 650 !important;
-  line-height: 32px !important;
+  font-weight: 600 !important;
+  line-height: 30px !important;
   text-decoration: none !important;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+}
+
+/* 序号：counter 生成，前三高亮 */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .acon li a::before {
+  content: counter(chhnews);
+  position: absolute;
+  left: 6px;
+  top: 0;
+  bottom: 0;
+  width: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display) !important;
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--chh-lg-muted) !important;
+  opacity: 0.5;
+  transition: color 0.16s ease, opacity 0.16s ease;
+}
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .acon li:nth-child(-n+3) a::before {
+  color: var(--accent) !important;
+  opacity: 1;
 }
 
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .acon li a::after {
-  content: "›";
-  position: absolute;
-  top: 50%;
-  right: 13px;
-  color: color-mix(in oklch, var(--chh-lg-muted) 84%, var(--accent)) !important;
-  font-family: var(--font-display) !important;
-  font-size: 23px;
-  font-weight: 520;
-  line-height: 1;
-  opacity: 0.86;
-  transform: translateY(-50%);
-  transition:
-    color var(--chh-lg-motion),
-    opacity var(--chh-lg-motion),
-    transform var(--chh-lg-motion);
+  content: none !important;
+  display: none !important;
 }
 
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .acon li a:hover {
-  border-color: color-mix(in oklch, var(--accent) 22%, oklch(100% 0 0 / 0.58)) !important;
-  background:
-    linear-gradient(135deg, oklch(100% 0 0 / 0.64), oklch(100% 0 0 / 0.3)),
-    radial-gradient(circle at 0 50%, color-mix(in oklch, var(--accent) 22%, transparent), transparent 12rem) !important;
-  box-shadow:
-    inset 2px 0 0 color-mix(in oklch, var(--accent) 70%, transparent),
-    inset 0 1px 0 oklch(100% 0 0 / 0.78),
-    0 8px 18px oklch(30% 0.04 250 / 0.11) !important;
-  color: color-mix(in oklch, var(--accent) 44%, var(--chh-lg-ink)) !important;
-  transform: translateX(2px);
+  /* 单层淡蓝胶囊 + 左侧 accent 竖条，不再叠白底/多层阴影 */
+  background: color-mix(in oklch, var(--accent) 9%, transparent) !important;
+  box-shadow: inset 3px 0 0 var(--accent) !important;
+  color: var(--accent) !important;
 }
-
-html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .acon li a:hover::after {
-  color: color-mix(in oklch, var(--accent) 76%, var(--chh-lg-muted)) !important;
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .acon li a:hover::before {
+  color: var(--accent) !important;
   opacity: 1;
-  transform: translate(3px, -50%);
 }
 
 /* ── portal-home hero alignment v8: page-width parity and native hot-banner geometry ──
@@ -22677,5 +22680,76 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-gl
   html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-post-author-card[data-omchh-rank-effect="3"]::after {
     animation: none !important;
     transform: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   portal-home 快讯/热门 v10 — 底部对齐，图片不拉伸不压缩
+   思路：热门图片锁死 600×252（高度=326px 由其内容决定，不可动）。
+   让快讯收缩到热门高度（压行不压图），而非反向拉伸图片。
+   grid 自动取较高列 → 快讯(12行) 会更高 → 反向。
+   解法：快讯卡片 absolute 定位 → 对网格高度“零贡献” → 轨道高度由
+   热门决定 → 快讯被 stretch 拉到=热门高度 → 12 行 flex:1 均分填满。
+   仅桌面生效；≤760px 单列布局保持原样。
+   ═══════════════════════════════════════════════════════════════ */
+@media (min-width: 761px) {
+  /* 两列等高 */
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain {
+    align-items: stretch !important;
+  }
+
+  /* 快讯列：建立定位上下文，对网格高度零贡献 */
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .cright {
+    position: relative !important;
+    min-height: 0 !important;
+  }
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .cright > .chiphell_box {
+    position: absolute !important;
+    inset: 0 !important;
+    margin: 0 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* 包裹链 height:100% flex 列，把热门高度逐层传到快讯玻璃卡片 */
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .cright .chiphell_index_news,
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .cright #diy_xw,
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .cright #diy_xw .cl_frame_bm,
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .cright #diy_xw .column,
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .cright #portal_block_673,
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .cright #portal_block_673_content {
+    flex: 1 1 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* 内容区 + 列表填满剩余空间 */
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .acon {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .acon ul {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+  }
+
+  /* 12 行均分列表高度，铺满无空隙；行内文字垂直居中 */
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .acon li {
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 .acon li a {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    line-height: 1.35 !important;
   }
 }
