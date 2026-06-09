@@ -17,7 +17,8 @@
         "https://www.chiphell.com/*"
       ],
       "css": [
-        "content/preflight.css"
+        "content/preflight.css",
+        "themes/liquid-glass/index.css"
       ],
       "js": [
         "content/main.js"

@@ -1,36 +1,11 @@
 import type { OmchhRoute } from "./router";
 import type { OmchhSettings } from "./settings";
-import { warnForUnexpectedExtensionError } from "./extension-context";
 
 const THEME_LINK_ID = "omchh-theme-css";
 const LEGACY_LIQUID_GLASS_CLASS = "chh-liquid-glass";
 
-function getThemeCacheVersion(): string {
-  try {
-    const runtime = globalThis.chrome?.runtime;
-    const version = runtime?.getManifest?.().version;
-    return version ? encodeURIComponent(version) : "dev";
-  } catch {
-    return "dev";
-  }
-}
-
-function withThemeCacheVersion(href: string): string {
-  const separator = href.includes("?") ? "&" : "?";
-  return `${href}${separator}omchh_theme_v=${getThemeCacheVersion()}`;
-}
-
-function getThemeHref(themeId: string): string | undefined {
-  const path = `themes/${encodeURIComponent(themeId)}/index.css`;
-
-  try {
-    const runtime = globalThis.chrome?.runtime;
-    if (!runtime?.getURL) return withThemeCacheVersion(`/${path}`);
-    return withThemeCacheVersion(runtime.getURL(path));
-  } catch (error) {
-    warnForUnexpectedExtensionError("[oh-my-chh] Extension context unavailable; skipping theme stylesheet update.", error);
-    return undefined;
-  }
+function removeManagedThemeLinks(): void {
+  document.querySelectorAll<HTMLLinkElement>(`link#${THEME_LINK_ID}`).forEach((link) => link.remove());
 }
 
 export function applyTheme(settings: OmchhSettings, route: OmchhRoute): void {
@@ -46,19 +21,5 @@ export function applyTheme(settings: OmchhSettings, route: OmchhRoute): void {
   root.classList.toggle(LEGACY_LIQUID_GLASS_CLASS, isLiquidGlass);
   document.body?.classList.toggle(LEGACY_LIQUID_GLASS_CLASS, isLiquidGlass);
 
-  const href = getThemeHref(settings.themeId);
-  if (!href) return;
-
-  const links = [...document.querySelectorAll<HTMLLinkElement>(`link#${THEME_LINK_ID}`)];
-  let link = links[0] ?? null;
-  links.slice(1).forEach((duplicate) => duplicate.remove());
-
-  if (!link) {
-    link = document.createElement("link");
-    link.id = THEME_LINK_ID;
-    link.rel = "stylesheet";
-    link.dataset.omchhManaged = "theme";
-    (document.head ?? document.documentElement).append(link);
-  }
-  if (link.getAttribute("href") !== href) link.href = href;
+  removeManagedThemeLinks();
 }

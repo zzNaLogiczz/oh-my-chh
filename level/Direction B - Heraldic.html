@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>方向 B · 圣纹（细化版）</title>
+<link rel="stylesheet" href="heraldic.css">
+<style>
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ font-family:"PingFang SC","Hiragino Sans GB",-apple-system,system-ui,sans-serif;
+    background:radial-gradient(1200px 600px at 50% -10%, #f2f5fb 0%, transparent 60%), #e7ebf2;
+    color:#1c2230; -webkit-font-smoothing:antialiased; padding:56px 24px 90px; }
+  .wrap{ max-width:1180px; margin:0 auto; }
+  .lead{ text-align:center; margin-bottom:42px; }
+  .kicker{ font-size:13px; letter-spacing:3px; color:#8a94a6; font-weight:600; }
+  h1{ font-size:32px; font-weight:800; letter-spacing:.5px; margin:10px 0 12px; }
+  .sub{ font-size:15px; color:#6a7488; max-width:660px; margin:0 auto; line-height:1.7; }
+
+  .shead{ display:flex; align-items:baseline; gap:14px; margin:50px 0 6px; }
+  .shead h2{ font-size:21px; font-weight:800; }
+  .shead .en{ font-size:12.5px; color:#9aa3b5; font-weight:600; letter-spacing:1px; }
+  .sdesc{ font-size:13.5px; color:#6a7488; line-height:1.65; max-width:780px; margin-bottom:24px; }
+
+  .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .spec{ background:#fff; border:1px solid rgba(120,140,170,.14); border-radius:20px;
+    padding:30px 18px 18px; text-align:center; box-shadow:0 1px 3px rgba(20,30,50,.05);
+    display:flex; flex-direction:column; align-items:center; }
+  .stage{ min-height:64px; display:grid; place-items:center; margin-bottom:18px; }
+  .slabel{ font-size:15px; font-weight:700; color:#2a3242; }
+  .stier{ font-size:11.5px; color:#9aa3b5; letter-spacing:1px; margin-top:3px; }
+  .rar{ display:flex; gap:4px; justify-content:center; margin-top:9px; }
+  .rar i{ width:6px; height:6px; border-radius:50%; background:#dfe4ee; }
+  .rar i.on{ background:linear-gradient(135deg,#ffd35a,#ef8a3a); }
+  .snote{ font-size:11.5px; color:#9aa3b5; line-height:1.5; margin-top:11px;
+    border-top:1px dashed rgba(140,155,180,.25); padding-top:11px; width:100%; }
+
+  .otherband{ background:linear-gradient(180deg,#fff,#f7f9fc); border:1px solid rgba(120,140,170,.16);
+    border-radius:22px; padding:26px; display:grid; grid-template-columns:auto 1fr; gap:28px; align-items:center;
+    box-shadow:0 1px 3px rgba(20,30,50,.05); }
+  .otherband .demo{ display:grid; place-items:center; min-width:150px; }
+  .otherchips{ display:flex; flex-wrap:wrap; gap:9px; }
+  .otherchips .hb{ font-size:13px; }
+  .otherchips .emblem{ width:36px; height:36px; }
+  .otherchips .crest{ width:22px; height:22px; } .otherchips .crest svg{ width:22px; height:22px; }
+  .otitle{ font-size:16px; font-weight:800; margin-bottom:6px; }
+  .odesc{ font-size:13px; color:#6a7488; line-height:1.6; margin-bottom:16px; max-width:560px; }
+
+  .inline-demo{ display:flex; flex-direction:column; gap:12px; background:#fff; border:1px solid rgba(120,140,170,.14);
+    border-radius:18px; padding:22px 24px; }
+  .post{ display:flex; gap:11px; align-items:center; }
+  .pav{ width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,#c9d3e4,#aeb9cf); flex:none; }
+  .pname{ font-weight:700; color:#2a3242; font-size:13.5px; display:flex; align-items:center; gap:9px; }
+  .inline-demo .hb{ font-size:12.5px; padding:3px 11px 3px 4px; }
+  .inline-demo .emblem{ width:28px; height:28px; } .inline-demo .crest{ width:18px; height:18px; }
+  .inline-demo .crest svg{ width:18px; height:18px; }
+
+  .foot{ text-align:center; margin-top:54px; font-size:12.5px; color:#aab2c2; line-height:1.7; }
+  @media (max-width:880px){ .grid{ grid-template-columns:1fr 1fr; } .otherband{ grid-template-columns:1fr; } }
+  @media (max-width:560px){ .grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" rx="20" fill="#160f1d"/>
+    <g transform="translate(50 52)">
+      <circle r="26" fill="none" stroke="#f0b22e" stroke-width="1.2" opacity=".5"/>
+      <path d="M-15 6l5 6 8-18 8 18 5-6-2.5 13h-21Z" fill="#f0b22e"/>
+      <circle cx="-15" cy="5" r="2.6" fill="#e0433f"/><circle cx="0" cy="-12" r="3" fill="#e0433f"/><circle cx="15" cy="5" r="2.6" fill="#e0433f"/>
+    </g>
+  </svg>
+</template>
+<div class="wrap">
+
+  <div class="lead">
+    <div class="kicker">DIRECTION B · 圣纹</div>
+    <h1>圣纹 · 纹章特效（细化版）</h1>
+    <p class="sub">每一级都加厚了特效：奖章底盘 + 呼吸光晕，随阶位叠加旋转符文环、放射圣光、轨道光点与上升火星。圣魔王配多层精细旋转外环。纯 CSS/SVG。</p>
+  </div>
+
+  <!-- ============ NORMAL LADDER ============ -->
+  <section>
+    <div class="shead"><h2>普通等级阶梯 · 完整 11 阶</h2><span class="en">亡灵 → 炽天使 · 越高越华丽</span></div>
+    <p class="sdesc">幽魂 → 光环初现 → 羽翼渐丰 → 权杖 → 圣盾 → 辉耀 → 巨翼 → 御座火轮 → 四翼智晶 → 炎之六翼。每阶换不同纹章，光晕、符文环、圣光、粒子逐级点亮。</p>
+    <div class="grid">
+
+      <!-- 亡灵 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-undead fx-aura fx-float fx-glow"><span class="emblem"><span class="disc"></span><span class="crest">
+          <svg viewBox="0 0 30 30"><path class="ico-fill" d="M15 4c-4.2 0-7.2 3.4-7.2 8.4 0 3.7 1.3 6.5 1.3 8.6 0 1-.9 1.6-.9 2.7 0 .9.9 1.5 1.7 1 .7-.4 1.1-.4 1.7 0 .7.5 1.5.5 2.2 0 .6-.4 1-.4 1.7 0 .8.5 1.7-.1 1.7-1 0-1.1-.9-1.7-.9-2.7 0-2.1 1.3-4.9 1.3-8.6C22.2 7.4 19.2 4 15 4Z" opacity=".9"/><circle class="ico-core" cx="11.8" cy="12.5" r="1.7"/><circle class="ico-core" cx="18.2" cy="12.5" r="1.7"/><circle class="ico-deep" cx="11.8" cy="12.7" r=".7"/><circle class="ico-deep" cx="18.2" cy="12.7" r=".7"/></svg>
+        </span></span><span class="bname">亡灵</span></span></div>
+        <div class="slabel">亡灵</div><div class="stier">T0 · 幽蓝</div>
+        <div class="rar"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+        <div class="snote">幽魂飘忽 · 冷蓝光晕 + 浮动</div>
+      </div>
+
+      <!-- 实习天使 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-novice fx-aura fx-float fx-glow"><span class="emblem"><span class="disc"></span><span class="crest">
+          <svg viewBox="0 0 30 30"><ellipse cx="15" cy="8" rx="5" ry="1.9" class="ico-stroke" stroke-width="1.8"/><path class="ico-fill" d="M15 12c-1.6 1.2-4 1.5-6.4.9 1.7 1.3 3.7 2 6.4 2s4.7-.7 6.4-2c-2.4.6-4.8.3-6.4-.9Z" opacity=".8"/><path class="ico-stroke" d="M15 13.5v7" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span></span><span class="bname">实习天使</span></span></div>
+        <div class="slabel">实习天使</div><div class="stier">T1 · 银白</div>
+        <div class="rar"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+        <div class="snote">微光环 · 银白柔晕</div>
+      </div>
+
+      <!-- 天使 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-angel fx-aura fx-float fx-glow fx-sweep fx-orbit"><span class="emblem"><span class="disc"></span><span class="ring"></span><span class="crest">
+          <svg viewBox="0 0 30 30"><ellipse cx="15" cy="6.5" rx="4.6" ry="1.8" class="ico-stroke" stroke-width="1.8"/><path class="ico-fill" d="M14 12C10.5 9.5 6 9.6 3.6 11.4c1.7.1 2.6.8 3 1.6-1.6-.4-2.8-.1-3.6.7 1.6.3 2.5 1 2.9 1.8 2.5-1.7 5-2.1 7.3-1.7Z"/><path class="ico-fill" d="M16 12c3.5-2.5 8-2.4 10.4-.6-1.7.1-2.6.8-3 1.6 1.6-.4 2.8-.1 3.6.7-1.6.3-2.5 1-2.9 1.8-2.5-1.7-5-2.1-7.3-1.7Z"/><path class="ico-core" d="M15 11l1.4 3-1.4 7-1.4-7Z"/></svg>
+        </span><span class="orb"></span></span><span class="bname">天使</span></span></div>
+        <div class="slabel">天使</div><div class="stier">T2 · 金白</div>
+        <div class="rar"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div>
+        <div class="snote">光环 + 单翼 · 符文环 + 1 光点</div>
+      </div>
+
+      <!-- 大天使 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-arch fx-aura fx-float fx-glow fx-sweep fx-orbit"><span class="emblem"><span class="disc"></span><span class="ring"></span><span class="ring2"></span><span class="crest">
+          <svg viewBox="0 0 30 30"><ellipse cx="15" cy="6" rx="4.8" ry="1.9" class="ico-stroke" stroke-width="1.9"/><path class="ico-fill" d="M14 12.5C9.5 9 4 9.2 1.4 11.6c2 0 3 .8 3.5 1.8-1.9-.5-3.2 0-4.1 1 1.9.3 2.9 1.1 3.3 2.1 2.9-2 6-2.6 9-2.2Z"/><path class="ico-fill" d="M16 12.5c4.5-3.5 10-3.3 12.6-.9-2 0-3 .8-3.5 1.8 1.9-.5 3.2 0 4.1 1-1.9.3-2.9 1.1-3.3 2.1-2.9-2-6-2.6-9-2.2Z"/><path class="ico-core" d="M15 11l1.6 3.4-1.6 7.5-1.6-7.5Z"/></svg>
+        </span><span class="orb"></span><span class="orb"></span></span><span class="bname">大天使</span></span></div>
+        <div class="slabel">大天使</div><div class="stier">T3 · 亮金</div>
+        <div class="rar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+        <div class="snote">双翼 · 双符文环 + 2 光点</div>
+      </div>
+
+      <!-- 权天使 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-prin fx-aura fx-float fx-glow fx-sweep fx-orbit"><span class="emblem"><span class="disc"></span><span class="ring"></span><span class="ring2"></span><span class="crest">
+          <svg viewBox="0 0 30 30"><ellipse cx="15" cy="5.6" rx="4.8" ry="1.9" class="ico-stroke" stroke-width="1.9"/><path class="ico-fill" d="M13.5 13C9 9.6 3.6 9.8 1 12.2c2 0 3 .8 3.5 1.8-1.9-.5-3.2 0-4.1 1 1.9.3 2.9 1.1 3.3 2.1 2.7-1.9 5.6-2.5 8.8-2.1Z"/><path class="ico-fill" d="M16.5 13c4.5-3.4 9.9-3.2 12.5-.8-2 0-3 .8-3.5 1.8 1.9-.5 3.2 0 4.1 1-1.9.3-2.9 1.1-3.3 2.1-2.7-1.9-5.6-2.5-8.8-2.1Z"/><circle class="ico-core" cx="15" cy="10.6" r="1.7"/><rect x="14.3" y="11.4" width="1.4" height="10" rx=".7" class="ico-core"/><rect x="12.4" y="14.2" width="5.2" height="1.3" rx=".6" class="ico-deep"/></svg>
+        </span><span class="orb" style="--c1:#bfe0ff"></span><span class="orb" style="--c1:#bfe0ff"></span></span><span class="bname">权天使</span></span></div>
+        <div class="slabel">权天使</div><div class="stier">T4 · 守护金</div>
+        <div class="rar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+        <div class="snote">权杖徽记 · 双环 + 守护光点</div>
+      </div>
+
+      <!-- 能天使 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-power fx-aura fx-float fx-glow fx-sweep fx-orbit"><span class="emblem"><span class="disc"></span><span class="ring"></span><span class="ring2"></span><span class="crest">
+          <svg viewBox="0 0 30 30"><ellipse cx="15" cy="5.4" rx="4.9" ry="1.9" class="ico-stroke" stroke-width="1.9"/><path class="ico-fill" d="M13.5 12.5C9 9 3.4 9.2.8 11.7c2 0 3.1.8 3.6 1.9-2-.6-3.3 0-4.2 1.1 2 .3 3 1.1 3.4 2.2 2.8-2 5.8-2.6 9.1-2.2Z"/><path class="ico-fill" d="M16.5 12.5c4.5-3.5 10.1-3.3 12.7-.8-2 0-3.1.8-3.6 1.9 2-.6 3.3 0 4.2 1.1-2 .3-3 1.1-3.4 2.2-2.8-2-5.8-2.6-9.1-2.2Z"/><path class="ico-core" d="M15 10.6l4.2 1.5v3.1c0 2.5-1.7 4.4-4.2 5.4-2.5-1-4.2-2.9-4.2-5.4v-3.1Z"/><path d="M12.9 15.2l1.5 1.5 2.6-2.8" stroke="var(--c3)" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span><span class="orb"></span><span class="orb"></span><span class="orb"></span></span><span class="bname">能天使</span></span></div>
+        <div class="slabel">能天使</div><div class="stier">T5 · 战盾金</div>
+        <div class="rar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+        <div class="snote">圣盾纹章 · 双环 + 3 光点</div>
+      </div>
+
+      <!-- 力天使 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-virtue fx-aura fx-float fx-glow fx-sweep fx-orbit fx-spark"><span class="emblem"><span class="disc"></span><span class="ring"></span><span class="ring2"></span><span class="crest">
+          <svg viewBox="0 0 30 30"><ellipse cx="15" cy="5.2" rx="5" ry="2" class="ico-stroke" stroke-width="2"/><path class="ico-fill" d="M13.5 12.5C9 9 3.2 9.2.6 11.7c2.1 0 3.2.8 3.7 1.9-2-.6-3.4 0-4.3 1.1 2 .3 3.1 1.2 3.5 2.3 2.9-2.1 6-2.7 9.5-2.3Z"/><path class="ico-fill" d="M16.5 12.5c4.5-3.5 10.3-3.3 12.9-.8-2.1 0-3.2.8-3.7 1.9 2-.6 3.4 0 4.3 1.1-2 .3-3.1 1.2-3.5 2.3-2.9-2.1-6-2.7-9.5-2.3Z"/><path class="ico-core" d="M15 10.2l1.5 4.3 4.3 1.5-4.3 1.5L15 21.8l-1.5-4.3-4.3-1.5 4.3-1.5Z"/></svg>
+        </span><span class="orb"></span><span class="orb"></span><span class="orb"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span></span><span class="bname">力天使</span></span></div>
+        <div class="slabel">力天使</div><div class="stier">T6 · 辉耀金</div>
+        <div class="rar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+        <div class="snote">辉耀圣星 · 双环 + 光点 + 火星</div>
+      </div>
+
+      <!-- 主天使 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-high fx-aura fx-float fx-glow2 fx-sweep fx-orbit fx-spark"><span class="emblem"><span class="disc"></span><span class="beam"></span><span class="ring"></span><span class="ring2"></span><span class="crest">
+          <svg viewBox="0 0 30 30"><ellipse cx="15" cy="5.5" rx="5" ry="2" class="ico-stroke" stroke-width="2"/><path class="ico-fill" d="M14 13C9 9 3 9.3.4 11.8c2.2 0 3.3.9 3.8 2-2-.6-3.5 0-4.4 1.1 2 .3 3.1 1.2 3.5 2.3C6.4 15 9.7 14.4 13 14.8Z"/><path class="ico-fill" d="M16 13c5-4 11-3.7 13.6-1.2-2.2 0-3.3.9-3.8 2 2-.6 3.5 0 4.4 1.1-2 .3-3.1 1.2-3.5 2.3C23.6 15 20.3 14.4 17 14.8Z"/><path class="ico-core" d="M15 11l1.7 3.6-1.7 8-1.7-8Z"/><circle class="ico-core" cx="15" cy="20.5" r="1.8"/></svg>
+        </span><span class="orb"></span><span class="orb"></span><span class="orb"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span></span><span class="bname">主天使</span></span></div>
+        <div class="slabel">主天使</div><div class="stier">T7 · 高阶金</div>
+        <div class="rar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+        <div class="snote">巨翼 + 圣光放射 · 3 光点 + 火星</div>
+      </div>
+
+      <!-- 座天使 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-throne fx-aura fx-glow2 fx-sweep fx-orbit fx-spark"><span class="emblem"><span class="disc"></span><span class="beam"></span><span class="ring"></span><span class="ring2"></span><span class="ring3"></span><span class="crest">
+          <svg viewBox="0 0 30 30"><ellipse cx="15" cy="5" rx="5" ry="2" class="ico-stroke" stroke-width="2"/><path class="ico-fill" d="M13 13C8 9 2.4 9.2-.2 11.8c2.2 0 3.3.9 3.8 2-2-.6-3.5 0-4.4 1.1 2 .3 3.1 1.2 3.5 2.3C8.5 15 11.7 14.5 15 14.9Z" opacity=".9"/><path class="ico-fill" d="M17 13c5-4 10.6-3.8 13.2-1.2-2.2 0-3.3.9-3.8 2 2-.6 3.5 0 4.4 1.1-2 .3-3.1 1.2-3.5 2.3C21.5 15 18.3 14.5 15 14.9Z" opacity=".9"/><circle cx="15" cy="15.6" r="4.4" class="ico-stroke" stroke-width="1.4"/><circle cx="15" cy="15.6" r="1.7" class="ico-core"/><path class="ico-stroke" d="M15 11.4v8.4M10.8 15.6h8.4M12 12.6l6 6M18 12.6l-6 6" stroke-width=".9"/><g class="ico-core"><circle cx="15" cy="11.7" r=".7"/><circle cx="15" cy="19.5" r=".7"/><circle cx="11.1" cy="15.6" r=".7"/><circle cx="18.9" cy="15.6" r=".7"/></g></svg>
+        </span><span class="orb"></span><span class="orb"></span><span class="orb"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span></span><span class="bname">座天使</span></span></div>
+        <div class="slabel">座天使</div><div class="stier">T8 · 御座金</div>
+        <div class="rar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+        <div class="snote">御座火轮 · 三环 + 圣光 + 火星</div>
+      </div>
+
+      <!-- 智天使 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-cherub fx-aura fx-glow2 fx-sweep fx-orbit fx-spark"><span class="emblem"><span class="disc"></span><span class="beam"></span><span class="ring"></span><span class="ring2"></span><span class="ring3"></span><span class="crest">
+          <svg viewBox="0 0 30 30"><ellipse cx="15" cy="4.8" rx="4.6" ry="1.8" class="ico-stroke" stroke-width="1.8"/><path class="ico-fill" d="M13.5 11C10.5 8.6 6.5 8.7 4.5 10.3c1.5.1 2.3.6 2.7 1.4-1.3-.4-2.3 0-3 .8 2.9-.2 6.3.6 9.3 1.5Z" opacity=".68"/><path class="ico-fill" d="M16.5 11c3-2.4 7-2.3 9-.7-1.5.1-2.3.6-2.7 1.4 1.3-.4 2.3 0 3 .8-2.9-.2-6.3.6-9.3 1.5Z" opacity=".68"/><path class="ico-fill" d="M13.2 14C8.6 10.6 3 10.8.4 13.2c2 0 3 .8 3.5 1.8-1.9-.5-3.2 0-4.1 1 1.9.3 2.9 1.1 3.3 2.1 2.9-2 6.2-2.6 9.6-2.2Z"/><path class="ico-fill" d="M16.8 14c4.6-3.4 10.2-3.2 12.8-.8-2 0-3 .8-3.5 1.8 1.9-.5 3.2 0 4.1 1-1.9.3-2.9 1.1-3.3 2.1-2.9-2-6.2-2.6-9.6-2.2Z"/><path class="ico-deep" d="M15 11.4l3 3.1-3 7-3-7Z"/><circle cx="15" cy="14.6" r="1" fill="#fff"/></svg>
+        </span><span class="orb" style="--c1:#bcd8ff"></span><span class="orb" style="--c1:#bcd8ff"></span><span class="orb" style="--c1:#bcd8ff"></span><span class="orb" style="--c1:#bcd8ff"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span></span><span class="bname">智天使</span></span></div>
+        <div class="slabel">智天使</div><div class="stier">T9 · 智蓝金</div>
+        <div class="rar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+        <div class="snote">四翼 + 智慧蓝晶 · 三环 + 蓝焰光点</div>
+      </div>
+
+      <!-- 炽天使 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-seraph fx-aura fx-glow2 fx-sweep fx-orbit fx-spark"><span class="emblem"><span class="disc"></span><span class="beam"></span><span class="ring"></span><span class="ring2"></span><span class="ring3"></span><span class="crest">
+          <svg viewBox="0 0 30 30"><circle cx="15" cy="5.5" r="3" class="ico-stroke" stroke-width="2" style="filter:drop-shadow(0 0 3px var(--glow))"/><g class="ico-fill">
+            <path d="M14 13.5C9 9.5 2.5 9.5.5 12.5c2 0 3 .7 3.6 1.7-2.2-.7-3.6-.1-4.4 1.3 2 .2 3 1 3.6 2-2.2-.6-3.2 0-3.8 1.4 2.6-.4 7.6-.6 14.4-1.4Z"/>
+            <path d="M16 13.5c5-4 11.5-4 13.5-1-2 0-3 .7-3.6 1.7 2.2-.7 3.6-.1 4.4 1.3-2 .2-3 1-3.6 2 2.2-.6 3.2 0 3.8 1.4-2.6-.4-7.6-.6-14.4-1.4Z"/>
+            <path d="M13 10.5C10 8 6 8 4 9.6c1.6.1 2.4.7 2.8 1.5-1.5-.5-2.6 0-3.3.9 3-.2 6.6.6 9.5 1.5Z" opacity=".8"/>
+            <path d="M17 10.5c3-2.5 7-2.5 9-0.9-1.6.1-2.4.7-2.8 1.5 1.5-.5 2.6 0 3.3.9-3-.2-6.6.6-9.5 1.5Z" opacity=".8"/>
+          </g><path class="ico-core" d="M15 10l1.9 4.2-1.9 8.5-1.9-8.5Z"/></svg>
+        </span><span class="orb"></span><span class="orb"></span><span class="orb"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span></span><span class="bname">炽天使</span></span></div>
+        <div class="slabel">炽天使</div><div class="stier">T10 · 炽金顶阶</div>
+        <div class="rar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+        <div class="snote">炎之光环 + 六翼 · 三环 + 圣光 + 飞旋圣火</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ DEMON + ADMIN ============ -->
+  <section>
+    <div class="shead"><h2>恶魔 &amp; 管理组</h2><span class="en">小恶魔 → 大恶魔 → 圣魔使 → 圣魔灵 → 圣魔王</span></div>
+    <p class="sdesc">赤红躁动；管理三级为暗金奖章，叠加堕天之翼、紫焰魔纹与极光。圣魔王配多层精细旋转外环——全场最炸。</p>
+    <div class="grid">
+
+      <!-- 小恶魔 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-demon fx-aura fx-float fx-glow fx-sweep fx-spark"><span class="emblem"><span class="disc"></span><span class="ring"></span><span class="crest">
+          <svg viewBox="0 0 30 30"><path class="ico-fill" d="M9.5 6.5c-.3 3 .8 5.2 2.4 6.8C9.8 12 8.3 9.8 7.4 6.2c-1.2 1.8-1.6 4.6.6 7.4-2.6-.8-3.7-2.9-4.2-5-.7 3.3 1 7.4 5.6 8.2Z"/><path class="ico-fill" d="M20.5 6.5c.3 3-.8 5.2-2.4 6.8 2.1-1.3 3.6-3.5 4.5-7.1 1.2 1.8 1.6 4.6-.6 7.4 2.6-.8 3.7-2.9 4.2-5 .7 3.3-1 7.4-5.6 8.2Z"/><circle class="ico-core" cx="15" cy="18.5" r="5.2"/><circle class="ico-deep" cx="13" cy="18" r="1.1"/><circle class="ico-deep" cx="17" cy="18" r="1.1"/><path class="ico-deep" d="M12.6 21c1.4 1.2 3.4 1.2 4.8 0" stroke="var(--c3)" stroke-width="1.1" fill="none" stroke-linecap="round"/></svg>
+        </span><span class="spk"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span></span><span class="bname">小恶魔</span></span></div>
+        <div class="slabel">小恶魔</div><div class="stier">特殊 · 赤红</div>
+        <div class="rar"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div>
+        <div class="snote">小犄角 · 赤焰符文环 + 火星</div>
+      </div>
+
+      <!-- 大恶魔 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-greater fx-aura fx-glow2 fx-sweep fx-orbit fx-spark"><span class="emblem"><span class="disc"></span><span class="ring"></span><span class="ring2"></span><span class="crest">
+          <svg viewBox="0 0 30 30">
+            <path class="ico-fill" d="M14 15.5c-3.6-2.6-7.8-2.9-11.3-1 1.7.2 2.5.9 2.7 2 .8-.8 1.8-.9 2.8-.4-.7.7-.9 1.6-.5 2.6 1-.9 2-1 3-.4-.5.8-.5 1.8.1 2.7 1.1-1.2 2.5-1.9 3.2-2.1Z" opacity=".92"/>
+            <path class="ico-fill" d="M16 15.5c3.6-2.6 7.8-2.9 11.3-1-1.7.2-2.5.9-2.7 2-.8-.8-1.8-.9-2.8-.4.7.7.9 1.6.5 2.6-1-.9-2-1-3-.4.5.8.5 1.8-.1 2.7-1.1-1.2-2.5-1.9-3.2-2.1Z" opacity=".92"/>
+            <path class="ico-deep" d="M11.2 10.5C9 8.4 8 5.6 8.4 2.8c1.5 2 3 3.1 4.6 3.8-.9 1.1-1.5 2.4-1.8 3.9Z"/>
+            <path class="ico-deep" d="M18.8 10.5C21 8.4 22 5.6 21.6 2.8c-1.5 2-3 3.1-4.6 3.8.9 1.1 1.5 2.4 1.8 3.9Z"/>
+            <path class="ico-fill" d="M15 8.6c-3.4 0-5.8 2.4-5.8 5.6 0 3 2.4 5.8 5.8 5.8s5.8-2.8 5.8-5.8c0-3.2-2.4-5.6-5.8-5.6Z"/>
+            <path class="ico-core" d="M11.6 12.8l2.4 1-2.4 1.2z"/>
+            <path class="ico-core" d="M18.4 12.8l-2.4 1 2.4 1.2z"/>
+            <path d="M12.2 17c1.7 1.6 5 1.6 6.6 0" stroke="var(--c3)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          </svg>
+        </span><span class="orb"></span><span class="orb"></span><span class="orb"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span></span><span class="bname">大恶魔</span></span></div>
+        <div class="slabel">大恶魔</div><div class="stier">特殊 · 进阶赤魔</div>
+        <div class="rar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+        <div class="snote">巨角魔翼 · 双符文环 + 轨道 + 火星</div>
+      </div>
+
+      <!-- 圣魔使 迪亚波罗 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-envoy fx-aura fx-glow2 fx-sweep fx-orbit fx-spark"><span class="emblem"><span class="disc"></span><span class="aurora" style="opacity:.4"></span><span class="beam"></span><span class="ring"></span><span class="ring2"></span><span class="crest">
+          <svg viewBox="0 0 30 30"><path class="ico-fill" d="M15 4l9.5 5.5v11L15 26l-9.5-5.5v-11Z" opacity=".25"/><path class="ico-stroke" d="M15 6.2 22 19h-14Z" stroke-width="1.6"/><circle class="ico-core" cx="15" cy="15" r="2.4"/><circle class="ico-deep" cx="15" cy="15" r="1"/><path class="ico-fill" d="M9 8.5c-.2 1.8.6 3 1.6 3.9-1.3-.8-2.3-2.1-2.9-4.1Z"/><path class="ico-fill" d="M21 8.5c.2 1.8-.6 3-1.6 3.9 1.3-.8 2.3-2.1 2.9-4.1Z"/></svg>
+        </span><span class="orb" style="--c1:#ffcaa0"></span><span class="orb" style="--c1:#ffcaa0"></span><span class="orb" style="--c1:#ffcaa0"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span></span><span class="bname">圣魔使</span></span></div>
+        <div class="slabel">圣魔使 · 迪亚波罗</div><div class="stier">管理组 · 见习恶魔</div>
+        <div class="rar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+        <div class="snote">暗金奖章 · 赤焰魔纹 + 极光底 + 圣光</div>
+      </div>
+
+      <!-- 圣魔灵 路西法 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-spirit fx-aura fx-glow2 fx-sweep fx-orbit fx-spark"><span class="emblem"><span class="disc"></span><span class="aurora" style="opacity:.5"></span><span class="beam"></span><span class="ring"></span><span class="ring2"></span><span class="ring3"></span><span class="crest">
+          <svg viewBox="0 0 30 30">
+            <path class="ico-core" d="M14 13.5C9.5 9.5 3.5 9.6 1 12.4c2 0 3 .7 3.6 1.7-2-.6-3.4 0-4.2 1.3 2 .2 3 1 3.6 2-2-.6-3 0-3.6 1.4 2.5-.4 7-.6 13.6-1.3Z" opacity=".95"/>
+            <path class="ico-fill" d="M16 13.5c4.6-3.2 9.6-2.6 11.8 0-1.7-.8-3-.4-3.8.4 1.6.2 2.6 1 3 2.2-1.6-.7-2.8-.3-3.5.6 1.5.4 2.3 1.3 2.5 2.6-2.6-2-5.6-3-10-2.4Z"/>
+            <path class="ico-deep" d="M14 9c-2.5-2-6-2-8 0 1.5 0 2.3.5 2.7 1.2-1.3-.4-2.2 0-2.8.8 2.6-.2 5.6.5 8.1 1.4Z"/>
+            <path class="ico-core" d="M15 10l1.8 4-1.8 8.5-1.8-8.5Z"/>
+          </svg>
+        </span><span class="orb" style="--c1:#e6b8ff"></span><span class="orb" style="--c1:#e6b8ff"></span><span class="orb" style="--c1:#e6b8ff"></span><span class="orb" style="--c1:#e6b8ff"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span></span><span class="bname">圣魔灵</span></span></div>
+        <div class="slabel">圣魔灵 · 路西法</div><div class="stier">管理组 · 堕天之翼</div>
+        <div class="rar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+        <div class="snote">天羽 × 魔翼 · 紫焰极光 + 三环 + 圣光</div>
+      </div>
+
+      <!-- 圣魔王 傻蛋 -->
+      <div class="spec">
+        <div class="stage"><span class="hb t-king fx-aura fx-glow2 fx-sweep fx-orbit fx-spark"><span class="emblem">
+          <span class="aurora"></span><span class="beam"></span>
+          <span class="king-rings"><span class="kr kr1"></span><span class="kr kr2"></span><span class="kr kr3"></span><span class="kr kr4"></span></span>
+          <span class="disc"></span>
+          <span class="crest">
+            <svg viewBox="0 0 30 30">
+              <path class="ico-fill" d="M15 17c-4.4-3.3-9.6-3.2-12.4-1 2 0 3 .7 3.6 1.6C4.2 18 3.2 18.5 2.6 19.6c2 .2 3 .9 3.5 1.8C3.8 20.4 2.8 21 2.2 22.2c3.6-.5 9.4-.7 12.8-1.3Z" opacity=".95"/>
+              <path class="ico-fill" d="M15 17c4.4-3.3 9.6-3.2 12.4-1-2 0-3 .7-3.6 1.6.6.4 1.6.9 2.2 2-2-.2-3 .9-3.5 1.8 2.3-1.2 3.3-.6 3.9.6-3.6-.5-9.4-.7-12.8-1.3Z" opacity=".95"/>
+              <path class="ico-core" d="M8 14.5l2.6 3L15 8.5l4.4 9 2.6-3-1.3 7H9.3Z"/>
+              <circle cx="8" cy="13.5" r="1.5" class="ico-deep"/><circle cx="15" cy="7.5" r="1.7" class="ico-deep"/><circle cx="22" cy="13.5" r="1.5" class="ico-deep"/>
+              <rect x="9.5" y="21" width="11" height="1.6" rx=".8" class="ico-fill"/>
+            </svg>
+          </span>
+          <span class="orb"></span><span class="orb"></span><span class="orb"></span><span class="orb"></span>
+          <span class="spk"></span><span class="spk"></span><span class="spk"></span><span class="spk"></span>
+        </span><span class="bname">圣魔王</span></span></div>
+        <div class="slabel">圣魔王 · "傻蛋"</div><div class="stier">管理组 · 顶级独有</div>
+        <div class="rar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+        <div class="snote">恶魔王冠 + 堕天翼 · 四层精细旋转外环 + 极光 + 圣光 + 轨道 + 火星</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ UNIVERSAL OTHER TAG ============ -->
+  <section>
+    <div class="shead"><h2>其他等级 · 通用标识</h2><span class="en">UNIVERSAL TAG · 不在阶梯内的用户组</span></div>
+    <p class="sdesc">游客、待验证、认证商家、禁止发言/访问、小号等不属于天使/恶魔阶梯的用户组，统一用一套中性石板灰标识——同一种样式与极简动效，与等级体系明确区分、不抢戏。</p>
+    <div class="otherband">
+      <div class="demo">
+        <span class="hb t-other fx-aura fx-float"><span class="emblem"><span class="disc"></span><span class="crest">
+          <svg viewBox="0 0 30 30"><path class="ico-stroke" d="M15 4l8 3v7c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V7Z" stroke-width="1.8"/><circle class="ico-fill" cx="15" cy="13" r="2.2"/><path class="ico-fill" d="M11 20c.6-2.4 2.2-3.6 4-3.6s3.4 1.2 4 3.6Z"/></svg>
+        </span></span><span class="bname">其他等级</span></span>
+      </div>
+      <div>
+        <div class="otitle">一套样式覆盖全部「非阶梯」用户组</div>
+        <div class="odesc">石板灰盾形徽记 + 轻微光晕，无金/赤/紫等级色，一眼区分于天使恶魔体系。仅替换名称即可复用：</div>
+        <div class="otherchips">
+          <span class="hb t-other fx-aura"><span class="emblem"><span class="disc"></span><span class="crest"><svg viewBox="0 0 30 30"><path class="ico-stroke" d="M15 5l7.5 3v6.5c0 4.5-3 7.8-7.5 10-4.5-2.2-7.5-5.5-7.5-10V8Z" stroke-width="1.7"/><circle class="ico-fill" cx="15" cy="13" r="2"/><path class="ico-fill" d="M11.5 19.5c.5-2 1.9-3 3.5-3s3 1 3.5 3Z"/></svg></span></span><span class="bname">游客</span></span>
+          <span class="hb t-other fx-aura"><span class="emblem"><span class="disc"></span><span class="crest"><svg viewBox="0 0 30 30"><path class="ico-stroke" d="M15 5l7.5 3v6.5c0 4.5-3 7.8-7.5 10-4.5-2.2-7.5-5.5-7.5-10V8Z" stroke-width="1.7"/><circle class="ico-fill" cx="15" cy="13" r="2"/><path class="ico-fill" d="M11.5 19.5c.5-2 1.9-3 3.5-3s3 1 3.5 3Z"/></svg></span></span><span class="bname">认证商家</span></span>
+          <span class="hb t-other fx-aura"><span class="emblem"><span class="disc"></span><span class="crest"><svg viewBox="0 0 30 30"><path class="ico-stroke" d="M15 5l7.5 3v6.5c0 4.5-3 7.8-7.5 10-4.5-2.2-7.5-5.5-7.5-10V8Z" stroke-width="1.7"/><circle class="ico-fill" cx="15" cy="13" r="2"/><path class="ico-fill" d="M11.5 19.5c.5-2 1.9-3 3.5-3s3 1 3.5 3Z"/></svg></span></span><span class="bname">待验证</span></span>
+          <span class="hb t-other fx-aura"><span class="emblem"><span class="disc"></span><span class="crest"><svg viewBox="0 0 30 30"><path class="ico-stroke" d="M15 5l7.5 3v6.5c0 4.5-3 7.8-7.5 10-4.5-2.2-7.5-5.5-7.5-10V8Z" stroke-width="1.7"/><circle class="ico-fill" cx="15" cy="13" r="2"/><path class="ico-fill" d="M11.5 19.5c.5-2 1.9-3 3.5-3s3 1 3.5 3Z"/></svg></span></span><span class="bname">禁止发言</span></span>
+          <span class="hb t-other fx-aura"><span class="emblem"><span class="disc"></span><span class="crest"><svg viewBox="0 0 30 30"><path class="ico-stroke" d="M15 5l7.5 3v6.5c0 4.5-3 7.8-7.5 10-4.5-2.2-7.5-5.5-7.5-10V8Z" stroke-width="1.7"/><circle class="ico-fill" cx="15" cy="13" r="2"/><path class="ico-fill" d="M11.5 19.5c.5-2 1.9-3 3.5-3s3 1 3.5 3Z"/></svg></span></span><span class="bname">小号</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INLINE PROOF ============ -->
+  <section>
+    <div class="shead"><h2>帖内内联效果</h2><span class="en">缩小到用户名旁也成立</span></div>
+    <div class="inline-demo">
+      <div class="post"><div class="pav"></div><div class="pname">月影流光 <span class="hb t-seraph fx-aura fx-glow fx-orbit"><span class="emblem"><span class="disc"></span><span class="ring"></span><span class="crest"><svg viewBox="0 0 30 30"><circle cx="15" cy="5.5" r="3" class="ico-stroke" stroke-width="2"/><g class="ico-fill"><path d="M14 13.5C9 9.5 2.5 9.5.5 12.5c2 0 3 .7 3.6 1.7-2.2-.7-3.6-.1-4.4 1.3 2 .2 3 1 3.6 2-2.2-.6-3.2 0-3.8 1.4 2.6-.4 7.6-.6 14.4-1.4Z"/><path d="M16 13.5c5-4 11.5-4 13.5-1-2 0-3 .7-3.6 1.7 2.2-.7 3.6-.1 4.4 1.3-2 .2-3 1-3.6 2 2.2-.6 3.2 0 3.8 1.4-2.6-.4-7.6-.6-14.4-1.4Z"/></g><path class="ico-core" d="M15 10l1.9 4.2-1.9 8.5-1.9-8.5Z"/></svg></span><span class="orb"></span></span><span class="bname">炽天使</span></span></div></div>
+      <div class="post"><div class="pav"></div><div class="pname">zol4203 <span class="hb t-king fx-aura fx-glow fx-orbit"><span class="emblem"><span class="king-rings"><span class="kr kr1"></span><span class="kr kr2"></span></span><span class="disc"></span><span class="crest"><svg viewBox="0 0 30 30"><path class="ico-core" d="M8 14.5l2.6 3L15 8.5l4.4 9 2.6-3-1.3 7H9.3Z"/><circle cx="15" cy="7.5" r="1.7" class="ico-deep"/></svg></span><span class="orb"></span></span><span class="bname">圣魔王</span></span></div></div>
+      <div class="post"><div class="pav"></div><div class="pname">路人甲 <span class="hb t-other fx-aura"><span class="emblem"><span class="disc"></span><span class="crest"><svg viewBox="0 0 30 30"><path class="ico-stroke" d="M15 5l7.5 3v6.5c0 4.5-3 7.8-7.5 10-4.5-2.2-7.5-5.5-7.5-10V8Z" stroke-width="1.7"/><circle class="ico-fill" cx="15" cy="13" r="2"/><path class="ico-fill" d="M11.5 19.5c.5-2 1.9-3 3.5-3s3 1 3.5 3Z"/></svg></span></span><span class="bname">游客</span></span></div></div>
+    </div>
+  </section>
+
+  <div class="foot">完整 12 普通等级 + 3 管理组 + 通用标识，全部纯 CSS/SVG。<br>需要的话我可以再出全四种落位形态（信息卡 / 内联 / 头像挂件 / 悬浮卡），或把这套风格直接套进你截图里的信息卡。</div>
+
+</div>
+</body>
+</html>

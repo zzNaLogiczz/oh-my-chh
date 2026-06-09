@@ -15,9 +15,11 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] {
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] {
   min-height: 100%;
   background:
-    radial-gradient(circle at 12% 8%, color-mix(in oklch, var(--accent) 18%, transparent) 0 22rem, transparent 38rem),
-    radial-gradient(circle at 86% 14%, oklch(72% 0.12 195 / 0.24) 0 24rem, transparent 42rem),
-    linear-gradient(135deg, oklch(99% 0.004 245), oklch(94% 0.022 255) 46%, oklch(98% 0.006 230));
+    radial-gradient(ellipse 46rem 30rem at 12% 8%, color-mix(in oklch, var(--accent) 24%, transparent) 0 34%, transparent 72%),
+    radial-gradient(ellipse 48rem 34rem at 86% 14%, oklch(72% 0.12 195 / 0.34) 0 32%, transparent 74%),
+    radial-gradient(ellipse 42rem 32rem at 72% 56%, oklch(82% 0.09 215 / 0.24) 0 30%, transparent 76%),
+    radial-gradient(ellipse 36rem 28rem at 18% 76%, oklch(86% 0.08 250 / 0.22) 0 32%, transparent 78%),
+    linear-gradient(135deg, oklch(99% 0.006 245), oklch(93% 0.026 250) 44%, oklch(96% 0.018 210) 72%, oklch(98% 0.008 230));
   color-scheme: light dark;
 }
 
@@ -41,16 +43,20 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"]::after {
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"]::before {
   z-index: -2;
   background:
-    linear-gradient(115deg, oklch(100% 0 0 / 0.76), transparent 42%),
-    repeating-linear-gradient(90deg, oklch(100% 0 0 / 0.18) 0 1px, transparent 1px 92px);
+    radial-gradient(ellipse 34rem 22rem at 18% 16%, oklch(100% 0 0 / 0.62), transparent 72%),
+    radial-gradient(ellipse 42rem 28rem at 84% 70%, oklch(82% 0.07 195 / 0.18), transparent 78%),
+    linear-gradient(115deg, oklch(100% 0 0 / 0.72), transparent 44%),
+    linear-gradient(160deg, oklch(91% 0.035 235 / 0.5) 0%, transparent 40%, oklch(82% 0.052 200 / 0.36) 100%);
 }
 
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"]::after {
   z-index: -1;
-  opacity: 0.54;
+  opacity: 0.62;
   background-image:
     radial-gradient(circle at var(--chh-lg-pointer-x, 50vw) var(--chh-lg-pointer-y, 12vh), color-mix(in oklch, var(--accent) 18%, transparent) 0 9rem, transparent 24rem),
-    linear-gradient(120deg, transparent 0 44%, oklch(100% 0 0 / 0.5) 48%, transparent 52%),
+    radial-gradient(ellipse 36rem 26rem at 88% 28%, oklch(78% 0.11 198 / 0.28), transparent 74%),
+    radial-gradient(ellipse 30rem 24rem at 22% 84%, oklch(82% 0.09 260 / 0.2), transparent 78%),
+    linear-gradient(120deg, transparent 0 44%, oklch(100% 0 0 / 0.48) 49%, transparent 54%),
     radial-gradient(circle at 50% 0, oklch(100% 0 0 / 0.52), transparent 44%);
   mix-blend-mode: soft-light;
   transition: opacity 220ms ease;
@@ -3836,9 +3842,11 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] {
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"].chh-liquid-glass {
   min-height: 100%;
   background:
-    radial-gradient(circle at 12% 8%, color-mix(in oklch, var(--accent) 18%, transparent) 0 22rem, transparent 38rem),
-    radial-gradient(circle at 86% 14%, oklch(72% 0.12 195 / 0.24) 0 24rem, transparent 42rem),
-    linear-gradient(135deg, oklch(99% 0.004 245), oklch(94% 0.022 255) 46%, oklch(98% 0.006 230));
+    radial-gradient(ellipse 46rem 30rem at 12% 8%, color-mix(in oklch, var(--accent) 24%, transparent) 0 34%, transparent 72%),
+    radial-gradient(ellipse 48rem 34rem at 86% 14%, oklch(72% 0.12 195 / 0.34) 0 32%, transparent 74%),
+    radial-gradient(ellipse 42rem 32rem at 72% 56%, oklch(82% 0.09 215 / 0.24) 0 30%, transparent 76%),
+    radial-gradient(ellipse 36rem 28rem at 18% 76%, oklch(86% 0.08 250 / 0.22) 0 32%, transparent 78%),
+    linear-gradient(135deg, oklch(99% 0.006 245), oklch(93% 0.026 250) 44%, oklch(96% 0.018 210) 72%, oklch(98% 0.008 230));
   color-scheme: light dark;
 }
 
@@ -3861,16 +3869,20 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"].chh-liquid-glass::
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"].chh-liquid-glass::before {
   z-index: -2;
   background:
-    linear-gradient(115deg, oklch(100% 0 0 / 0.76), transparent 42%),
-    repeating-linear-gradient(90deg, oklch(100% 0 0 / 0.18) 0 1px, transparent 1px 92px);
+    radial-gradient(ellipse 34rem 22rem at 18% 16%, oklch(100% 0 0 / 0.62), transparent 72%),
+    radial-gradient(ellipse 42rem 28rem at 84% 70%, oklch(82% 0.07 195 / 0.18), transparent 78%),
+    linear-gradient(115deg, oklch(100% 0 0 / 0.72), transparent 44%),
+    linear-gradient(160deg, oklch(91% 0.035 235 / 0.5) 0%, transparent 40%, oklch(82% 0.052 200 / 0.36) 100%);
 }
 
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"].chh-liquid-glass::after {
   z-index: -1;
-  opacity: 0.54;
+  opacity: 0.62;
   background-image:
     radial-gradient(circle at var(--chh-lg-pointer-x, 50vw) var(--chh-lg-pointer-y, 12vh), color-mix(in oklch, var(--accent) 18%, transparent) 0 9rem, transparent 24rem),
-    linear-gradient(120deg, transparent 0 44%, oklch(100% 0 0 / 0.5) 48%, transparent 52%),
+    radial-gradient(ellipse 36rem 26rem at 88% 28%, oklch(78% 0.11 198 / 0.28), transparent 74%),
+    radial-gradient(ellipse 30rem 24rem at 22% 84%, oklch(82% 0.09 260 / 0.2), transparent 78%),
+    linear-gradient(120deg, transparent 0 44%, oklch(100% 0 0 / 0.48) 49%, transparent 54%),
     radial-gradient(circle at 50% 0, oklch(100% 0 0 / 0.52), transparent 44%);
   mix-blend-mode: soft-light;
   transition: opacity 220ms ease;
@@ -10794,6 +10806,377 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-gl
   color: color-mix(in oklch, var(--accent) 76%, var(--chh-lg-muted)) !important;
   opacity: 1;
   transform: translate(3px, -50%);
+}
+
+/* ── portal-home hero alignment v8: page-width parity and native hot-banner geometry ──
+   Keep the middle 快讯/热门 band on the same page rail as the header/search and
+   lower content.  The previous -20px width compensation made 快讯 protrude left.
+   Also let 热门 use the original banner crop (600×252) instead of stretching to
+   the taller 快讯 list. */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain {
+  display: grid !important;
+  grid-template-columns: minmax(0, 585fr) minmax(0, 600fr) !important;
+  align-items: start !important;
+  gap: 16px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: var(--chh-lg-page-width, min(1240px, calc(100vw - 32px))) !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .cright {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  order: initial !important;
+  display: block !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .cleft {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  order: initial !important;
+  display: block !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_box,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chiphell_index_news,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #diy_xw,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #diy_xw .cl_frame_bm,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #diy_xw .column,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #diy_xw .cl_block_bm,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673_content {
+  flex: 0 0 auto !important;
+  height: auto !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_673 {
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home {
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home .acon,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .area,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .cl_frame_bm,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .column,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .cl_block_bm,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .dxb_bc {
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .swiper-container {
+  flex: 0 0 auto !important;
+  height: 252px !important;
+  max-height: 252px !important;
+  aspect-ratio: 600 / 252 !important;
+  min-height: 0 !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .swiper-wrapper,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .swiper-slide {
+  height: 252px !important;
+  max-height: 252px !important;
+  min-height: 252px !important;
+}
+
+@media (max-width: 760px) {
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .cright,
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .cleft {
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+}
+
+/* ── portal-home hot carousel v9: culture-card glass treatment without dimension cloning ──
+   Reuse the visual language from the 文化/专题 carousel cards: padded glass
+   shell, transparent title lane with pill label, inset rounded media frame,
+   left-aligned caption pill, and neutral blue pagination.  Keep 热门's own
+   column width and 600×252 media geometry from v8. */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home {
+  padding: 14px !important;
+  overflow: hidden !important;
+  border: 1px solid var(--chh-lg-border) !important;
+  border-radius: var(--chh-lg-radius-xl) !important;
+  background:
+    linear-gradient(135deg, oklch(100% 0 0 / 0.68), oklch(100% 0 0 / 0.36)),
+    radial-gradient(circle at 12% 0, color-mix(in oklch, var(--accent) 14%, transparent), transparent 22rem),
+    radial-gradient(circle at 92% 18%, oklch(72% 0.12 195 / 0.14), transparent 24rem) !important;
+  box-shadow: var(--chh-lg-shadow-soft) !important;
+  backdrop-filter: blur(24px) saturate(1.62);
+  -webkit-backdrop-filter: blur(24px) saturate(1.62);
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home::before {
+  border-radius: calc(var(--chh-lg-radius-xl) - 1px) !important;
+  background:
+    linear-gradient(120deg, oklch(100% 0 0 / 0.52), transparent 38%),
+    radial-gradient(circle at var(--chh-lg-pointer-x, 50vw) 0, color-mix(in oklch, var(--accent) 16%, transparent), transparent 24rem) !important;
+  opacity: 0.74;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home .atit {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex: 0 0 auto !important;
+  min-height: 34px !important;
+  margin: 0 0 12px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home .atit::after {
+  content: "";
+  display: block;
+  height: 1px;
+  flex: 1 1 auto;
+  background:
+    linear-gradient(90deg, color-mix(in oklch, var(--accent) 34%, transparent), transparent),
+    linear-gradient(90deg, oklch(100% 0 0 / 0.72), transparent);
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home .atit span {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  margin: 0 !important;
+  padding: 7px 13px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background:
+    linear-gradient(180deg, oklch(100% 0 0 / 0.7), oklch(100% 0 0 / 0.34)),
+    color-mix(in oklch, var(--accent) 8%, transparent) !important;
+  box-shadow: none !important;
+  color: var(--chh-lg-ink) !important;
+  font-family: var(--font-display) !important;
+  font-size: 13px !important;
+  font-weight: 780 !important;
+  line-height: 1.1 !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home .atit span::before {
+  width: 8px !important;
+  height: 8px !important;
+  flex: 0 0 auto !important;
+  box-shadow:
+    0 0 0 4px color-mix(in oklch, var(--accent) 13%, transparent),
+    0 0 18px color-mix(in oklch, var(--accent) 36%, transparent) !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home .atit span a {
+  color: inherit !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home .acon,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border-radius: var(--chh-lg-radius-lg) !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home #home-banner .swiper-container {
+  position: relative !important;
+  flex: 0 0 auto !important;
+  height: 252px !important;
+  max-height: 252px !important;
+  overflow: hidden !important;
+  border: 1px solid color-mix(in oklch, var(--chh-lg-border) 72%, oklch(100% 0 0 / 0.54)) !important;
+  border-radius: var(--chh-lg-radius-lg) !important;
+  background: oklch(15% 0.018 250) !important;
+  box-shadow:
+    inset 0 1px 0 oklch(100% 0 0 / 0.18),
+    0 12px 28px oklch(30% 0.04 250 / 0.1) !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_672 .swiper-slide {
+  border-radius: calc(var(--chh-lg-radius-lg) - 1px) !important;
+  background: oklch(15% 0.018 250) !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_672 .swiper-slide::after {
+  height: 48% !important;
+  background:
+    linear-gradient(180deg, transparent 0%, oklch(0% 0 0 / 0.34) 54%, oklch(0% 0 0 / 0.72) 100%),
+    radial-gradient(ellipse at 50% 100%, oklch(0% 0 0 / 0.44), transparent 64%) !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_672 .swiper-slide > img,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_672 .swiper-slide > .img-cover {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  filter: saturate(1.04) contrast(1.03);
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_672 .swiper-slide[data-chh-lg-title]::before {
+  left: 18px !important;
+  right: auto !important;
+  bottom: 32px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  box-sizing: border-box !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: calc(100% - 36px) !important;
+  min-height: 34px !important;
+  padding: 8px 17px !important;
+  border: 1px solid oklch(100% 0 0 / 0.42) !important;
+  border-radius: 999px !important;
+  background:
+    linear-gradient(180deg, oklch(100% 0 0 / 0.24), oklch(0% 0 0 / 0.48)),
+    oklch(0% 0 0 / 0.38) !important;
+  box-shadow:
+    inset 0 1px 0 oklch(100% 0 0 / 0.32),
+    0 10px 24px oklch(0% 0 0 / 0.32),
+    0 0 0 1px oklch(0% 0 0 / 0.16) !important;
+  backdrop-filter: blur(14px) saturate(1.35);
+  -webkit-backdrop-filter: blur(14px) saturate(1.35);
+  text-align: left !important;
+  transform: none !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #home-banner .swiper-pagination {
+  position: absolute !important;
+  left: 18px !important;
+  right: auto !important;
+  bottom: 14px !important;
+  z-index: 7 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: 5px !important;
+  transform: none !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #home-banner .swiper-pagination-bullet {
+  display: block !important;
+  width: 7px !important;
+  height: 7px !important;
+  margin: 0 !important;
+  border: 1px solid oklch(100% 0 0 / 0.42) !important;
+  border-radius: 999px !important;
+  background:
+    linear-gradient(180deg, oklch(100% 0 0 / 0.48), oklch(100% 0 0 / 0.18)) !important;
+  box-shadow: 0 4px 10px oklch(0% 0 0 / 0.22) !important;
+  opacity: 0.78 !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #home-banner .swiper-pagination-bullet-active {
+  width: 20px !important;
+  border-color: oklch(78% 0.13 230 / 0.72) !important;
+  background:
+    linear-gradient(90deg, oklch(72% 0.16 235 / 0.95), oklch(90% 0.08 210 / 0.88)) !important;
+  box-shadow:
+    0 5px 14px oklch(0% 0 0 / 0.24),
+    0 0 18px oklch(72% 0.16 235 / 0.28) !important;
+  opacity: 1 !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #home-banner .swiper-button-wrap {
+  position: absolute !important;
+  top: 50% !important;
+  left: 0 !important;
+  z-index: 6 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 14px !important;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #home-banner .swiper-button {
+  position: static !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  margin: 0 !important;
+  border: 1px solid oklch(100% 0 0 / 0.34) !important;
+  border-radius: 999px !important;
+  background:
+    linear-gradient(180deg, oklch(100% 0 0 / 0.24), oklch(0% 0 0 / 0.46)),
+    oklch(0% 0 0 / 0.32) !important;
+  box-shadow:
+    inset 0 1px 0 oklch(100% 0 0 / 0.28),
+    0 8px 18px oklch(0% 0 0 / 0.26) !important;
+  opacity: 0;
+  pointer-events: auto;
+  backdrop-filter: blur(12px) saturate(1.3);
+  -webkit-backdrop-filter: blur(12px) saturate(1.3);
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #home-banner:hover .swiper-button {
+  opacity: 0.82;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #home-banner .swiper-button .button-fonts {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: oklch(100% 0 0 / 0.94) !important;
+  font-size: 0 !important;
+  line-height: 1 !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #home-banner .swiper-button .button-fonts img {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  display: block !important;
+  width: 18px !important;
+  height: 18px !important;
+  margin: 0 !important;
+  object-fit: contain !important;
+}
+
+@media (max-width: 680px) {
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass .chip_topmain .chiphell_home {
+    padding: 12px !important;
+  }
+
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #portal_block_672 .swiper-slide[data-chh-lg-title]::before {
+    bottom: 30px !important;
+    max-width: calc(100% - 28px) !important;
+    font-size: 13px !important;
+  }
 }
 
 /* ── portal-home review cards: CHH评测室 liquid-glass grid ── */

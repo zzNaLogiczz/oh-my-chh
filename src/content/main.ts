@@ -3,6 +3,7 @@ import { scheduleHealthSave } from "./health";
 import { createObserverScheduler } from "./dom/observer";
 import { detectRoute, type OmchhRoute } from "./router";
 import { applyTheme } from "./theme-loader";
+import { warnForUnexpectedExtensionError } from "./extension-context";
 import { DEFAULT_SETTINGS, loadSettings, onSettingsChanged, type OmchhSettings } from "./settings";
 
 const ALLOWED_HOSTS = new Set(["www.chiphell.com"]);
@@ -10,6 +11,10 @@ const ALLOWED_HOSTS = new Set(["www.chiphell.com"]);
 let currentSettings: OmchhSettings = DEFAULT_SETTINGS;
 let currentRoute: OmchhRoute = "unknown";
 let initialized = false;
+
+function markPaintReady(): void {
+  document.documentElement.dataset.omchhPaintReady = "1";
+}
 
 function isAllowedHost(): boolean {
   return ALLOWED_HOSTS.has(window.location.hostname);
@@ -34,7 +39,11 @@ function runWhenDomReady(callback: () => void): void {
 }
 
 async function initialize(): Promise<void> {
-  if (initialized || !isAllowedHost()) return;
+  if (initialized) return;
+  if (!isAllowedHost()) {
+    markPaintReady();
+    return;
+  }
   initialized = true;
 
   currentRoute = detectRoute();
@@ -48,8 +57,12 @@ async function initialize(): Promise<void> {
   const scheduler = createObserverScheduler(refresh);
 
   runWhenDomReady(() => {
-    refresh();
-    scheduler.start();
+    try {
+      refresh();
+    } finally {
+      markPaintReady();
+      scheduler.start();
+    }
   });
 
   onSettingsChanged((settings) => {
@@ -59,4 +72,7 @@ async function initialize(): Promise<void> {
   });
 }
 
-void initialize();
+void initialize().catch((error: unknown) => {
+  warnForUnexpectedExtensionError("[oh-my-chh] Failed to initialize content script; releasing first-paint guard.", error);
+  markPaintReady();
+});
