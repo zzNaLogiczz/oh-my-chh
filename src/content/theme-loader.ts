@@ -5,13 +5,28 @@ import { warnForUnexpectedExtensionError } from "./extension-context";
 const THEME_LINK_ID = "omchh-theme-css";
 const LEGACY_LIQUID_GLASS_CLASS = "chh-liquid-glass";
 
+function getThemeCacheVersion(): string {
+  try {
+    const runtime = globalThis.chrome?.runtime;
+    const version = runtime?.getManifest?.().version;
+    return version ? encodeURIComponent(version) : "dev";
+  } catch {
+    return "dev";
+  }
+}
+
+function withThemeCacheVersion(href: string): string {
+  const separator = href.includes("?") ? "&" : "?";
+  return `${href}${separator}omchh_theme_v=${getThemeCacheVersion()}`;
+}
+
 function getThemeHref(themeId: string): string | undefined {
   const path = `themes/${encodeURIComponent(themeId)}/index.css`;
 
   try {
     const runtime = globalThis.chrome?.runtime;
-    if (!runtime?.getURL) return `/${path}`;
-    return runtime.getURL(path);
+    if (!runtime?.getURL) return withThemeCacheVersion(`/${path}`);
+    return withThemeCacheVersion(runtime.getURL(path));
   } catch (error) {
     warnForUnexpectedExtensionError("[oh-my-chh] Extension context unavailable; skipping theme stylesheet update.", error);
     return undefined;

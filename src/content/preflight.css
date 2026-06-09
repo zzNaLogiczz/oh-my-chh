@@ -1,0 +1,8 @@
+/* Hide Discuz rich-editor textarea during the iframe bootstrap window.
+   The switcher is unchecked in rich mode before Discuz has finished showing #e_iframe; without this
+   document_start guard, the themed textarea can flash as a large plain-text panel. */
+@supports selector(:has(*)) {
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] #e_body:has(#e_switchercheck:not(:checked)) #e_textarea {
+    visibility: hidden !important;
+  }
+}

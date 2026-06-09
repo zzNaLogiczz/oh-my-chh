@@ -1,3 +1,4 @@
+import { enhanceRankBadge, getRankBadgeIdentity } from "./rank-badges";
 import type { ContentAdapter } from "./types";
 
 const HEADER_READY_ATTR = "data-omchh-liquid-header-ready";
@@ -19,12 +20,42 @@ function makeNode<K extends keyof HTMLElementTagNameMap>(tagName: K, className: 
 }
 
 function decorateAccountLinks(accountRoot: Element | null): void {
-  if (!accountRoot || accountRoot.getAttribute("data-chh-lg-account-ready") === "true") return;
+  if (!accountRoot) return;
+  if (accountRoot.getAttribute("data-chh-lg-account-ready") === "true") {
+    enhanceAccountUserGroupBadge(accountRoot);
+    return;
+  }
+
   accountRoot.querySelectorAll<HTMLAnchorElement>("a").forEach((link) => {
     const text = link.textContent?.replace(/\s+/g, " ").trim();
     if (text) link.dataset.chhLgLabel = text;
   });
+  enhanceAccountUserGroupBadge(accountRoot);
   accountRoot.setAttribute("data-chh-lg-account-ready", "true");
+}
+
+function accountUserGroupLabel(link: HTMLElement): string {
+  const sourceLabel = link.dataset.chhLgAccountRankLabel ?? link.dataset.chhLgLabel ?? link.textContent ?? "";
+  return normalizeText(sourceLabel).replace(/^用户组\s*[:：]\s*/, "");
+}
+
+function enhanceAccountUserGroupBadge(accountRoot: Element): void {
+  const userGroupLink = accountRoot.querySelector<HTMLElement>("#g_upmine");
+  if (!userGroupLink) return;
+
+  const rankLabel = accountUserGroupLabel(userGroupLink);
+  const identity = getRankBadgeIdentity(rankLabel);
+  if (!identity) return;
+
+  enhanceRankBadge(userGroupLink, identity, rankLabel);
+  userGroupLink.dataset.omchhRank = identity.rank;
+  userGroupLink.dataset.omchhRankFamily = identity.family;
+  userGroupLink.dataset.omchhRankTier = identity.tier;
+  userGroupLink.dataset.omchhRankEffect = identity.effect;
+  userGroupLink.dataset.chhLgAccountRank = "true";
+  userGroupLink.dataset.chhLgAccountRankLabel = rankLabel;
+  userGroupLink.setAttribute("aria-label", `用户组: ${rankLabel}`);
+  userGroupLink.setAttribute("title", `用户组: ${rankLabel}`);
 }
 
 function rebuildBrandRail(headerInner: HTMLElement): void {

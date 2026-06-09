@@ -1,6 +1,6 @@
 {
   "name": "oh-my-chh",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "private": true,
   "type": "module",
   "description": "Chiphell.com UI/UX reskin with the Liquid Glass theme.",

@@ -39,7 +39,7 @@ function detectComposeMode(root: ParentNode): "plain" | "rich" {
   const iframe = root.querySelector<HTMLElement>("#e_iframe");
   const textarea = root.querySelector<HTMLElement>("#e_textarea");
 
-  if (switcher?.checked) return "plain";
+  if (switcher) return switcher.checked ? "plain" : "rich";
   if (iframe && !hiddenByDiscuz(iframe)) return "rich";
   if (textarea && hiddenByDiscuz(textarea)) return "rich";
   return "plain";

@@ -19,6 +19,7 @@ describe("applyTheme", () => {
   it("keeps exactly one managed theme stylesheet and updates root attributes", () => {
     vi.stubGlobal("chrome", {
       runtime: {
+        getManifest: () => ({ version: "0.1.3" }),
         getURL: (path: string) => `chrome-extension://test/${path}`
       }
     });
@@ -28,7 +29,7 @@ describe("applyTheme", () => {
 
     const links = document.querySelectorAll<HTMLLinkElement>("link#omchh-theme-css");
     expect(links).toHaveLength(1);
-    expect(links[0].href).toBe("chrome-extension://test/themes/liquid-glass/index.css");
+    expect(links[0].href).toBe("chrome-extension://test/themes/liquid-glass/index.css?omchh_theme_v=0.1.3");
     expect(document.documentElement.dataset.omchhEnabled).toBe("1");
     expect(document.documentElement.dataset.omchhRoute).toBe("thread-list");
     expect(document.documentElement.dataset.omchhTheme).toBe("liquid-glass");

@@ -2,25 +2,38 @@
   "manifest_version": 3,
   "name": "oh-my-chh",
   "short_name": "oh-my-chh",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "Chiphell.com UI/UX reskin with the Liquid Glass theme.",
-  "permissions": ["storage"],
+  "permissions": [
+    "storage"
+  ],
   "action": {
     "default_title": "oh-my-chh",
     "default_popup": "popup/index.html"
   },
   "content_scripts": [
     {
-      "matches": ["https://www.chiphell.com/*"],
-      "css": ["content/preflight.css"],
-      "js": ["content/main.js"],
+      "matches": [
+        "https://www.chiphell.com/*"
+      ],
+      "css": [
+        "content/preflight.css"
+      ],
+      "js": [
+        "content/main.js"
+      ],
       "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["themes/*/index.css", "themes/*/fonts/*"],
-      "matches": ["https://www.chiphell.com/*"]
+      "resources": [
+        "themes/*/index.css",
+        "themes/*/fonts/*"
+      ],
+      "matches": [
+        "https://www.chiphell.com/*"
+      ]
     }
   ]
 }

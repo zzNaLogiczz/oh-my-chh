@@ -1,6 +1,17 @@
 import { markAll, markElement, setData } from "../dom/mark";
 import { trackSelector } from "../health";
+import { enhanceRankBadge, getRankBadgeIdentity, type RankBadgeIdentity } from "./rank-badges";
 import type { ContentAdapter } from "./types";
+
+function applyRankIdentity(identity: RankBadgeIdentity | null, elements: Array<Element | null>): void {
+  if (!identity) return;
+  elements.forEach((element) => {
+    setData(element, "omchhRank", identity.rank);
+    setData(element, "omchhRankFamily", identity.family);
+    setData(element, "omchhRankTier", identity.tier);
+    setData(element, "omchhRankEffect", identity.effect);
+  });
+}
 
 function directChildrenMatching(element: Element | null, selector: string): Element[] {
   if (!element) return [];
@@ -45,15 +56,22 @@ function enhanceThreadTitle(postList: Element | null, adapter: string): void {
 
 function enhancePostAuthor(authorCell: Element | null, adapter: string): void {
   markElement(authorCell, "omchh-post-author", adapter);
-  markElement(firstDescendant(authorCell, ".favatar"), "omchh-post-author-card", adapter);
+  const authorCard = firstDescendant(authorCell, ".favatar");
+  markElement(authorCard, "omchh-post-author-card", adapter);
   markElement(firstDescendant(authorCell, ".favatar > .pi, .pi"), "omchh-post-author-head", adapter);
   markElement(firstDescendant(authorCell, ".authi"), "omchh-post-author-name", adapter);
   const avatar = firstDescendant(authorCell, ".avatar");
-  markElement(avatar?.parentElement ?? null, "omchh-post-avatar-shell", adapter);
+  const avatarShell = avatar?.parentElement ?? null;
+  markElement(avatarShell, "omchh-post-avatar-shell", adapter);
   markElement(avatar, "omchh-post-avatar", adapter);
   markElement(firstDescendant(authorCell, ".tns"), "omchh-post-author-stats", adapter);
   markAllInside(authorCell, ".p_pop.bui", "omchh-post-author-popover", adapter);
-  markAllInside(authorCell, ".favatar > p:not(.xg1):not(.md_ctrl)", "omchh-post-author-rank", adapter);
+  directChildrenMatching(authorCard, "p:not(.xg1):not(.md_ctrl)").forEach((rankElement) => {
+    markElement(rankElement, "omchh-post-author-rank", adapter);
+    const identity = getRankBadgeIdentity(rankElement.textContent ?? "");
+    applyRankIdentity(identity, [rankElement, authorCell, authorCard, avatarShell, avatar]);
+    if (identity) enhanceRankBadge(rankElement, identity, rankElement.textContent ?? "");
+  });
   markAllInside(authorCell, ".favatar > p.xg1", "omchh-post-author-tagline", adapter);
   markAllInside(authorCell, ".pil", "omchh-post-author-details", adapter);
   markAllInside(authorCell, ".md_ctrl", "omchh-post-medals", adapter);
@@ -109,8 +127,7 @@ function enhancePosts(postList: Element | null, adapter: string): void {
   trackSelector(adapter, "#postlist > div[id^='post_']", shells.length);
 }
 
-function enhanceQuickReply(root: ParentNode, adapter: string, enabled: boolean): void {
-  if (!enabled) return;
+function enhanceQuickReply(root: ParentNode, adapter: string): void {
   const count = markAll(root, "#f_pst", "omchh-quick-reply", adapter);
   trackSelector(adapter, "#f_pst", count);
 
@@ -142,6 +159,6 @@ export const enhanceThreadDetail: ContentAdapter = ({ root, settings }) => {
   const postList = root.querySelector("#postlist");
   enhanceThreadTitle(postList, adapter);
   enhancePosts(postList, adapter);
-  enhanceQuickReply(root, adapter, settings.enhanceQuickReply);
+  enhanceQuickReply(root, adapter);
   markElement(document.querySelector("#ct"), "omchh-thread-detail", adapter);
 };

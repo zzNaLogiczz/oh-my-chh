@@ -40,6 +40,26 @@ function elementDimension(element: HTMLElement, axis: "width" | "height"): numbe
   return Math.max(Math.ceil(rectValue), Math.ceil(offsetValue), Math.ceil(inlineValue), 1);
 }
 
+const POPUP_VIEWPORT_MARGIN = 14;
+const DEFAULT_POPUP_MAX_WIDTH = 560;
+const DEFAULT_POPUP_MAX_HEIGHT = 620;
+const FORUM_WINDOW_MAX_WIDTH = 720;
+
+function forumWindowPopup(element: HTMLElement): boolean {
+  return element.classList.contains("fwinmask") || element.id.startsWith("fwin_");
+}
+
+function popupMaxWidth(element: HTMLElement, viewportWidth: number): number {
+  const available = Math.max(1, viewportWidth - POPUP_VIEWPORT_MARGIN * 2);
+  const preferred = forumWindowPopup(element) ? FORUM_WINDOW_MAX_WIDTH : DEFAULT_POPUP_MAX_WIDTH;
+  return Math.min(preferred, available);
+}
+
+function popupMaxHeight(element: HTMLElement, viewportHeight: number): number {
+  const available = Math.max(1, viewportHeight - POPUP_VIEWPORT_MARGIN * 2);
+  return forumWindowPopup(element) ? available : Math.min(DEFAULT_POPUP_MAX_HEIGHT, available);
+}
+
 function centerPopup(element: HTMLElement): void {
   const computed = window.getComputedStyle(element);
   const fixed = computed.position === "fixed" || element.style.position === "fixed";
@@ -47,14 +67,20 @@ function centerPopup(element: HTMLElement): void {
   const viewportHeight = document.documentElement.clientHeight || window.innerHeight || 768;
   const scrollLeft = fixed ? 0 : window.scrollX || document.documentElement.scrollLeft || document.body?.scrollLeft || 0;
   const scrollTop = fixed ? 0 : window.scrollY || document.documentElement.scrollTop || document.body?.scrollTop || 0;
-  const width = elementDimension(element, "width");
-  const height = elementDimension(element, "height");
-  const left = Math.max(14, Math.round(scrollLeft + (viewportWidth - width) / 2));
-  const top = Math.max(14, Math.round(scrollTop + (viewportHeight - height) / 2));
+  const maxWidth = popupMaxWidth(element, viewportWidth);
+  const maxHeight = popupMaxHeight(element, viewportHeight);
+  const width = Math.min(elementDimension(element, "width"), maxWidth);
+  const height = Math.min(elementDimension(element, "height"), maxHeight);
+  const left = Math.max(POPUP_VIEWPORT_MARGIN, Math.round(scrollLeft + (viewportWidth - width) / 2));
+  const top = Math.max(POPUP_VIEWPORT_MARGIN, Math.round(scrollTop + (viewportHeight - height) / 2));
 
   if (!element.style.position) element.style.position = fixed ? "fixed" : "absolute";
+  element.style.setProperty("--omchh-popup-max-width", `${maxWidth}px`);
+  element.style.setProperty("--omchh-popup-max-height", `${maxHeight}px`);
   element.style.left = `${left}px`;
   element.style.top = `${top}px`;
+  element.style.right = "auto";
+  element.style.bottom = "auto";
   element.dataset.omchhPopupCentered = "1";
 }
 
