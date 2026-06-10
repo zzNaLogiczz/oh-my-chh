@@ -3,6 +3,41 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+const readLiquidGlassRoutesCss = () =>
+  readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+
+const getCssBlock = (css: string, selector: string, occurrence = 0) => {
+  let searchFrom = 0;
+  let selectorIndex = -1;
+
+  for (let index = 0; index <= occurrence; index += 1) {
+    selectorIndex = css.indexOf(selector, searchFrom);
+    expect(selectorIndex).toBeGreaterThan(-1);
+    searchFrom = selectorIndex + selector.length;
+  }
+
+  const blockStart = css.indexOf("{", selectorIndex);
+  const blockEnd = css.indexOf("\n}", blockStart);
+
+  expect(blockStart).toBeGreaterThan(-1);
+  expect(blockEnd).toBeGreaterThan(blockStart);
+
+  return css.slice(blockStart + 1, blockEnd);
+};
+
+const expectSmoothAmbientBackground = (css: string, themeSelector: string, rootOccurrence: number) => {
+  const rootBackground = getCssBlock(css, themeSelector, rootOccurrence);
+  const ambientBefore = getCssBlock(css, `${themeSelector}::before`, 1);
+  const ambientAfter = getCssBlock(css, `${themeSelector}::after`, 1);
+  const ambientLayers = `${rootBackground}\n${ambientBefore}\n${ambientAfter}`;
+
+  expect(rootBackground).toMatch(/background:\s*[\s\S]*radial-gradient/);
+  expect(rootBackground.match(/radial-gradient/g)?.length ?? 0).toBeGreaterThanOrEqual(4);
+  expect(ambientBefore).toMatch(/linear-gradient/);
+  expect(ambientAfter).toMatch(/radial-gradient/);
+  expect(ambientLayers).not.toMatch(/repeating-(?:linear|radial)-gradient/i);
+};
+
 describe("liquid-glass theme CSS", () => {
   it("centers rank badge labels in the text lane and uses solid saint-demon gold", () => {
     const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/rank-badges.css"), "utf8");
@@ -50,6 +85,14 @@ describe("liquid-glass theme CSS", () => {
     }
   });
 
+  it("uses smooth ambient background blobs without visible grid lines", () => {
+    const css = readLiquidGlassRoutesCss();
+    const themeSelector = 'html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"]';
+
+    expectSmoothAmbientBackground(css, themeSelector, 1);
+    expectSmoothAmbientBackground(css, `${themeSelector}.chh-liquid-glass`, 0);
+  });
+
   it("scopes route styling to the liquid-glass theme", () => {
     const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
     const declarations = Array.from(css.matchAll(/\{([^}]*)\}/g), (match) => match[1]).join("\n");
@@ -83,6 +126,42 @@ describe("liquid-glass theme CSS", () => {
 
     expect(css).toMatch(/#chh-lg-header #nv_ph[\s\S]*float:\s*none\s*!important;[\s\S]*position:\s*static\s*!important;[\s\S]*width:\s*100%\s*!important;/);
     expect(css).toMatch(/#chh-lg-header #nv[\s\S]*float:\s*none\s*!important;[\s\S]*position:\s*relative\s*!important;[\s\S]*left:\s*auto\s*!important;[\s\S]*right:\s*auto\s*!important;/);
+  });
+
+  it("upgrades the Discuz quick navigation popup for the original forum jump markup", () => {
+    const css = readLiquidGlassRoutesCss();
+    const quickNav = css.slice(css.indexOf("quick navigation popup v2"));
+
+    expect(quickNav).toContain("quick navigation popup v2: original forum jump markup");
+    expect(quickNav).toContain("body #qmenu_menu .nav li a");
+    expect(quickNav).toContain("body #qmenu_menu #fjump_menu.btda");
+    expect(quickNav).toContain("body #qmenu_menu #flsrchdiv > .mbm");
+    expect(quickNav).toContain("body #qmenu_menu .jump_bdl");
+    expect(quickNav).toContain("body #qmenu_menu .jump_bdl > li");
+    expect(quickNav).toMatch(/#qmenu_menu\s*\.jump_bdl\s*>\s*li\s*\{[\s\S]*display:\s*block\s*!important;[\s\S]*overflow:\s*auto\s*!important;/);
+    expect(quickNav).not.toMatch(/#qmenu_menu\s*\.jump_bdl\s*>\s*li\s*\{[\s\S]*flex-direction:\s*column\s*!important;/);
+    const forumRows = getCssBlock(quickNav, "body #qmenu_menu .jump_bdl p,");
+    expect(forumRows).toMatch(/height:\s*auto\s*!important;/);
+    expect(forumRows).toMatch(/max-height:\s*none\s*!important;/);
+    expect(forumRows).toMatch(/overflow:\s*visible\s*!important;/);
+    expect(quickNav).toMatch(/#qmenu_menu\s*\.jump_bdl\s+p\.xw1\s*\{[\s\S]*position:\s*static\s*!important;[\s\S]*top:\s*auto\s*!important;[\s\S]*z-index:\s*auto\s*!important;/);
+    expect(quickNav).not.toMatch(/#qmenu_menu\s*\.jump_bdl\s+p\.xw1\s*\{[\s\S]*position:\s*sticky\s*!important;/);
+    const sectionHeading = getCssBlock(quickNav, "body #qmenu_menu .jump_bdl p.xw1 {");
+    expect(sectionHeading).toMatch(/height:\s*auto\s*!important;/);
+    expect(sectionHeading).toMatch(/max-height:\s*none\s*!important;/);
+    expect(sectionHeading).toMatch(/overflow:\s*visible\s*!important;/);
+    expect(sectionHeading).toMatch(/padding:\s*0\s*!important;/);
+    expect(sectionHeading).toMatch(/border:\s*0\s*!important;/);
+    expect(sectionHeading).toMatch(/background:\s*transparent\s*!important;/);
+    expect(sectionHeading).toMatch(/box-shadow:\s*none\s*!important;/);
+    expect(sectionHeading).toMatch(/backdrop-filter:\s*none\s*!important;/);
+    const sectionHeadingLink = getCssBlock(quickNav, "body #qmenu_menu .jump_bdl p.xw1 > a,");
+    expect(sectionHeadingLink).toMatch(/min-height:\s*30px\s*!important;/);
+    expect(sectionHeadingLink).toMatch(/border:\s*1px solid/);
+    expect(sectionHeadingLink).toMatch(/background:[\s\S]*linear-gradient/);
+    expect(quickNav).toMatch(/#qmenu_menu\s*\.jump_bdl\s+p\.sub a::before\s*\{[\s\S]*content:\s*"›";/);
+    expect(quickNav).toMatch(/#qmenu_menu\s*\.jump_bdl\s+p\.(?:child|a) a/);
+    expect(quickNav).toMatch(/#qmenu_menu\s*\.jump_bdl\s*p\.a a\s*\{[\s\S]*background:[\s\S]*var\(--accent\)/);
   });
 
 
@@ -138,6 +217,85 @@ describe("liquid-glass theme CSS", () => {
     expect(css).toContain("body.chh-liquid-glass #portal_block_672 .swiper-slide > a");
     expect(css).toContain("body.chh-liquid-glass #portal_block_672 .swiper-slide[data-chh-lg-title]::before");
     expect(css).toContain("backdrop-filter: blur(14px) saturate(1.35)");
+  });
+
+  it("keeps forumdisplay thread type pills visible when Discuz collapses the type bar", () => {
+    const css = readLiquidGlassRoutesCss();
+    const guardStart = css.indexOf("thread-type collapsed row guard");
+    expect(guardStart).toBeGreaterThan(-1);
+
+    const guard = css.slice(guardStart);
+    expect(guard).toMatch(/\.omchh-thread-types\s*\{[\s\S]*height:\s*auto\s*!important;[\s\S]*min-height:\s*46px\s*!important;[\s\S]*box-sizing:\s*border-box\s*!important;/);
+    expect(guard).toMatch(/\.omchh-thread-types:has\(>\s*li\.unfold\)\s*\{[\s\S]*max-height:\s*48px\s*!important;[\s\S]*overflow:\s*hidden\s*!important;/);
+    expect(guard).toMatch(/\.omchh-thread-types:has\(>\s*li\.fold\)\s*\{[\s\S]*max-height:\s*none\s*!important;[\s\S]*overflow:\s*visible\s*!important;/);
+    expect(guard).toMatch(/\.omchh-thread-types\s*>\s*li\.fold,[\s\S]*\.omchh-thread-types\s*>\s*li\.unfold\s*\{[\s\S]*min-height:\s*30px\s*!important;[\s\S]*flex:\s*0 0 auto\s*!important;/);
+  });
+
+  it("aligns portal-home hero band to the page width and keeps the hot card at native banner geometry", () => {
+    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const hero = css.slice(css.indexOf("portal-home hero alignment v8"));
+
+    expect(hero).toContain("portal-home hero alignment v8: page-width parity and native hot-banner geometry");
+    expect(hero).toMatch(/\.chip_topmain\s*\{[\s\S]*display:\s*grid\s*!important;/);
+    expect(hero).toMatch(/\.chip_topmain\s*\{[\s\S]*width:\s*100%\s*!important;[\s\S]*max-width:\s*var\(--chh-lg-page-width/);
+    expect(hero).toMatch(/\.chip_topmain\s*\{[\s\S]*margin:\s*0 auto\s*!important;/);
+    expect(hero).toMatch(/\.chip_topmain\s*\{[\s\S]*align-items:\s*start\s*!important;/);
+    expect(hero).toMatch(/\.chip_topmain\s*\{[\s\S]*grid-template-columns:\s*minmax\(0,\s*585fr\) minmax\(0,\s*600fr\)/);
+    const quickBlock = getCssBlock(hero, ".chip_topmain .cright");
+    const hotBlock = getCssBlock(hero, ".chip_topmain .cleft");
+    expect(quickBlock).toMatch(/grid-column:\s*1\s*!important;/);
+    expect(quickBlock).toMatch(/grid-row:\s*1\s*!important;/);
+    expect(hotBlock).toMatch(/grid-column:\s*2\s*!important;/);
+    expect(hotBlock).toMatch(/grid-row:\s*1\s*!important;/);
+    expect(hero).toMatch(/\.chip_topmain \.chiphell_home\s*\{[\s\S]*flex:\s*0 0 auto\s*!important;[\s\S]*height:\s*auto\s*!important;/);
+    expect(hero).toMatch(/#home-banner \.swiper-container\s*\{[\s\S]*flex:\s*0 0 auto\s*!important;[\s\S]*height:\s*252px\s*!important;[\s\S]*max-height:\s*252px\s*!important;/);
+    expect(hero).toMatch(/#home-banner \.swiper-wrapper,[\s\S]*#home-banner \.swiper-slide\s*\{[\s\S]*height:\s*252px\s*!important;[\s\S]*max-height:\s*252px\s*!important;/);
+    expect(hero).toMatch(/#portal_block_673\s*\{[\s\S]*flex:\s*0 0 auto\s*!important;[\s\S]*height:\s*auto\s*!important;/);
+  });
+
+  it("restyles the portal-home hot carousel with the culture-card glass treatment", () => {
+    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const hotRestyle = css.slice(css.indexOf("portal-home hot carousel v9"));
+
+    expect(hotRestyle).toContain("portal-home hot carousel v9: culture-card glass treatment without dimension cloning");
+    const hotShell = getCssBlock(hotRestyle, ".chip_topmain .chiphell_home");
+    const hotTitle = getCssBlock(hotRestyle, ".chip_topmain .chiphell_home .atit");
+    const hotTitlePill = getCssBlock(hotRestyle, ".chip_topmain .chiphell_home .atit span");
+    const hotMedia = getCssBlock(hotRestyle, "#home-banner .swiper-container");
+    const hotCaption = getCssBlock(hotRestyle, "#portal_block_672 .swiper-slide[data-chh-lg-title]::before");
+    const hotPagination = getCssBlock(hotRestyle, "#home-banner .swiper-pagination");
+    const hotActiveDot = getCssBlock(hotRestyle, "#home-banner .swiper-pagination-bullet-active");
+    const hotArrowGlyph = getCssBlock(hotRestyle, "#home-banner .swiper-button .button-fonts");
+    const hotArrowIcon = getCssBlock(hotRestyle, "#home-banner .swiper-button .button-fonts img");
+
+    expect(hotShell).toMatch(/padding:\s*14px\s*!important;/);
+    expect(hotShell).toMatch(/border-radius:\s*var\(--chh-lg-radius-xl\)\s*!important;/);
+    expect(hotShell).toMatch(/background:\s*[\s\S]*linear-gradient\(135deg,\s*oklch\(100% 0 0 \/ 0\.68\)/);
+    expect(hotTitle).toMatch(/margin:\s*0 0 12px\s*!important;/);
+    expect(hotTitle).toMatch(/border:\s*0\s*!important;/);
+    expect(hotTitle).toMatch(/background:\s*transparent\s*!important;/);
+    expect(hotTitlePill).toMatch(/border-radius:\s*999px\s*!important;/);
+    expect(hotTitlePill).toMatch(/box-shadow:\s*none\s*!important;/);
+    expect(hotMedia).toMatch(/height:\s*252px\s*!important;/);
+    expect(hotMedia).toMatch(/border:\s*1px solid color-mix\(in oklch,\s*var\(--chh-lg-border\)/);
+    expect(hotMedia).toMatch(/border-radius:\s*var\(--chh-lg-radius-lg\)\s*!important;/);
+    expect(hotMedia).toMatch(/box-shadow:\s*[\s\S]*0 12px 28px oklch\(30% 0\.04 250 \/ 0\.1\)/);
+    expect(hotCaption).toMatch(/left:\s*18px\s*!important;/);
+    expect(hotCaption).toMatch(/bottom:\s*32px\s*!important;/);
+    expect(hotCaption).toMatch(/display:\s*inline-flex\s*!important;/);
+    expect(hotCaption).toMatch(/backdrop-filter:\s*blur\(14px\) saturate\(1\.35\)/);
+    expect(hotPagination).toMatch(/left:\s*18px\s*!important;/);
+    expect(hotPagination).toMatch(/bottom:\s*14px\s*!important;/);
+    expect(hotActiveDot).toMatch(/width:\s*20px\s*!important;/);
+    expect(hotActiveDot).toMatch(/background:\s*[\s\S]*linear-gradient\(90deg,\s*oklch\(72% 0\.16 235 \/ 0\.95\)/);
+    expect(hotArrowGlyph).toMatch(/display:\s*flex\s*!important;/);
+    expect(hotArrowGlyph).toMatch(/align-items:\s*center\s*!important;/);
+    expect(hotArrowGlyph).toMatch(/justify-content:\s*center\s*!important;/);
+    expect(hotArrowGlyph).toMatch(/line-height:\s*1\s*!important;/);
+    expect(hotArrowIcon).toMatch(/position:\s*static\s*!important;/);
+    expect(hotArrowIcon).toMatch(/width:\s*18px\s*!important;/);
+    expect(hotArrowIcon).toMatch(/height:\s*18px\s*!important;/);
+    expect(hotRestyle).not.toMatch(/#(?:a90000|990000|dd0000|f00)\b/i);
   });
 
   it("styles the portal-home CHH review room as a liquid-glass card grid", () => {
@@ -492,6 +650,33 @@ describe("liquid-glass theme CSS", () => {
     expect(goldBlock).not.toMatch(/background-clip:\s*text/);
     expect(goldBlock).not.toMatch(/-webkit-text-fill-color:\s*transparent/);
     expect(goldBlock).toMatch(/text-shadow:[\s\S]*rgba\(246,211,106,\.38\)[\s\S]*!important/);
+  });
+
+  it("skins greater-demon as the elite overlord seal without changing badge dimensions", () => {
+    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/rank-badges.css"), "utf8");
+    const badgeLayer = css.slice(css.indexOf("Heraldic rank badge integration"));
+    const shellLayer = badgeLayer.slice(badgeLayer.indexOf("/* ---- badge shell ---- */"));
+    const shellBlock = shellLayer.match(/\.omchh-rank-badge\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
+    const medallionBlock = shellLayer.match(/\.omchh-rank-badge \.emblem\s*\{[\s\S]*?\}/)?.[0] ?? "";
+    const overlordBlock = badgeLayer.slice(badgeLayer.indexOf("大恶魔 \"魔君\""));
+    const overlordNameBlock =
+      overlordBlock.match(/\.omchh-rank-badge\.elite \.bname,[\s\S]*?\.omchh-rank-badge\.elite \.bname\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
+
+    expect(overlordBlock).toContain(".omchh-rank-badge.t-overlord");
+    expect(overlordBlock).toContain(".omchh-rank-badge.elite");
+    expect(overlordBlock).toContain(".omchh-rank-badge.elite .eseal svg");
+    expect(overlordBlock).toContain(".omchh-rank-badge.elite .e-flame");
+    expect(overlordBlock).toContain(".omchh-rank-badge.elite .ember");
+    expect(overlordBlock).toContain("@keyframes omchh-overlord-glow");
+    expect(overlordBlock).toContain("@keyframes omchh-overlord-rise");
+    expect(shellBlock).toMatch(/width:\s*168px/);
+    expect(shellBlock).toMatch(/height:\s*44px/);
+    expect(medallionBlock).toMatch(/width:\s*38px/);
+    expect(medallionBlock).toMatch(/height:\s*38px/);
+    expect(overlordNameBlock).toMatch(/color:\s*#f6d36a\s*!important/);
+    expect(overlordNameBlock).not.toMatch(/background:\s*linear-gradient/);
+    expect(overlordNameBlock).not.toMatch(/color:\s*transparent/);
+    expect(overlordNameBlock).not.toMatch(/background-clip:\s*text/);
   });
 
   it("reconstructs the post composer as an editorial liquid-glass workspace", () => {
@@ -865,6 +1050,8 @@ describe("liquid-glass theme CSS", () => {
       "thread-detail",
       "article-view",
       "profile",
+      "settings",
+      "messages",
       "compose",
       "unknown"
     ]);

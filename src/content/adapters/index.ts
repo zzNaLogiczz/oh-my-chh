@@ -4,8 +4,10 @@ import { enhanceArticleView } from "./article-view";
 import { enhanceCommon } from "./common";
 import { enhanceCompose } from "./compose";
 import { enhanceForumIndex } from "./forum-index";
+import { enhanceMessages } from "./messages";
 import { enhancePortalHome } from "./portal-home";
 import { enhanceProfile } from "./profile";
+import { enhanceSettings } from "./settings";
 import { enhanceThreadDetail } from "./thread-detail";
 import { enhanceThreadList } from "./thread-list";
 import type { AdapterContext, ContentAdapter } from "./types";
@@ -17,6 +19,8 @@ const routeAdapters: Partial<Record<OmchhRoute, ContentAdapter>> = {
   "thread-detail": enhanceThreadDetail,
   "article-view": enhanceArticleView,
   profile: enhanceProfile,
+  settings: enhanceSettings,
+  messages: enhanceMessages,
   compose: enhanceCompose
 };
 

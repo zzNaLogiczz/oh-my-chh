@@ -25,6 +25,8 @@
     "thread-detail",
     "article-view",
     "profile",
+    "settings",
+    "messages",
     "compose",
     "unknown"
   ]

@@ -83,8 +83,49 @@ const RANK_BADGE_DEFINITIONS: Record<string, RankBadgeDefinition> = {
     emblemHtml: "<span class=\"disc\"></span><span class=\"ring\"></span><span class=\"crest\"> <svg viewBox=\"0 0 30 30\"><path class=\"ico-fill\" d=\"M9.5 6.5c-.3 3 .8 5.2 2.4 6.8C9.8 12 8.3 9.8 7.4 6.2c-1.2 1.8-1.6 4.6.6 7.4-2.6-.8-3.7-2.9-4.2-5-.7 3.3 1 7.4 5.6 8.2Z\"></path><path class=\"ico-fill\" d=\"M20.5 6.5c.3 3-.8 5.2-2.4 6.8 2.1-1.3 3.6-3.5 4.5-7.1 1.2 1.8 1.6 4.6-.6 7.4 2.6-.8 3.7-2.9 4.2-5 .7 3.3-1 7.4-5.6 8.2Z\"></path><circle class=\"ico-core\" cx=\"15\" cy=\"18.5\" r=\"5.2\"></circle><circle class=\"ico-deep\" cx=\"13\" cy=\"18\" r=\"1.1\"></circle><circle class=\"ico-deep\" cx=\"17\" cy=\"18\" r=\"1.1\"></circle><path class=\"ico-deep\" d=\"M12.6 21c1.4 1.2 3.4 1.2 4.8 0\" stroke=\"var(--c3)\" stroke-width=\"1.1\" fill=\"none\" stroke-linecap=\"round\"></path></svg> </span><span class=\"spk\"></span><span class=\"spk\"></span><span class=\"spk\"></span><span class=\"spk\"></span>"
   },
   "greater-demon": {
-    classes: "t-greater fx-aura fx-glow2 fx-sweep fx-orbit fx-spark",
-    emblemHtml: "<span class=\"disc\"></span><span class=\"ring\"></span><span class=\"ring2\"></span><span class=\"crest\"> <svg viewBox=\"0 0 30 30\"> <path class=\"ico-fill\" d=\"M14 15.5c-3.6-2.6-7.8-2.9-11.3-1 1.7.2 2.5.9 2.7 2 .8-.8 1.8-.9 2.8-.4-.7.7-.9 1.6-.5 2.6 1-.9 2-1 3-.4-.5.8-.5 1.8.1 2.7 1.1-1.2 2.5-1.9 3.2-2.1Z\" opacity=\".92\"></path> <path class=\"ico-fill\" d=\"M16 15.5c3.6-2.6 7.8-2.9 11.3-1-1.7.2-2.5.9-2.7 2-.8-.8-1.8-.9-2.8-.4.7.7.9 1.6.5 2.6-1-.9-2-1-3-.4.5.8.5 1.8-.1 2.7-1.1-1.2-2.5-1.9-3.2-2.1Z\" opacity=\".92\"></path> <path class=\"ico-deep\" d=\"M11.2 10.5C9 8.4 8 5.6 8.4 2.8c1.5 2 3 3.1 4.6 3.8-.9 1.1-1.5 2.4-1.8 3.9Z\"></path> <path class=\"ico-deep\" d=\"M18.8 10.5C21 8.4 22 5.6 21.6 2.8c-1.5 2-3 3.1-4.6 3.8.9 1.1 1.5 2.4 1.8 3.9Z\"></path> <path class=\"ico-fill\" d=\"M15 8.6c-3.4 0-5.8 2.4-5.8 5.6 0 3 2.4 5.8 5.8 5.8s5.8-2.8 5.8-5.8c0-3.2-2.4-5.6-5.8-5.6Z\"></path> <path class=\"ico-core\" d=\"M11.6 12.8l2.4 1-2.4 1.2z\"></path> <path class=\"ico-core\" d=\"M18.4 12.8l-2.4 1 2.4 1.2z\"></path> <path d=\"M12.2 17c1.7 1.6 5 1.6 6.6 0\" stroke=\"var(--c3)\" stroke-width=\"1.2\" fill=\"none\" stroke-linecap=\"round\"></path> </svg> </span><span class=\"orb\"></span><span class=\"orb\"></span><span class=\"orb\"></span><span class=\"spk\"></span><span class=\"spk\"></span><span class=\"spk\"></span><span class=\"spk\"></span>"
+    classes: "t-greater t-overlord elite",
+    emblemHtml: `
+      <span class="crest eseal">
+        <svg viewBox="0 0 44 50" focusable="false" aria-hidden="true">
+          <defs>
+            <linearGradient id="omchhOverlordGold" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#fff0c4"></stop><stop offset=".45" stop-color="#f3c155"></stop>
+              <stop offset="1" stop-color="#a9681c"></stop>
+            </linearGradient>
+            <linearGradient id="omchhOverlordGoldEdge" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ffe9ad"></stop><stop offset=".5" stop-color="#e0a338"></stop>
+              <stop offset="1" stop-color="#7d4a16"></stop>
+            </linearGradient>
+            <radialGradient id="omchhOverlordEnamel" cx="50%" cy="30%" r="75%">
+              <stop offset="0" stop-color="#c63028"></stop><stop offset=".5" stop-color="#8a161a"></stop>
+              <stop offset="1" stop-color="#440a10"></stop>
+            </radialGradient>
+            <radialGradient id="omchhOverlordGloss" cx="50%" cy="38%" r="55%">
+              <stop offset="0" stop-color="#fff" stop-opacity=".7"></stop><stop offset="1" stop-color="#fff" stop-opacity="0"></stop>
+            </radialGradient>
+            <linearGradient id="omchhOverlordRuby" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ff8a78"></stop><stop offset="1" stop-color="#c2161c"></stop>
+            </linearGradient>
+            <clipPath id="omchhOverlordShield"><path d="M11 16 H33 Q33.6 24 33 29 Q31.8 38.5 22 44 Q12.2 38.5 11 29 Q10.4 24 11 16 Z"></path></clipPath>
+          </defs>
+          <g>
+            <path d="M12 15 L13.4 6.5 L17.4 11 L22 4.5 L26.6 11 L30.6 6.5 L32 15 Z" fill="url(#omchhOverlordGold)" stroke="url(#omchhOverlordGoldEdge)" stroke-width=".6" stroke-linejoin="round"></path>
+            <rect x="12" y="14.2" width="20" height="2.4" rx="1.2" fill="url(#omchhOverlordGold)" stroke="url(#omchhOverlordGoldEdge)" stroke-width=".4"></rect>
+            <circle class="e-tw" cx="13.4" cy="6.5" r="1.5" fill="url(#omchhOverlordRuby)"></circle>
+            <circle class="e-tw" cx="22" cy="4.5" r="1.8" fill="url(#omchhOverlordRuby)" style="animation-delay:.5s"></circle>
+            <circle class="e-tw" cx="30.6" cy="6.5" r="1.5" fill="url(#omchhOverlordRuby)" style="animation-delay:1s"></circle>
+          </g>
+          <path d="M9.4 14.5 H34.6 Q35.3 24 34.6 29.6 Q33.2 39.8 22 46 Q10.8 39.8 9.4 29.6 Q8.7 24 9.4 14.5 Z" fill="url(#omchhOverlordGoldEdge)"></path>
+          <path d="M11 16 H33 Q33.6 24 33 29 Q31.8 38.5 22 44 Q12.2 38.5 11 29 Q10.4 24 11 16 Z" fill="url(#omchhOverlordEnamel)"></path>
+          <path d="M12.6 17.4 H31.4 Q31.9 24 31.4 28.4 Q30.4 36.4 22 41.6 Q13.6 36.4 12.6 28.4 Q12.1 24 12.6 17.4 Z" fill="none" stroke="url(#omchhOverlordGold)" stroke-width=".7" opacity=".65"></path>
+          <ellipse class="e-gloss" cx="22" cy="22" rx="9" ry="5.5" fill="url(#omchhOverlordGloss)" clip-path="url(#omchhOverlordShield)"></ellipse>
+          <g class="e-flame" clip-path="url(#omchhOverlordShield)">
+            <path d="M22 23.5 C24.6 26.4 25.6 28.6 24.7 31.2 C24.2 32.7 22.9 33.4 23.1 35.1 C21.4 34.3 20.7 32.6 21.2 30.9 C20 31.6 19.6 32.7 20 34.2 C18.8 32.9 18.5 30.9 19.4 29.2 C20.3 27.4 21.7 26.2 22 23.5 Z" fill="url(#omchhOverlordGold)"></path>
+            <path d="M22 27 C23.2 28.6 23.6 30 23 31.4 C22.6 32.4 21.8 32.8 22 33.8 C21 33.2 20.7 32.1 21 31 C20.4 31.8 20.6 30.4 21.2 29.4 C21.7 28.6 21.9 28 22 27 Z" fill="#fff0cf" opacity=".85"></path>
+          </g>
+        </svg>
+      </span>
+      <span class="ember"></span><span class="ember"></span><span class="ember"></span>`
   },
   "diablo": {
     classes: "t-envoy fx-aura fx-glow2 fx-sweep fx-orbit fx-spark",
@@ -163,6 +204,16 @@ export function enhanceRankBadge(rankElement: Element, identity: RankBadgeIdenti
     spark.style.setProperty("--omchh-spark-left", sparkPositions[sparkIndex]);
     spark.style.setProperty("--omchh-spark-duration", sparkDurations[sparkIndex]);
     spark.style.setProperty("--omchh-spark-delay", sparkDelays[sparkIndex]);
+  });
+
+  const emberPositions = ["30%", "50%", "68%"];
+  const emberDurations = ["2.8s", "3.3s", "2.6s"];
+  const emberDelays = ["0s", "0.7s", "1.4s"];
+  emblem.querySelectorAll<HTMLElement>(".ember").forEach((ember, index) => {
+    const emberIndex = index % emberPositions.length;
+    ember.style.setProperty("--omchh-ember-left", emberPositions[emberIndex]);
+    ember.style.setProperty("--omchh-ember-duration", emberDurations[emberIndex]);
+    ember.style.setProperty("--omchh-ember-delay", emberDelays[emberIndex]);
   });
 
   const name = document.createElement("span");

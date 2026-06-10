@@ -290,6 +290,113 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-gl
   filter:drop-shadow(0 0 4px var(--glow)); animation:omchh-heraldic-spin-rev 20s linear infinite;
 }
 
+/* ============================================================
+   大恶魔 "魔君" — ELITE DEMON  (refined vector seal)
+   Highest reachable by normal users. Wine-garnet enamel seal
+   with smooth gilded shield + crown; keeps the shared badge
+   and medallion dimensions unchanged.
+   ============================================================ */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-rank-badge.t-overlord,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #g_upmine .omchh-rank-badge.t-overlord {
+  --omchh-overlord-gold:#f0b24a;
+  --omchh-overlord-glow:rgba(255,120,60,.6);
+  --omchh-overlord-ember:#ff7a42;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-rank-badge.elite,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #g_upmine .omchh-rank-badge.elite {
+  gap:8px;
+  background:linear-gradient(180deg,#7d1820,#4c0e14);
+  color:#ffeccf;
+  letter-spacing:2px;
+  border-color:rgba(245,190,100,.42);
+  box-shadow:0 3px 16px rgba(110,18,18,.34), inset 0 1px 0 rgba(255,210,160,.24);
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-rank-badge.elite .bname,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #g_upmine .omchh-rank-badge.elite .bname {
+  color:#f6d36a !important;
+  text-shadow:0 0 10px rgba(246,211,106,.5), 0 0 2px rgba(255,244,208,.8) !important;
+  font-weight:800;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-rank-badge.elite .emblem::before,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #g_upmine .omchh-rank-badge.elite .emblem::before {
+  content:"";
+  position:absolute;
+  inset:2px;
+  border-radius:50%;
+  background:radial-gradient(circle, var(--omchh-overlord-glow) 0%, transparent 70%);
+  opacity:.55;
+  filter:blur(4px);
+  pointer-events:none;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-rank-badge.elite .eseal svg,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #g_upmine .omchh-rank-badge.elite .eseal svg {
+  animation:omchh-overlord-glow 3s ease-in-out infinite;
+}
+@keyframes omchh-overlord-glow {
+  0%,100%{ filter:drop-shadow(0 1px 1px rgba(0,0,0,.4)) drop-shadow(0 0 3px var(--omchh-overlord-glow)); }
+  50%{ filter:drop-shadow(0 1px 1px rgba(0,0,0,.4)) drop-shadow(0 0 8px var(--omchh-overlord-glow)); }
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-rank-badge.elite .e-gloss,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #g_upmine .omchh-rank-badge.elite .e-gloss {
+  animation:omchh-overlord-shim 3.8s ease-in-out infinite;
+  transform-origin:center;
+}
+@keyframes omchh-overlord-shim { 0%,100%{ opacity:.22; } 50%{ opacity:.55; } }
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-rank-badge.elite .e-tw,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #g_upmine .omchh-rank-badge.elite .e-tw {
+  animation:omchh-overlord-twinkle 2.6s ease-in-out infinite;
+}
+@keyframes omchh-overlord-twinkle { 0%,100%{ opacity:.72; } 50%{ opacity:1; } }
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-rank-badge.elite .e-flame,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #g_upmine .omchh-rank-badge.elite .e-flame {
+  transform-origin:22px 34px;
+  animation:omchh-overlord-breath 2.4s ease-in-out infinite;
+}
+@keyframes omchh-overlord-breath { 0%,100%{ transform:scaleY(.94); opacity:.9; } 50%{ transform:scaleY(1.06); opacity:1; } }
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-rank-badge.elite .ember,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #g_upmine .omchh-rank-badge.elite .ember {
+  position:absolute;
+  bottom:5px;
+  width:2.5px;
+  height:2.5px;
+  border-radius:50%;
+  z-index:4;
+  left:var(--omchh-ember-left, 50%);
+  background:radial-gradient(circle,#fff2cc,var(--omchh-overlord-ember));
+  box-shadow:0 0 5px var(--omchh-overlord-glow);
+  opacity:0;
+  pointer-events:none;
+  animation:omchh-overlord-rise var(--omchh-ember-duration, 2.8s) ease-in var(--omchh-ember-delay, 0s) infinite;
+}
+@keyframes omchh-overlord-rise {
+  0%{ opacity:0; transform:translateY(0) scale(.5); }
+  18%{ opacity:1; }
+  100%{ opacity:0; transform:translateY(-30px) scale(1.1); }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-rank-badge.elite .eseal svg,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #g_upmine .omchh-rank-badge.elite .eseal svg,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-rank-badge.elite .e-gloss,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #g_upmine .omchh-rank-badge.elite .e-gloss,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-rank-badge.elite .e-tw,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #g_upmine .omchh-rank-badge.elite .e-tw,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-rank-badge.elite .e-flame,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #g_upmine .omchh-rank-badge.elite .e-flame,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-rank-badge.elite .ember,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #chh-lg-header #g_upmine .omchh-rank-badge.elite .ember {
+    animation:none;
+  }
+}
+
 /* ---- reduced motion ---- */
 @media (prefers-reduced-motion:reduce){
   html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-rank-badge.fx-aura .disc::after,

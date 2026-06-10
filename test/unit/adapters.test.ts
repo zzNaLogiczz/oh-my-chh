@@ -13,6 +13,55 @@ afterEach(() => {
 });
 
 describe("content adapters", () => {
+  it("marks spacecp usergroup comparison tables for stable aligned layout", () => {
+    window.history.pushState({}, "", "/home.php?mod=spacecp&ac=usergroup");
+    document.body.innerHTML = `
+      <div id="wp">
+        <div id="ct" class="ct2_a wp cl">
+          <div class="mn">
+            <div class="bm bw0">
+              <h1 class="mt">用户组</h1>
+              <ul class="tb cl">
+                <li class="a"><a href="/home.php?mod=spacecp&ac=usergroup">我的用户组</a></li>
+                <li><a href="/home.php?mod=spacecp&ac=usergroup&do=list">购买用户组</a></li>
+              </ul>
+              <p class="tbmu">您升级到此用户组还需积分 203</p>
+              <table cellspacing="0" cellpadding="0" class="tdat">
+                <tbody>
+                  <tr><th>用户级别</th><td class="xw1">我的主用户组 - 天使</td></tr>
+                  <tr><th>访问论坛</th><td>允许</td></tr>
+                  <tr><th>发新话题</th><td>允许</td></tr>
+                </tbody>
+              </table>
+              <table cellspacing="0" cellpadding="0" class="tdat">
+                <tbody>
+                  <tr><th>晋级用户组 - 大天使</th><td>您升级到此用户组还需积分 203</td></tr>
+                  <tr><th>阅读权限</th><td>20</td></tr>
+                  <tr><th>允许发短消息</th><td>允许</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="appl">
+            <div class="tbn">
+              <h2 class="mt">设置</h2>
+              <ul><li class="a"><a href="/home.php?mod=spacecp&ac=usergroup">用户组</a></li></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    runAdapters("settings", DEFAULT_SETTINGS);
+    runAdapters("settings", DEFAULT_SETTINGS);
+
+    expect(document.querySelector("#ct")?.classList.contains("omchh-settings")).toBe(true);
+    expect(document.querySelector("#ct")?.classList.contains("omchh-settings-usergroup")).toBe(true);
+    expect(document.querySelector(".tb")?.classList.contains("omchh-settings-tabs")).toBe(true);
+    expect(document.querySelector(".tbmu")?.classList.contains("omchh-settings-usergroup-note")).toBe(true);
+    expect(document.querySelectorAll(".omchh-settings-usergroup-table")).toHaveLength(2);
+  });
+
   it("marks thread list semantics idempotently without rebuilding Discuz nodes", () => {
     document.body.innerHTML = `
       <div id="wp">
@@ -222,9 +271,12 @@ describe("content adapters", () => {
     expect(greaterDemonRank?.dataset.omchhRankBadge).toBe("heraldic");
     const greaterDemonBadge = greaterDemonRank?.querySelector<HTMLElement>(".omchh-rank-badge");
     expect(greaterDemonBadge?.classList.contains("t-greater")).toBe(true);
-    expect(greaterDemonBadge?.classList.contains("fx-orbit")).toBe(true);
-    expect(greaterDemonBadge?.querySelector(".crest svg")).not.toBeNull();
-    expect(greaterDemonBadge?.querySelectorAll(".spk")).toHaveLength(4);
+    expect(greaterDemonBadge?.classList.contains("t-overlord")).toBe(true);
+    expect(greaterDemonBadge?.classList.contains("elite")).toBe(true);
+    expect(greaterDemonBadge?.classList.contains("fx-orbit")).toBe(false);
+    expect(greaterDemonBadge?.querySelector(".eseal svg")).not.toBeNull();
+    expect(greaterDemonBadge?.querySelector(".e-flame")).not.toBeNull();
+    expect(greaterDemonBadge?.querySelectorAll(".ember")).toHaveLength(3);
     expect(greaterDemonBadge?.querySelector(".bname")?.textContent).toBe("大恶魔");
     expect(greaterDemonCard?.dataset.omchhRank).toBe("greater-demon");
     expect(greaterDemonAvatarShell?.dataset.omchhRank).toBe("greater-demon");
