@@ -15,6 +15,7 @@ async function copyFile(from, to) {
 await rm(dist, { recursive: true, force: true });
 await build({ configFile: join(projectRoot, "vite.config.ts") });
 await copyFile("manifest.json", join(dist, "manifest.json"));
+await copyFile("icons", join(dist, "icons"));
 await copyFile("src/content/preflight.css", join(dist, "content/preflight.css"));
 await copyFile("src/popup/index.html", join(dist, "popup/index.html"));
 await copyFile("src/popup/popup.css", join(dist, "popup/popup.css"));

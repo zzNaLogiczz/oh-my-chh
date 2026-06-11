@@ -10,12 +10,6 @@ type Settings = {
   reduceMotion: boolean;
 };
 
-type HealthSummary = {
-  route: string;
-  hitCount: number;
-  missingCount: number;
-};
-
 type ChromeLike = typeof chrome;
 
 const DEFAULT_SETTINGS: Settings = {
@@ -28,7 +22,6 @@ const DEFAULT_SETTINGS: Settings = {
 };
 
 const SETTINGS_KEYS = Object.keys(DEFAULT_SETTINGS) as Array<keyof Settings>;
-const HEALTH_KEY = "omchh:lastHealth";
 const PREVIEW_SYNC_KEY = "omchh:preview:sync";
 const PREVIEW_LOCAL_KEY = "omchh:preview:local";
 
@@ -108,39 +101,6 @@ function normalizeSettings(items: Record<string, unknown>): Settings {
   };
 }
 
-function countFrom(value: unknown): number | undefined {
-  if (typeof value === "number" && Number.isFinite(value)) return value;
-  if (Array.isArray(value)) return value.length;
-  return undefined;
-}
-
-function normalizeHealth(raw: unknown): HealthSummary {
-  if (!raw || typeof raw !== "object") {
-    return { route: "尚未检测", hitCount: 0, missingCount: 0 };
-  }
-
-  const item = raw as Record<string, unknown>;
-  const selectors = item.selectors && typeof item.selectors === "object" ? (item.selectors as Record<string, unknown>) : {};
-  const route = typeof item.route === "string" && item.route.trim() ? item.route : "未知路由";
-  const hitCount =
-    countFrom(item.hitCount) ??
-    countFrom(item.hitSelectors) ??
-    countFrom(item.hits) ??
-    countFrom(item.matchedSelectors) ??
-    countFrom(selectors.hit) ??
-    countFrom(selectors.hits) ??
-    0;
-  const missingCount =
-    countFrom(item.missingCount) ??
-    countFrom(item.missingSelectors) ??
-    countFrom(item.misses) ??
-    countFrom(selectors.missing) ??
-    countFrom(selectors.misses) ??
-    0;
-
-  return { route, hitCount, missingCount };
-}
-
 function requireElement<T extends HTMLElement>(id: string, ctor: new () => T): T {
   const element = document.getElementById(id);
   if (!(element instanceof ctor)) {
@@ -151,41 +111,23 @@ function requireElement<T extends HTMLElement>(id: string, ctor: new () => T): T
 
 const controls = {
   themeId: requireElement("theme-id", HTMLSelectElement),
-  density: requireElement("density", HTMLSelectElement),
-  enhanceQuickReply: requireElement("enhance-quick-reply", HTMLInputElement),
-  hideUbbEmoji: requireElement("hide-ubb-emoji", HTMLInputElement),
-  reduceGlass: requireElement("reduce-glass", HTMLInputElement),
-  reduceMotion: requireElement("reduce-motion", HTMLInputElement),
-  healthRoute: requireElement("health-route", HTMLElement),
-  healthHit: requireElement("health-hit", HTMLElement),
-  healthMissing: requireElement("health-missing", HTMLElement),
   saveStatus: requireElement("save-status", HTMLElement)
 };
 
+const editableControls = [controls.themeId];
+
+let currentSettings: Settings = DEFAULT_SETTINGS;
+
 function renderSettings(settings: Settings): void {
+  currentSettings = settings;
   controls.themeId.value = settings.themeId;
-  controls.density.value = settings.density;
-  controls.enhanceQuickReply.checked = settings.enhanceQuickReply;
-  controls.hideUbbEmoji.checked = settings.hideUbbEmoji;
-  controls.reduceGlass.checked = settings.reduceGlass;
-  controls.reduceMotion.checked = settings.reduceMotion;
 }
 
 function currentSettingsFromDom(): Settings {
   return {
-    themeId: asThemeId(controls.themeId.value),
-    density: asDensity(controls.density.value),
-    enhanceQuickReply: controls.enhanceQuickReply.checked,
-    hideUbbEmoji: controls.hideUbbEmoji.checked,
-    reduceGlass: controls.reduceGlass.checked,
-    reduceMotion: controls.reduceMotion.checked
+    ...currentSettings,
+    themeId: asThemeId(controls.themeId.value)
   };
-}
-
-function renderHealth(health: HealthSummary): void {
-  controls.healthRoute.textContent = health.route;
-  controls.healthHit.textContent = String(health.hitCount);
-  controls.healthMissing.textContent = String(health.missingCount);
 }
 
 let saveTimer: ReturnType<typeof globalThis.setTimeout> | undefined;
@@ -210,28 +152,23 @@ async function saveSettings(): Promise<void> {
 }
 
 function bindControls(): void {
-  for (const key of SETTINGS_KEYS) {
-    controls[key].addEventListener("change", () => {
+  for (const control of editableControls) {
+    control.addEventListener("change", () => {
       void saveSettings();
     });
   }
 }
 
 async function init(): Promise<void> {
-  const [storedSettings, storedHealth] = await Promise.all([
-    storageGet("sync", [...SETTINGS_KEYS]),
-    storageGet("local", [HEALTH_KEY])
-  ]);
+  const storedSettings = await storageGet("sync", [...SETTINGS_KEYS]);
 
   renderSettings(normalizeSettings(storedSettings));
-  renderHealth(normalizeHealth(storedHealth[HEALTH_KEY]));
   controls.saveStatus.textContent = chromeApi ? "就绪" : "预览模式";
   bindControls();
 }
 
 void init().catch(() => {
   renderSettings(DEFAULT_SETTINGS);
-  renderHealth({ route: "预览不可用", hitCount: 0, missingCount: 0 });
   controls.saveStatus.textContent = "预览模式";
   bindControls();
 });
