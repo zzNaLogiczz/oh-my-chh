@@ -23755,7 +23755,9 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-gl
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body:has(.omchh-settings) #wp,
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body:has(.omchh-settings) #ct,
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body:has(.omchh-messages) #wp,
-html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body:has(.omchh-messages) #ct {
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body:has(.omchh-messages) #ct,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body:has(.omchh-space) #wp,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body:has(.omchh-space) #ct {
   box-sizing: border-box !important;
   width: min(1240px, calc(100vw - 32px)) !important;
   max-width: 100% !important;
@@ -23774,8 +23776,12 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body:has(.omchh-se
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body:has(.omchh-messages) #diy2,
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body:has(.omchh-settings) #diy3,
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body:has(.omchh-messages) #diy3,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body:has(.omchh-space) #diy1,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body:has(.omchh-space) #diy2,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body:has(.omchh-space) #diy3,
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-settings .appl > .drag,
-html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages .appl > .drag {
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages .appl > .drag,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space .appl > .drag {
   display: none !important;
 }
 
@@ -23793,23 +23799,44 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body #ct.omchh-mes
 
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body #ct.omchh-settings > .mn,
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body #ct.omchh-messages > .mn,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body #ct.omchh-space > .mn,
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body #ct.omchh-settings > .appl,
-html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body #ct.omchh-messages > .appl {
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body #ct.omchh-messages > .appl,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body #ct.omchh-space > .appl {
   float: none !important;
   width: auto !important;
   min-width: 0 !important;
   margin: 0 !important;
 }
 
+/* ---- Space utility shell: sidebar (primary space nav) sits on the LEFT,
+   matching the native Discuz layout and the page's information hierarchy. ---- */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body #ct.omchh-space {
+  display: grid !important;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* DOM order is `.mn` then `.appl`; pull the nav into the first (left) column. */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body #ct.omchh-space > .appl {
+  order: -1;
+}
+
 /* ---- Strip legacy block chrome on the main column ---- */
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-settings .mn > .bm,
-html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages .mn > .bm {
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages .mn > .bm,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space .mn > .bm {
   margin: 0 !important;
 }
 
 /* ---- Main content card (shared glass surface) ---- */
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-settings-card,
-html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-card {
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-card,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-card {
   overflow: hidden;
   margin: 0 !important;
   padding: 20px 24px !important;
@@ -23825,7 +23852,8 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messag
 
 /* ---- Page title (消息 / 修改头像 …) → glow-dot section heading ---- */
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-settings-title,
-html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-title {
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-title,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-title {
   display: flex;
   align-items: center;
   gap: 9px;
@@ -23840,7 +23868,8 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messag
 }
 
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-settings-title::before,
-html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-title::before {
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-title::before,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-title::before {
   content: "";
   flex: 0 0 auto;
   width: 8px;
@@ -23852,8 +23881,10 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messag
     0 0 20px color-mix(in oklch, var(--accent) 36%, transparent);
 }
 
-/* The 消息 title carries a legacy email icon — keep it inline & accented. */
-html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-title i {
+/* The 消息 title carries a legacy email icon — keep it inline & accented.
+   Space pages (好友列表 等) carry a similar legacy group icon — same treatment. */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-title i,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-title i {
   color: var(--accent) !important;
 }
 
@@ -23862,7 +23893,8 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messag
    ===================================================================== */
 
 /* ---- Category tabs (私人消息 / 公共消息 …) → pill nav ---- */
-html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-tabs {
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-tabs,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-tabs {
   display: flex !important;
   flex-wrap: wrap;
   gap: 8px;
@@ -23873,7 +23905,8 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messag
   background: transparent !important;
 }
 
-html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-tabs > li {
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-tabs > li,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-tabs > li {
   float: none !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -23882,7 +23915,8 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messag
   list-style: none;
 }
 
-html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-tabs > li a {
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-tabs > li a,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-tabs > li a {
   display: inline-flex;
   align-items: center;
   min-height: 30px;
@@ -23896,13 +23930,15 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messag
   text-decoration: none !important;
 }
 
-html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-tabs > li a:hover {
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-tabs > li a:hover,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-tabs > li a:hover {
   border-color: color-mix(in oklch, var(--accent) 30%, transparent) !important;
   background: color-mix(in oklch, var(--accent) 13%, oklch(100% 0 0 / 0.6)) !important;
   transform: translateY(-1px);
 }
 
-html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-tabs > li.a a {
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-messages-tabs > li.a a,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-tabs > li.a a {
   border-color: color-mix(in oklch, var(--accent) 50%, transparent) !important;
   color: oklch(100% 0 0) !important;
   background: linear-gradient(180deg, color-mix(in oklch, var(--accent) 86%, transparent), var(--accent)) !important;
@@ -24520,7 +24556,243 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body #ct.omchh-set
 }
 
 /* =====================================================================
-   Shared sidebar nav (.omchh-side-nav) — 设置菜单 / 通知菜单
+   个人空间工具页 (space) — 好友列表 / 我的帖子 / 访客足迹 等
+   外层壳/卡片/标题/标签复用 settings·messages 的共享规则，此处只补充
+   空间页特有的内部遗留块复位，避免卡内再叠灰色子卡片。
+   ===================================================================== */
+
+/* 卡片内部的遗留 Discuz 块（如「查找好友」侧盒 .bm.mtm、列表项 .bm_h/.bm_c）
+   去边框/背景/阴影，仅靠节奏分隔，符合「外层透明、内容才是表面」原则。 */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-card .bm,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-card .bm_h,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-card .bm_c {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* 顶部统计/排序提示条（当前共有 N 个好友 / 按热度排序）：作为轻量元信息行。
+   排除帖子列表过滤条（.omchh-space-filter，另有专属样式）。 */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-card > .tbmu:not(.omchh-space-filter) {
+  margin: 14px 0 0 !important;
+  padding: 10px 0 0 !important;
+  border-top: 1px solid oklch(100% 0 0 / 0.16) !important;
+  color: var(--chh-lg-muted) !important;
+  font-size: 13px;
+}
+
+/* =====================================================================
+   帖子列表子页（我的帖子 / 好友的帖子）：过滤条 + 帖子表
+   ===================================================================== */
+
+/* ---- 顶部过滤/分类工具条（全部|已发表|… + 选择版块 + 主题|回复|点评 + 搜索） ----
+   原生靠 .pipe 竖线分隔并左右浮动；改为可换行的胶囊工具条，竖线隐藏。 */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-filter {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px !important;
+  padding: 0 0 16px !important;
+  border-bottom: 1px solid oklch(100% 0 0 / 0.18) !important;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* 内层右浮动分组（.y 含过滤项+版块下拉）回归正常流，参与同一行换行。 */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-filter .y,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-filter .z {
+  display: inline-flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  float: none !important;
+  margin: 0 !important;
+}
+
+/* 竖线分隔符由 gap 取代。 */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-filter .pipe {
+  display: none !important;
+}
+
+/* 过滤项链接 → 文字胶囊；当前项（.a）填充强调色。 */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-filter a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 11px !important;
+  border: 1px solid oklch(100% 0 0 / 0.42) !important;
+  border-radius: 999px !important;
+  color: var(--chh-lg-ink) !important;
+  background: oklch(100% 0 0 / 0.32) !important;
+  box-shadow: inset 0 1px 0 oklch(100% 0 0 / 0.62);
+  text-decoration: none !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-filter a:hover {
+  border-color: color-mix(in oklch, var(--accent) 30%, transparent) !important;
+  background: color-mix(in oklch, var(--accent) 13%, oklch(100% 0 0 / 0.6)) !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-filter a.a {
+  border-color: color-mix(in oklch, var(--accent) 50%, transparent) !important;
+  color: oklch(100% 0 0) !important;
+  background: linear-gradient(180deg, color-mix(in oklch, var(--accent) 86%, transparent), var(--accent)) !important;
+  box-shadow: 0 8px 20px color-mix(in oklch, var(--accent) 30%, transparent);
+}
+
+/* 版块下拉 + 搜索框 → 玻璃胶囊输入；搜索按钮 → 强调胶囊。 */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-filter select,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-filter input[type="text"] {
+  height: 28px;
+  box-sizing: border-box;
+  padding: 0 12px !important;
+  border: 1px solid oklch(100% 0 0 / 0.42) !important;
+  border-radius: 999px !important;
+  color: var(--chh-lg-ink) !important;
+  background: oklch(100% 0 0 / 0.32) !important;
+  box-shadow: inset 0 1px 0 oklch(100% 0 0 / 0.62);
+  font-size: 13px;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-filter button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 14px !important;
+  border: 1px solid color-mix(in oklch, var(--accent) 50%, transparent) !important;
+  border-radius: 999px !important;
+  color: oklch(100% 0 0) !important;
+  background: linear-gradient(180deg, color-mix(in oklch, var(--accent) 86%, transparent), var(--accent)) !important;
+  box-shadow: 0 6px 16px color-mix(in oklch, var(--accent) 26%, transparent);
+  cursor: pointer;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-filter button em {
+  font-style: normal;
+}
+
+/* ---- 帖子表：去表格层叠，重排为可扫描的列表行 ---- */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  background: transparent !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads td,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads th {
+  border: 0 !important;
+  background: transparent !important;
+}
+
+/* 表头行：弱化为列标签。 */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads tr.th > td,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads tr.th > th {
+  padding: 0 10px 9px !important;
+  border-bottom: 1px solid oklch(100% 0 0 / 0.18) !important;
+  color: var(--chh-lg-muted) !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+  text-align: left;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads tr.th > .num,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads tr.th > .by {
+  text-align: left;
+}
+
+/* 数据行：仅靠 1px 分隔与 hover 微洗区分，无嵌套卡片。 */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads tr:not(.th) > td {
+  padding: 11px 10px !important;
+  border-bottom: 1px solid oklch(100% 0 0 / 0.10) !important;
+  vertical-align: middle;
+  transition: background 180ms cubic-bezier(.2, .8, .2, 1);
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads tr:not(.th):hover > td {
+  background: color-mix(in oklch, var(--accent) 7%, transparent) !important;
+}
+
+/* 列宽：主题列自适应，其余固定，保证标题尽量长。 */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads td.icn {
+  width: 24px;
+  text-align: center;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads td.frm {
+  width: 150px;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads td.num {
+  width: 84px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads td.by {
+  width: 172px;
+}
+
+/* 主题标题：主信息，加粗，hover 强调。 */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads th > a {
+  color: var(--chh-lg-ink) !important;
+  font-size: 14px;
+  font-weight: 650;
+  text-decoration: none !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads th > a:hover {
+  color: var(--accent) !important;
+}
+
+/* 版块/圈子：次要元信息。 */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads td.frm a {
+  color: var(--chh-lg-muted) !important;
+  font-size: 12px;
+  text-decoration: none !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads td.frm a:hover {
+  color: var(--accent) !important;
+}
+
+/* 回复/查看：回复数强调，查看数弱化，数字等宽。 */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads td.num a {
+  color: var(--accent) !important;
+  font-weight: 700;
+  text-decoration: none !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads td.num em {
+  display: block;
+  color: var(--chh-lg-muted) !important;
+  font-style: normal;
+  font-size: 12px;
+}
+
+/* 最后发帖：作者 + 时间两行。 */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads td.by {
+  font-size: 12px;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads td.by cite,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads td.by em {
+  display: block;
+  font-style: normal;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads td.by cite a {
+  color: var(--chh-lg-ink) !important;
+  text-decoration: none !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-space-threads td.by em a {
+  color: var(--chh-lg-muted) !important;
+  text-decoration: none !important;
+}
+
+/* =====================================================================
+   Shared sidebar nav (.omchh-side-nav) — 设置菜单 / 通知菜单 / 空间导航
    ===================================================================== */
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body .omchh-side-nav {
   overflow: hidden;
