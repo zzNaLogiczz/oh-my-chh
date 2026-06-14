@@ -1,6 +1,6 @@
 {
   "name": "oh-my-chh",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "private": true,
   "type": "module",
   "description": "Enhances the Chiphell forum interface and browsing experience with customizable UI themes.",
@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "lint:css": "node scripts/check-css-scope.mjs",
-    "verify": "npm run lint:css && npm run typecheck && npm test && npm run build"
+    "lint:imports": "node scripts/check-import-boundaries.mjs",
+    "verify": "npm run lint:css && npm run lint:imports && npm run typecheck && npm test && npm run build"
   },
   "devDependencies": {
     "@types/chrome": "latest",

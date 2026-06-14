@@ -13,13 +13,51 @@ async function copyFile(from, to) {
 }
 
 await rm(dist, { recursive: true, force: true });
-await build({ configFile: join(projectRoot, "vite.config.ts") });
+await build({
+  configFile: false,
+  root: projectRoot,
+  publicDir: false,
+  build: {
+    outDir: dist,
+    emptyOutDir: true,
+    sourcemap: true,
+    minify: false,
+    rollupOptions: {
+      input: join(projectRoot, "src/platform/bootstrap.ts"),
+      output: {
+        format: "iife",
+        name: "OhMyChhContent",
+        entryFileNames: "content/main.js",
+        assetFileNames: "assets/[name]-[hash][extname]"
+      }
+    }
+  }
+});
+await build({
+  configFile: false,
+  root: projectRoot,
+  publicDir: false,
+  build: {
+    outDir: dist,
+    emptyOutDir: false,
+    sourcemap: true,
+    minify: false,
+    rollupOptions: {
+      input: join(projectRoot, "src/preferences/popup/popup.ts"),
+      output: {
+        format: "es",
+        entryFileNames: "popup/popup.js",
+        assetFileNames: "assets/[name]-[hash][extname]"
+      }
+    }
+  }
+});
 await copyFile("manifest.json", join(dist, "manifest.json"));
 await copyFile("icons", join(dist, "icons"));
-await copyFile("src/content/preflight.css", join(dist, "content/preflight.css"));
-await copyFile("src/popup/index.html", join(dist, "popup/index.html"));
-await copyFile("src/popup/popup.css", join(dist, "popup/popup.css"));
-await copyFile("src/themes", join(dist, "themes"));
+await copyFile("src/platform/preflight.css", join(dist, "content/preflight.css"));
+await copyFile("src/preferences/popup/index.html", join(dist, "popup/index.html"));
+await copyFile("src/preferences/popup/popup.css", join(dist, "popup/popup.css"));
+await copyFile("src/theming/themes", join(dist, "themes"));
 
 async function flattenCssImports(cssFile, seen = new Set()) {
   if (seen.has(cssFile)) return "";
@@ -54,6 +92,15 @@ async function flattenThemeIndexes() {
 }
 
 await flattenThemeIndexes();
+
+async function assertClassicContentScript() {
+  const contentScript = await readFile(join(dist, "content/main.js"), "utf8");
+  if (/^\s*(?:import|export)\s/m.test(contentScript) || contentScript.includes("../assets/")) {
+    throw new Error("content/main.js must be a self-contained classic script for manifest content_scripts.");
+  }
+}
+
+await assertClassicContentScript();
 
 const manifestPath = join(dist, "manifest.json");
 const manifest = JSON.parse(await readFile(manifestPath, "utf8"));

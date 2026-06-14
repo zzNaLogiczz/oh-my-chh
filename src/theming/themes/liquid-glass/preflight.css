@@ -1,0 +1,13 @@
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"]:not([data-omchh-paint-ready="1"]) {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 12% 8%, color-mix(in oklch, oklch(58% 0.18 255) 18%, transparent) 0 22rem, transparent 38rem),
+    radial-gradient(circle at 86% 14%, oklch(72% 0.12 195 / 0.24) 0 24rem, transparent 42rem),
+    linear-gradient(135deg, oklch(99% 0.004 245), oklch(94% 0.022 255) 46%, oklch(98% 0.006 230));
+}
+
+@supports selector(:has(*)) {
+  html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] #e_body:has(#e_switchercheck:not(:checked)) #e_textarea {
+    visibility: hidden !important;
+  }
+}

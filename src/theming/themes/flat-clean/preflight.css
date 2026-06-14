@@ -1,0 +1,7 @@
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"] body {
+  background: #f6f7f9 !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"][data-omchh-scheme="dark"] body {
+  background: #15171a !important;
+}

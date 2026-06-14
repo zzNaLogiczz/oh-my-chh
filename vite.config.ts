@@ -9,8 +9,8 @@ export default defineConfig({
     minify: false,
     rollupOptions: {
       input: {
-        "content/main": "src/content/main.ts",
-        "popup/popup": "src/popup/popup.ts"
+        "content/main": "src/platform/bootstrap.ts",
+        "popup/popup": "src/preferences/popup/popup.ts"
       },
       output: {
         entryFileNames: "[name].js",

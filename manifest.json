@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "oh-my-chh",
   "short_name": "oh-my-chh",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Enhances the Chiphell forum interface and browsing experience with customizable UI themes.",
   "permissions": [
     "storage"
@@ -23,8 +23,7 @@
         "https://www.chiphell.com/*"
       ],
       "css": [
-        "content/preflight.css",
-        "themes/liquid-glass/index.css"
+        "content/preflight.css"
       ],
       "js": [
         "content/main.js"
@@ -36,6 +35,7 @@
     {
       "resources": [
         "themes/*/index.css",
+        "themes/*/preflight.css",
         "themes/*/fonts/*"
       ],
       "matches": [

@@ -2,7 +2,7 @@ import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 
 const root = new URL("..", import.meta.url).pathname;
-const themesDir = join(root, "src/themes");
+const themesDir = join(root, "src/theming/themes");
 const allowedAtRules = /^(?:@import|@media|@supports|@keyframes|from\b|to\b|\d+%)/;
 const errors = [];
 

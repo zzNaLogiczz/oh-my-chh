@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oh-my-chh.local/themes/theme.schema.json",
+  "title": "Oh My CHH Theme Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "version",
+    "description",
+    "entrypoints",
+    "tokens",
+    "capabilities"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "styleFamily": {
+      "type": "string"
+    },
+    "entrypoints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "index",
+        "preflight",
+        "tokens",
+        "routes",
+        "preview"
+      ],
+      "properties": {
+        "index": {
+          "type": "string",
+          "pattern": "^\\./.+\\.css$"
+        },
+        "tokens": {
+          "type": "string",
+          "pattern": "^\\./.+\\.css$"
+        },
+        "routes": {
+          "type": "string",
+          "pattern": "^\\./.+\\.css$"
+        },
+        "preview": {
+          "type": "string",
+          "pattern": "^\\./.+\\.html$"
+        },
+        "preflight": {
+          "type": "string",
+          "pattern": "^\\./.+\\.css$"
+        }
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scopedSelectors",
+        "crossThemeImports",
+        "responsive",
+        "reducedMotion",
+        "requiresReloadOnSwitch"
+      ],
+      "properties": {
+        "scopedSelectors": {
+          "const": true
+        },
+        "crossThemeImports": {
+          "const": false
+        },
+        "responsive": {
+          "const": true
+        },
+        "reducedMotion": {
+          "const": true
+        },
+        "glassReductionAttribute": {
+          "type": "string"
+        },
+        "requiresReloadOnSwitch": {
+          "type": "boolean"
+        },
+        "legacyRootClass": {
+          "type": "string"
+        }
+      }
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    }
+  }
+}

@@ -1,0 +1,50 @@
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"] {
+  color-scheme: light;
+  background: #f6f7f9 !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"] body {
+  color: #20242a !important;
+  background: #f6f7f9 !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"] .omchh-page,
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"] .omchh-content,
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"] .omchh-module {
+  color: #20242a !important;
+  background: #ffffff !important;
+  border: 1px solid #dde2e8 !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"][data-omchh-density="comfortable"] .omchh-page,
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"][data-omchh-density="comfortable"] .omchh-content,
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"][data-omchh-density="comfortable"] .omchh-module {
+  padding: 18px !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"][data-omchh-motion="reduce"] *,
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"][data-omchh-motion="reduce"] *::before,
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"][data-omchh-motion="reduce"] *::after {
+  animation-duration: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"][data-omchh-scheme="dark"] {
+  color-scheme: dark;
+  background: #15171a !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"][data-omchh-scheme="dark"] body {
+  color: #e8ebef !important;
+  background: #15171a !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"][data-omchh-scheme="dark"] .omchh-page,
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"][data-omchh-scheme="dark"] .omchh-content,
+html[data-omchh-enabled="1"][data-omchh-theme="flat-clean"][data-omchh-scheme="dark"] .omchh-module {
+  color: #e8ebef !important;
+  background: #20242a !important;
+  border-color: #363c45 !important;
+}

@@ -1,0 +1,32 @@
+{
+  "id": "flat-clean",
+  "name": "Flat Clean",
+  "version": "0.1.0",
+  "description": "Low-contrast flat theme with clean readable surfaces and no glass effects.",
+  "styleFamily": "flat-clean",
+  "entrypoints": {
+    "index": "./index.css",
+    "preflight": "./preflight.css"
+  },
+  "tokens": {},
+  "capabilities": {
+    "scopedSelectors": true,
+    "crossThemeImports": false,
+    "responsive": true,
+    "reducedMotion": true,
+    "requiresReloadOnSwitch": false,
+    "legacyRootClass": "chh-flat-clean"
+  },
+  "routes": [
+    "portal-home",
+    "forum-index",
+    "thread-list",
+    "thread-detail",
+    "article-view",
+    "profile",
+    "settings",
+    "messages",
+    "compose",
+    "unknown"
+  ]
+}

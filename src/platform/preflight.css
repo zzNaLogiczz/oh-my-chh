@@ -1,0 +1,10 @@
+/* First-paint guard: Chromium injects content CSS before the document_start script.
+   Keep the original Discuz body hidden until settings, theme assets, root attributes,
+   and the initial DOM adapter pass are ready. */
+html:not([data-omchh-paint-ready="1"]) body {
+  visibility: hidden !important;
+}
+
+html[data-omchh-paint-ready="1"] body {
+  visibility: visible !important;
+}
