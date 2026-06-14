@@ -13,6 +13,7 @@ const NAV_ACTIVE_ATTR = "data-chh-lg-active";
 let pointerScheduled = false;
 let globalStateBound = false;
 let lastPointer = { x: "50vw", y: "12vh" };
+let lastNavSignature = "";
 
 function makeNode<K extends keyof HTMLElementTagNameMap>(tagName: K, className: string, text?: string): HTMLElementTagNameMap[K] {
   const node = document.createElement(tagName);
@@ -129,6 +130,12 @@ function directNavLink(item: HTMLLIElement): HTMLAnchorElement | null {
   return [...item.children].find((child): child is HTMLAnchorElement => child instanceof HTMLAnchorElement) ?? null;
 }
 
+function navSignature(items: HTMLLIElement[]): string {
+  const activeIndex = items.findIndex((item) => item.classList.contains("a"));
+  const hrefs = items.map((item) => directNavLink(item)?.getAttribute("href") ?? "").join("\u001f");
+  return [window.location.href, String(items.length), String(activeIndex), hrefs].join("\u001e");
+}
+
 function bodyHas(...tokens: string[]): boolean {
   const body = document.body;
   if (!body) return false;
@@ -167,7 +174,13 @@ function scoreNavLink(link: HTMLAnchorElement, currentUrl: URL): number {
 
 function syncNavActiveState(): void {
   const items = navItems();
-  if (!items.length) return;
+  if (!items.length) {
+    lastNavSignature = "";
+    return;
+  }
+
+  const signature = navSignature(items);
+  if (signature === lastNavSignature) return;
 
   const currentUrl = new URL(window.location.href);
   const scored = items
@@ -178,7 +191,10 @@ function syncNavActiveState(): void {
   const matched = scored[0]?.score >= 0 ? scored[0] : null;
   const existing = scored.find(({ item }) => item.classList.contains("a"));
   const active = matched ?? existing;
-  if (!active) return;
+  if (!active) {
+    lastNavSignature = signature;
+    return;
+  }
 
   items.forEach((item) => {
     item.classList.remove("a");
@@ -189,6 +205,7 @@ function syncNavActiveState(): void {
   active.item.classList.add("a");
   active.item.setAttribute(NAV_ACTIVE_ATTR, "true");
   active.link?.setAttribute("aria-current", "page");
+  lastNavSignature = navSignature(items);
 }
 
 function buildHeaderShell(scope: EnhancementScope): void {
