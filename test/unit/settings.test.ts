@@ -43,7 +43,7 @@ describe("settings subscription", () => {
 });
 
 describe("theme setting validation", () => {
-  it("adds color scheme as a flat default", () => {
+  it("defaults color scheme to explicit light mode", () => {
     expect(DEFAULT_SETTINGS.colorScheme).toBe("light");
   });
 
@@ -58,7 +58,7 @@ describe("theme setting validation", () => {
       }
     });
 
-    await expect(loadSettings()).resolves.toMatchObject({ themeId: "liquid-glass", density: "comfortable" });
-    await expect(loadSettings()).resolves.toMatchObject({ themeId: DEFAULT_SETTINGS.themeId, density: "comfortable" });
+    await expect(loadSettings()).resolves.toMatchObject({ themeId: "liquid-glass", density: "comfortable", colorScheme: "light" });
+    await expect(loadSettings()).resolves.toMatchObject({ themeId: DEFAULT_SETTINGS.themeId, density: "comfortable", colorScheme: "light" });
   });
 });
