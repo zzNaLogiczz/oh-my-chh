@@ -3,7 +3,7 @@ import type { AdapterContext } from "../foundation/context";
 import { scheduleHealthSave, trackSelector } from "./health";
 import { createObserverScheduler } from "../foundation/observer";
 import { EnhancementScope } from "./enhancement-scope";
-import { detectRoute, type OmchhRoute } from "../foundation/route";
+import { detectRoute } from "../foundation/route";
 import { applyThemeRoot, ensureThemeAssets } from "../theming/assets";
 import { getTheme, DEFAULT_THEME_ID } from "../theming/registry";
 import { warnForUnexpectedExtensionError } from "./extension-context";
@@ -11,9 +11,9 @@ import { DEFAULT_SETTINGS, loadSettings, onSettingsChanged, type OmchhSettings }
 import { getThemeMetadata, type ThemeId } from "../theming/catalog";
 
 const ALLOWED_HOSTS = new Set(["www.chiphell.com"]);
+const SYSTEM_COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)";
 
 let currentSettings: OmchhSettings = DEFAULT_SETTINGS;
-let currentRoute: OmchhRoute = "unknown";
 let initialized = false;
 let settingsReady = false;
 let activeThemeId: ThemeId | undefined;
@@ -97,17 +97,24 @@ async function performRefresh(opts: RefreshOptions = {}): Promise<RefreshResult>
   const sequence = ++refreshSequence;
   const settingsSnapshot = currentSettings;
   const routeSnapshot = detectRoute();
-  currentRoute = routeSnapshot;
 
   const nextThemeId = getThemeMetadata(settingsSnapshot.themeId)?.id ?? DEFAULT_THEME_ID;
   const switchResult = switchThemeIfNeeded(nextThemeId);
   if (switchResult === "reloading") return "reloading";
 
+  const primeRootBeforeAssets = opts.blockFirstPaint === true && activeThemeId === undefined;
+  if (primeRootBeforeAssets) {
+    applyThemeRoot(settingsSnapshot, routeSnapshot);
+    activeThemeId = nextThemeId;
+  }
+
   await ensureThemeAssets(nextThemeId, opts);
   if (sequence !== refreshSequence && opts.enhanceDom === false) return "continue";
 
-  applyThemeRoot(settingsSnapshot, routeSnapshot);
-  activeThemeId = nextThemeId;
+  if (!primeRootBeforeAssets) {
+    applyThemeRoot(settingsSnapshot, routeSnapshot);
+    activeThemeId = nextThemeId;
+  }
 
   if (opts.enhanceDom === false) return "continue";
 
@@ -154,6 +161,33 @@ function requestRefresh(opts: RefreshOptions = {}): Promise<RefreshResult> {
   return refreshDrainPromise;
 }
 
+function systemColorSchemeMedia(): MediaQueryList | undefined {
+  try {
+    return window.matchMedia?.(SYSTEM_COLOR_SCHEME_QUERY);
+  } catch {
+    return undefined;
+  }
+}
+
+function onSystemColorSchemeChanged(): void {
+  if (currentSettings.colorScheme !== "system") return;
+  void requestRefresh({ enhanceDom: false }).catch((error: unknown) => {
+    warnForUnexpectedExtensionError("[oh-my-chh] Failed to apply system color-scheme change.", error);
+  });
+}
+
+function subscribeToSystemColorScheme(): void {
+  const media = systemColorSchemeMedia();
+  if (!media) return;
+
+  if (typeof media.addEventListener === "function") {
+    media.addEventListener("change", onSystemColorSchemeChanged);
+    return;
+  }
+
+  media.addListener?.(onSystemColorSchemeChanged);
+}
+
 async function initialize(): Promise<void> {
   if (initialized) return;
   if (!isAllowedHost()) {
@@ -170,6 +204,7 @@ async function initialize(): Promise<void> {
 
   currentSettings = await loadSettings();
   settingsReady = true;
+  subscribeToSystemColorScheme();
   const earlyThemeReady = requestRefresh({ blockFirstPaint: true, enhanceDom: false }).catch((error: unknown) => {
     warnForUnexpectedExtensionError("[oh-my-chh] Failed during early theme asset preparation.", error);
     return "skipped" as const;

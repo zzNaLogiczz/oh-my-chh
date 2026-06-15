@@ -148,7 +148,7 @@ function enhanceStickyThreadCard(table: Element | null, adapter: string): void {
   syncStickyCard(table, adapter);
 }
 
-export const enhanceThreadList: ContentAdapter = ({ root, settings }) => {
+export const enhanceThreadList: ContentAdapter = ({ root }) => {
   const adapter = "thread-list";
   const selectors: Array<[string, string, boolean]> = [
     [".bml.pbn", "omchh-forum-heading", false],

@@ -6,6 +6,7 @@ import { build } from "vite";
 const root = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(root, "..");
 const dist = join(projectRoot, "dist");
+const sourcemap = process.env.BUILD_SOURCEMAP === "1";
 
 async function copyFile(from, to) {
   await mkdir(dirname(to), { recursive: true });
@@ -20,7 +21,7 @@ await build({
   build: {
     outDir: dist,
     emptyOutDir: true,
-    sourcemap: true,
+    sourcemap,
     minify: false,
     rollupOptions: {
       input: join(projectRoot, "src/platform/bootstrap.ts"),
@@ -40,7 +41,7 @@ await build({
   build: {
     outDir: dist,
     emptyOutDir: false,
-    sourcemap: true,
+    sourcemap,
     minify: false,
     rollupOptions: {
       input: join(projectRoot, "src/preferences/popup/popup.ts"),
@@ -57,7 +58,6 @@ await copyFile("icons", join(dist, "icons"));
 await copyFile("src/platform/preflight.css", join(dist, "content/preflight.css"));
 await copyFile("src/preferences/popup/index.html", join(dist, "popup/index.html"));
 await copyFile("src/preferences/popup/popup.css", join(dist, "popup/popup.css"));
-await copyFile("src/theming/themes", join(dist, "themes"));
 
 async function flattenCssImports(cssFile, seen = new Set()) {
   if (seen.has(cssFile)) return "";
@@ -77,21 +77,25 @@ async function flattenCssImports(cssFile, seen = new Set()) {
   return output;
 }
 
-async function flattenThemeIndexes() {
-  const themesRoot = join(dist, "themes");
+async function copyThemeRuntimeAssets() {
+  const themesRoot = join(projectRoot, "src/theming/themes");
   const entries = await readdir(themesRoot, { withFileTypes: true });
   for (const entry of entries) {
     if (!entry.isDirectory() || entry.name.startsWith("_")) continue;
-    const indexPath = join(themesRoot, entry.name, "index.css");
+    const sourceThemeRoot = join(themesRoot, entry.name);
+    const targetThemeRoot = join(dist, "themes", entry.name);
+    const indexPath = join(sourceThemeRoot, "index.css");
     const flattened = await flattenCssImports(indexPath);
     if (/@import\s+["']\.\/[^"']+\.css["'];?/.test(flattened)) {
       throw new Error(`Theme CSS import was not flattened: ${indexPath}`);
     }
-    await writeFile(indexPath, flattened.trimStart());
+    await mkdir(targetThemeRoot, { recursive: true });
+    await writeFile(join(targetThemeRoot, "index.css"), flattened.trimStart());
+    await cp(join(sourceThemeRoot, "preflight.css"), join(targetThemeRoot, "preflight.css"));
   }
 }
 
-await flattenThemeIndexes();
+await copyThemeRuntimeAssets();
 
 async function assertClassicContentScript() {
   const contentScript = await readFile(join(dist, "content/main.js"), "utf8");

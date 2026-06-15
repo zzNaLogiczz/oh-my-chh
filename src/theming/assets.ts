@@ -1,11 +1,30 @@
 import type { OmchhRoute } from "../foundation/route";
-import type { OmchhSettingsShape } from "../shared/preferences-shape";
+import type { OmchhColorScheme, OmchhSettingsShape } from "../shared/preferences-shape";
 import { CAPABILITY_CATALOG } from "../capabilities/catalog";
 import { DEFAULT_THEME_ID, getThemeMetadata, THEME_CATALOG, type ThemeMetadata } from "./catalog";
 
 export const THEME_LINK_ID = "omchh-theme-css";
 export const PREFLIGHT_LINK_ID = "omchh-theme-preflight";
 export const ASSET_LOAD_TIMEOUT_MS = 800;
+
+export type ResolvedColorScheme = "light" | "dark";
+
+export function resolveSystemColorScheme(): ResolvedColorScheme {
+  try {
+    return globalThis.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  } catch {
+    return "light";
+  }
+}
+
+export function resolveColorScheme(value: OmchhColorScheme): ResolvedColorScheme {
+  if (value === "dark" || value === "light") return value;
+  return resolveSystemColorScheme();
+}
+
+function resolveCapabilitySettings(settings: OmchhSettingsShape): OmchhSettingsShape {
+  return { ...settings, colorScheme: resolveColorScheme(settings.colorScheme) };
+}
 
 function knownLegacyRootClasses(): string[] {
   return THEME_CATALOG.map((theme) => theme.capabilities.legacyRootClass).filter((value): value is string => Boolean(value));
@@ -32,8 +51,10 @@ export function applyThemeRoot(settings: OmchhSettingsShape, route: OmchhRoute):
   root.dataset.omchhTheme = meta.id;
   syncLegacyRootClass(meta);
 
+  const capabilitySettings = resolveCapabilitySettings(settings);
+
   for (const capability of CAPABILITY_CATALOG) {
-    root.setAttribute(capability.rootAttr, capability.toAttr(settings[capability.settingKey]));
+    root.setAttribute(capability.rootAttr, capability.toAttr(capabilitySettings[capability.settingKey]));
   }
 }
 

@@ -11,7 +11,6 @@ export interface OmchhSettings extends OmchhSettingsShape {
 export const DEFAULT_SETTINGS: OmchhSettings = {
   themeId: DEFAULT_THEME_ID,
   density: "compact",
-  hideUbbEmoji: false,
   reduceGlass: false,
   reduceMotion: true,
   enhanceQuickReply: true,
@@ -29,7 +28,7 @@ export function asDensity(value: unknown): OmchhDensity {
 }
 
 export function asColorScheme(value: unknown): OmchhColorScheme {
-  return value === "dark" ? "dark" : "light";
+  return value === "light" ? "light" : DEFAULT_SETTINGS.colorScheme;
 }
 
 export function asBool(value: unknown, fallback: boolean): boolean {
@@ -41,7 +40,6 @@ export function normalizeSettings(raw: Partial<OmchhSettingsShape> | Record<stri
   return {
     themeId: asThemeId(merged.themeId),
     density: asDensity(merged.density),
-    hideUbbEmoji: asBool(merged.hideUbbEmoji, DEFAULT_SETTINGS.hideUbbEmoji),
     reduceGlass: asBool(merged.reduceGlass, DEFAULT_SETTINGS.reduceGlass),
     reduceMotion: asBool(merged.reduceMotion, DEFAULT_SETTINGS.reduceMotion),
     enhanceQuickReply: asBool(merged.enhanceQuickReply, DEFAULT_SETTINGS.enhanceQuickReply),

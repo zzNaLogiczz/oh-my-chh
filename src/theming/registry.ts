@@ -1,4 +1,4 @@
-import { DEFAULT_THEME_ID, getThemeMetadata, type ThemeId } from "./catalog";
+import { getThemeMetadata, type ThemeId } from "./catalog";
 import { flatCleanTheme } from "./themes/flat-clean/adapter";
 import { liquidGlassTheme } from "./themes/liquid-glass/adapter";
 import type { ThemeModule } from "./theme-module";

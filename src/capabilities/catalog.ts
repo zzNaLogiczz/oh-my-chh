@@ -70,8 +70,9 @@ export const CAPABILITY_CATALOG: CapabilityDescriptor[] = [
     control: {
       type: "select",
       label: "色彩模式",
-      description: "选择全局明暗意图，具体呈现由当前主题负责。",
+      description: "选择浅色、深色，或自动跟随系统明暗模式。",
       options: [
+        { value: "system", label: "自动跟随系统" },
         { value: "light", label: "浅色" },
         { value: "dark", label: "深色" }
       ]

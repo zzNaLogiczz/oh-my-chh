@@ -1,6 +1,6 @@
 import { CAPABILITY_CATALOG } from "../../capabilities/catalog";
 import { THEME_CATALOG } from "../../theming/catalog";
-import { DEFAULT_SETTINGS, SETTINGS_KEYS, asBool, asThemeId, normalizeSettings, type OmchhSettings } from "../schema";
+import { DEFAULT_SETTINGS, SETTINGS_KEYS, asBool, asColorScheme, asThemeId, normalizeSettings, type OmchhSettings } from "../schema";
 
 type Settings = OmchhSettings;
 type ChromeLike = typeof chrome;
@@ -19,9 +19,17 @@ function getChromeApi(): ChromeLike | undefined {
   return chrome;
 }
 
+function previewStorage(): Storage | undefined {
+  try {
+    return window.localStorage;
+  } catch {
+    return undefined;
+  }
+}
+
 function readPreviewBucket(key: string): Record<string, unknown> {
   try {
-    const raw = globalThis.localStorage?.getItem(key);
+    const raw = previewStorage()?.getItem(key);
     return raw ? (JSON.parse(raw) as Record<string, unknown>) : {};
   } catch {
     return {};
@@ -30,7 +38,7 @@ function readPreviewBucket(key: string): Record<string, unknown> {
 
 function writePreviewBucket(key: string, value: Record<string, unknown>): void {
   try {
-    globalThis.localStorage?.setItem(key, JSON.stringify(value));
+    previewStorage()?.setItem(key, JSON.stringify(value));
   } catch {
     // Preview storage is best-effort only.
   }
@@ -170,8 +178,18 @@ function currentSettingsFromDom(): Settings {
 
   for (const capability of POPUP_CAPABILITY_CATALOG) {
     const control = capabilityControl(String(capability.settingKey));
-    if (capability.settingKey === "reduceGlass") next.reduceGlass = asBool((control as HTMLInputElement).checked, DEFAULT_SETTINGS.reduceGlass);
-    if (capability.settingKey === "reduceMotion") next.reduceMotion = asBool((control as HTMLInputElement).checked, DEFAULT_SETTINGS.reduceMotion);
+
+    if (capability.settingKey === "reduceGlass") {
+      next.reduceGlass = asBool((control as HTMLInputElement).checked, DEFAULT_SETTINGS.reduceGlass);
+    }
+
+    if (capability.settingKey === "reduceMotion") {
+      next.reduceMotion = asBool((control as HTMLInputElement).checked, DEFAULT_SETTINGS.reduceMotion);
+    }
+
+    if (capability.settingKey === "colorScheme") {
+      next.colorScheme = asColorScheme((control as HTMLSelectElement).value);
+    }
   }
 
   return next;

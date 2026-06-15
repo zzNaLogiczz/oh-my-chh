@@ -6,6 +6,14 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"]:not([data-omchh-pa
     linear-gradient(135deg, oklch(99% 0.004 245), oklch(94% 0.022 255) 46%, oklch(98% 0.006 230));
 }
 
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"][data-omchh-scheme="dark"]:not([data-omchh-paint-ready="1"]) {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 12% 8%, color-mix(in oklch, oklch(58% 0.18 255) 24%, transparent) 0 22rem, transparent 38rem),
+    radial-gradient(circle at 86% 14%, oklch(62% 0.13 195 / 0.22) 0 24rem, transparent 42rem),
+    linear-gradient(135deg, oklch(16% 0.016 255), oklch(20% 0.024 258) 46%, oklch(13% 0.012 250));
+}
+
 @supports selector(:has(*)) {
   html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] #e_body:has(#e_switchercheck:not(:checked)) #e_textarea {
     visibility: hidden !important;
