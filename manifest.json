@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "oh-my-chh",
   "short_name": "oh-my-chh",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Enhances the Chiphell forum interface and browsing experience with customizable UI themes.",
   "permissions": [
     "storage"
