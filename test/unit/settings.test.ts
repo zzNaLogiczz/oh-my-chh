@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { DEFAULT_SETTINGS, loadSettings, onSettingsChanged } from "../../src/content/settings";
+import { DEFAULT_SETTINGS, loadSettings, onSettingsChanged } from "../../src/preferences/settings";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -39,5 +39,26 @@ describe("settings subscription", () => {
 
     expect(() => unsubscribe()).not.toThrow();
     expect(warn).not.toHaveBeenCalled();
+  });
+});
+
+describe("theme setting validation", () => {
+  it("adds color scheme as a flat default", () => {
+    expect(DEFAULT_SETTINGS.colorScheme).toBe("light");
+  });
+
+  it("keeps known theme IDs and falls back to the catalog default for unknown IDs", async () => {
+    const get = vi.fn()
+      .mockResolvedValueOnce({ themeId: "liquid-glass", density: "comfortable" })
+      .mockResolvedValueOnce({ themeId: "unknown-theme", density: "comfortable" });
+
+    vi.stubGlobal("chrome", {
+      storage: {
+        sync: { get }
+      }
+    });
+
+    await expect(loadSettings()).resolves.toMatchObject({ themeId: "liquid-glass", density: "comfortable" });
+    await expect(loadSettings()).resolves.toMatchObject({ themeId: DEFAULT_SETTINGS.themeId, density: "comfortable" });
   });
 });

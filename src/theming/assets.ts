@@ -49,12 +49,68 @@ function safeRuntimeUrl(path: string): string | null {
   }
 }
 
+type ManagedLinkState = {
+  href: string;
+  element: HTMLLinkElement;
+  finalLoadPromise: Promise<boolean>;
+};
+
+const pendingLinks = new Map<string, ManagedLinkState>();
+
+function waitForTimeout(ms: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    window.setTimeout(() => resolve(false), ms);
+  });
+}
+
+function waitForPaint(state: ManagedLinkState, opts: { blockFirstPaint?: boolean }): Promise<boolean> {
+  const timeoutMs = opts.blockFirstPaint ? ASSET_LOAD_TIMEOUT_MS : 3000;
+  return Promise.race([state.finalLoadPromise, waitForTimeout(timeoutMs)]);
+}
+
+function createPendingState(id: string, href: string, link: HTMLLinkElement): ManagedLinkState {
+  const finalLoadPromise = new Promise<boolean>((resolve) => {
+    link.onload = () => {
+      link.dataset.omchhLoaded = "1";
+      resolve(true);
+    };
+    link.onerror = () => {
+      resolve(false);
+    };
+  });
+
+  const state: ManagedLinkState = { href, element: link, finalLoadPromise };
+
+  pendingLinks.set(id, state);
+  void finalLoadPromise.finally(() => {
+    const current = pendingLinks.get(id);
+    if (current?.href === href && current.element === link) pendingLinks.delete(id);
+  });
+
+  return state;
+}
+
+function pendingStateForExistingLink(id: string, href: string, link: HTMLLinkElement): ManagedLinkState {
+  const current = pendingLinks.get(id);
+  if (current?.href === href && current.element === link) return current;
+  return createPendingState(id, href, link);
+}
+
 function swapLink(id: string, path: string, opts: { blockFirstPaint?: boolean }): Promise<boolean> {
   const href = safeRuntimeUrl(path);
   if (!href) return Promise.resolve(false);
 
+  const pending = pendingLinks.get(id);
+  if (pending?.href === href && pending.element.isConnected) return waitForPaint(pending, opts);
+
   const old = document.querySelector<HTMLLinkElement>(`link#${id}`);
-  if (old?.href === href && old.dataset.omchhLoaded === "1") return Promise.resolve(true);
+  if (old?.href === href) {
+    if (old.dataset.omchhLoaded === "1") return Promise.resolve(true);
+    return waitForPaint(pendingStateForExistingLink(id, href, old), opts);
+  }
+
+  const previousPending = pendingLinks.get(id);
+  if (previousPending && previousPending.href !== href) pendingLinks.delete(id);
 
   const link = document.createElement("link");
   link.id = id;
@@ -63,22 +119,18 @@ function swapLink(id: string, path: string, opts: { blockFirstPaint?: boolean })
   link.dataset.omchhManaged = "theme";
 
   const target = document.head ?? document.documentElement;
-  const loaded = new Promise<boolean>((resolve) => {
-    const timeoutMs = opts.blockFirstPaint ? ASSET_LOAD_TIMEOUT_MS : 3000;
-    const timer = window.setTimeout(() => resolve(false), timeoutMs);
-    link.onload = () => {
-      window.clearTimeout(timer);
-      link.dataset.omchhLoaded = "1";
-      resolve(true);
-    };
-    link.onerror = () => {
-      window.clearTimeout(timer);
-      resolve(false);
-    };
+  const state = createPendingState(id, href, link);
+
+  void state.finalLoadPromise.then((loaded) => {
+    if (loaded) {
+      old?.remove();
+      return;
+    }
+    link.remove();
   });
 
   target.append(link);
-  return loaded.finally(() => old?.remove());
+  return waitForPaint(state, opts);
 }
 
 export async function ensureThemeAssets(themeId: string, opts: { blockFirstPaint?: boolean } = {}): Promise<boolean> {

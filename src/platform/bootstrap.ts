@@ -65,28 +65,93 @@ function switchThemeIfNeeded(nextThemeId: ThemeId): Exclude<RefreshResult, "skip
   return "continue";
 }
 
-async function refresh(opts: RefreshOptions = {}): Promise<RefreshResult> {
+let refreshDrainPromise: Promise<RefreshResult> | undefined;
+let refreshQueued = false;
+let refreshSequence = 0;
+let enhancedRefreshSequence = 0;
+let queuedRefreshOptions: Required<RefreshOptions> | undefined;
+
+function normalizeRefreshOptions(opts: RefreshOptions = {}): Required<RefreshOptions> {
+  return {
+    blockFirstPaint: opts.blockFirstPaint === true,
+    enhanceDom: opts.enhanceDom !== false
+  };
+}
+
+function mergeRefreshOptions(opts: RefreshOptions = {}): void {
+  const next = normalizeRefreshOptions(opts);
+  if (!queuedRefreshOptions) {
+    queuedRefreshOptions = next;
+    return;
+  }
+
+  queuedRefreshOptions = {
+    blockFirstPaint: queuedRefreshOptions.blockFirstPaint || next.blockFirstPaint,
+    enhanceDom: queuedRefreshOptions.enhanceDom && next.enhanceDom
+  };
+}
+
+async function performRefresh(opts: RefreshOptions = {}): Promise<RefreshResult> {
   if (!settingsReady) return "skipped";
 
-  currentRoute = detectRoute();
-  const nextThemeId = getThemeMetadata(currentSettings.themeId)?.id ?? DEFAULT_THEME_ID;
+  const sequence = ++refreshSequence;
+  const settingsSnapshot = currentSettings;
+  const routeSnapshot = detectRoute();
+  currentRoute = routeSnapshot;
+
+  const nextThemeId = getThemeMetadata(settingsSnapshot.themeId)?.id ?? DEFAULT_THEME_ID;
   const switchResult = switchThemeIfNeeded(nextThemeId);
   if (switchResult === "reloading") return "reloading";
 
   await ensureThemeAssets(nextThemeId, opts);
-  applyThemeRoot(currentSettings, currentRoute);
+  if (sequence !== refreshSequence && opts.enhanceDom === false) return "continue";
+
+  applyThemeRoot(settingsSnapshot, routeSnapshot);
   activeThemeId = nextThemeId;
 
   if (opts.enhanceDom === false) return "continue";
 
   if (document.body) {
-    const context: AdapterContext = { route: currentRoute, settings: currentSettings, root: document };
-    runSharedAdapters(currentRoute, currentSettings, document, trackSelector);
+    const context: AdapterContext = { route: routeSnapshot, settings: settingsSnapshot, root: document };
+    runSharedAdapters(routeSnapshot, settingsSnapshot, document, trackSelector);
     getTheme(nextThemeId)?.enhance(context, scope);
-    scheduleHealthSave(currentRoute);
+    scheduleHealthSave(routeSnapshot);
+    enhancedRefreshSequence = sequence;
   }
 
   return "continue";
+}
+
+async function drainRefreshQueue(): Promise<RefreshResult> {
+  let result: RefreshResult = "skipped";
+
+  while (queuedRefreshOptions) {
+    const opts = queuedRefreshOptions;
+    queuedRefreshOptions = undefined;
+    refreshQueued = false;
+
+    result = await performRefresh(opts);
+    if (result === "reloading") return result;
+
+    if (refreshQueued && !queuedRefreshOptions) mergeRefreshOptions();
+  }
+
+  return result;
+}
+
+function requestRefresh(opts: RefreshOptions = {}): Promise<RefreshResult> {
+  mergeRefreshOptions(opts);
+
+  if (refreshDrainPromise) {
+    refreshQueued = true;
+    return refreshDrainPromise;
+  }
+
+  refreshDrainPromise = drainRefreshQueue().finally(() => {
+    refreshDrainPromise = undefined;
+  });
+
+  return refreshDrainPromise;
 }
 
 async function initialize(): Promise<void> {
@@ -98,14 +163,14 @@ async function initialize(): Promise<void> {
   initialized = true;
 
   const scheduler = createObserverScheduler(() => {
-    void refresh().catch((error: unknown) => {
+    void requestRefresh().catch((error: unknown) => {
       warnForUnexpectedExtensionError("[oh-my-chh] Failed during scheduled content script refresh.", error);
     });
   });
 
   currentSettings = await loadSettings();
   settingsReady = true;
-  const earlyThemeReady = refresh({ blockFirstPaint: true, enhanceDom: false }).catch((error: unknown) => {
+  const earlyThemeReady = requestRefresh({ blockFirstPaint: true, enhanceDom: false }).catch((error: unknown) => {
     warnForUnexpectedExtensionError("[oh-my-chh] Failed during early theme asset preparation.", error);
     return "skipped" as const;
   });
@@ -118,7 +183,9 @@ async function initialize(): Promise<void> {
         shouldReleasePaint = false;
         return;
       }
-      const refreshResult = await refresh({ blockFirstPaint: true });
+      const refreshResult = enhancedRefreshSequence === refreshSequence
+        ? earlyResult
+        : await requestRefresh({ blockFirstPaint: true });
       if (refreshResult === "reloading") shouldReleasePaint = false;
     } finally {
       if (shouldReleasePaint) {
@@ -130,7 +197,7 @@ async function initialize(): Promise<void> {
 
   onSettingsChanged((settings) => {
     currentSettings = settings;
-    void refresh().then((result) => {
+    void requestRefresh().then((result) => {
       if (result !== "reloading") scheduler.requestRun();
     }).catch((error: unknown) => {
       warnForUnexpectedExtensionError("[oh-my-chh] Failed to apply updated settings.", error);

@@ -1,6 +1,15 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { runAdapters } from "../../src/content/adapters";
-import { DEFAULT_SETTINGS } from "../../src/content/settings";
+import { runAdapters } from "../../src/foundation/semantics";
+import { EnhancementScope } from "../../src/platform/enhancement-scope";
+import { DEFAULT_SETTINGS } from "../../src/preferences/settings";
+import { liquidGlassTheme } from "../../src/theming/themes/liquid-glass/adapter";
+
+
+function runLiquidGlassAdapters(route: Parameters<typeof runAdapters>[0]): void {
+  const settings = { ...DEFAULT_SETTINGS, themeId: "liquid-glass" as const };
+  runAdapters(route, settings);
+  liquidGlassTheme.enhance({ root: document, route, settings }, new EnhancementScope());
+}
 
 afterEach(() => {
   document.body.innerHTML = "";
@@ -268,16 +277,9 @@ describe("content adapters", () => {
     expect(greaterDemonRank?.dataset.omchhRankFamily).toBe("demon");
     expect(greaterDemonRank?.dataset.omchhRankTier).toBe("13");
     expect(greaterDemonRank?.dataset.omchhRankEffect).toBe("2");
-    expect(greaterDemonRank?.dataset.omchhRankBadge).toBe("heraldic");
-    const greaterDemonBadge = greaterDemonRank?.querySelector<HTMLElement>(".omchh-rank-badge");
-    expect(greaterDemonBadge?.classList.contains("t-greater")).toBe(true);
-    expect(greaterDemonBadge?.classList.contains("t-overlord")).toBe(true);
-    expect(greaterDemonBadge?.classList.contains("elite")).toBe(true);
-    expect(greaterDemonBadge?.classList.contains("fx-orbit")).toBe(false);
-    expect(greaterDemonBadge?.querySelector(".eseal svg")).not.toBeNull();
-    expect(greaterDemonBadge?.querySelector(".e-flame")).not.toBeNull();
-    expect(greaterDemonBadge?.querySelectorAll(".ember")).toHaveLength(3);
-    expect(greaterDemonBadge?.querySelector(".bname")?.textContent).toBe("大恶魔");
+    expect(greaterDemonRank?.dataset.omchhRankBadge).toBeUndefined();
+    expect(greaterDemonRank?.querySelector(".omchh-rank-badge")).toBeNull();
+    expect(greaterDemonRank?.textContent?.replace(/\s+/g, " ").trim()).toBe("大恶魔");
     expect(greaterDemonCard?.dataset.omchhRank).toBe("greater-demon");
     expect(greaterDemonAvatarShell?.dataset.omchhRank).toBe("greater-demon");
 
@@ -327,11 +329,8 @@ describe("content adapters", () => {
     expect(originalRankNode?.dataset.omchhRankFamily).toBe("admin");
     expect(originalRankNode?.dataset.omchhRankTier).toBe("90");
     expect(originalRankNode?.dataset.omchhRankEffect).toBe("3");
-    expect(originalRankNode?.dataset.omchhRankBadge).toBe("heraldic");
-    const adminBadge = originalRankNode?.querySelector<HTMLElement>(".omchh-rank-badge");
-    expect(adminBadge?.classList.contains("t-envoy")).toBe(true);
-    expect(adminBadge?.querySelector(".aurora")).not.toBeNull();
-    expect(adminBadge?.querySelector(".bname")?.textContent).toBe("圣魔使-迪亚波罗");
+    expect(originalRankNode?.dataset.omchhRankBadge).toBeUndefined();
+    expect(originalRankNode?.querySelector(".omchh-rank-badge")).toBeNull();
     expect(authorCard?.dataset.omchhRankFamily).toBe("admin");
     expect(authorCell?.dataset.omchhRank).toBe("diablo");
     expect(avatarShell?.dataset.omchhRankEffect).toBe("3");
@@ -339,9 +338,9 @@ describe("content adapters", () => {
 
   it("matches the complete saint-demon group labels from the admin menu", () => {
     const cases = [
-      { label: '圣魔王- "傻蛋"', rank: "saint-demon-king", tier: "99", badgeClass: "t-king" },
-      { label: "圣魔灵-路西法", rank: "lucifer", tier: "95", badgeClass: "t-spirit" },
-      { label: "圣魔使-迪亚波罗", rank: "diablo", tier: "90", badgeClass: "t-envoy" }
+      { label: '圣魔王- "傻蛋"', rank: "saint-demon-king", tier: "99" },
+      { label: "圣魔灵-路西法", rank: "lucifer", tier: "95" },
+      { label: "圣魔使-迪亚波罗", rank: "diablo", tier: "90" }
     ];
 
     document.body.innerHTML = `
@@ -373,16 +372,13 @@ describe("content adapters", () => {
 
     cases.forEach((item, index) => {
       const rankNode = document.querySelector<HTMLElement>(`#favatarAdmin${index + 1} > p:not(.xg1):not(.md_ctrl)`);
-      const badge = rankNode?.querySelector<HTMLElement>(".omchh-rank-badge");
       expect(rankNode?.dataset.omchhRank).toBe(item.rank);
       expect(rankNode?.dataset.omchhRankFamily).toBe("admin");
       expect(rankNode?.dataset.omchhRankTier).toBe(item.tier);
       expect(rankNode?.dataset.omchhRankEffect).toBe("3");
-      expect(rankNode?.dataset.omchhRankBadge).toBe("heraldic");
-      expect(rankNode?.getAttribute("aria-label")).toBe(item.label);
+      expect(rankNode?.dataset.omchhRankBadge).toBeUndefined();
+      expect(rankNode?.querySelector(".omchh-rank-badge")).toBeNull();
       expect(rankNode?.textContent?.trim()).toBe(item.label);
-      expect(badge?.classList.contains(item.badgeClass)).toBe(true);
-      expect(badge?.querySelector(".bname")?.textContent).toBe(item.label);
     });
   });
 
@@ -413,13 +409,11 @@ describe("content adapters", () => {
     runAdapters("thread-detail", DEFAULT_SETTINGS);
 
     const rankNode = document.querySelector<HTMLElement>("#favatarMerchant > p:not(.xg1):not(.md_ctrl)");
-    const badge = rankNode?.querySelector<HTMLElement>(".omchh-rank-badge");
     expect(rankNode?.dataset.omchhRank).toBe("other");
     expect(rankNode?.dataset.omchhRankFamily).toBe("other");
-    expect(rankNode?.dataset.omchhRankBadge).toBe("heraldic");
+    expect(rankNode?.dataset.omchhRankBadge).toBeUndefined();
+    expect(rankNode?.querySelector(".omchh-rank-badge")).toBeNull();
     expect(rankNode?.textContent?.trim()).toBe("认证商家");
-    expect(badge?.classList.contains("t-other")).toBe(true);
-    expect(badge?.querySelector(".bname")?.textContent).toBe("认证商家");
   });
 
   it("adds semantic hooks for the new-thread compose editor without rebuilding Discuz controls", () => {
@@ -799,8 +793,8 @@ describe("content adapters", () => {
     const fjumpMenu = document.querySelector("#fjump_menu") as HTMLElement;
     const searchForm = document.querySelector("#scbar_form") as HTMLFormElement;
 
-    runAdapters("forum-index", { ...DEFAULT_SETTINGS, themeId: "liquid-glass" });
-    runAdapters("forum-index", { ...DEFAULT_SETTINGS, themeId: "liquid-glass" });
+    runLiquidGlassAdapters("forum-index");
+    runLiquidGlassAdapters("forum-index");
 
     expect(document.querySelectorAll("#chh-lg-header")).toHaveLength(1);
     expect(document.querySelector("#chh-lg-header #nv")).toBeTruthy();
@@ -847,8 +841,8 @@ describe("content adapters", () => {
     const qmenu = document.querySelector("#qmenu") as HTMLAnchorElement;
     const searchForm = document.querySelector("#scbar_form") as HTMLFormElement;
 
-    runAdapters("portal-home", { ...DEFAULT_SETTINGS, themeId: "liquid-glass" });
-    runAdapters("portal-home", { ...DEFAULT_SETTINGS, themeId: "liquid-glass" });
+    runLiquidGlassAdapters("portal-home");
+    runLiquidGlassAdapters("portal-home");
 
     expect(document.querySelectorAll("#chh-lg-header")).toHaveLength(1);
     expect(document.querySelector("#chh-lg-header #nv")).toBe(nav);
@@ -877,7 +871,7 @@ describe("content adapters", () => {
 
     const communityLink = document.querySelector<HTMLAnchorElement>("#mn_forum_2 > a");
 
-    runAdapters("forum-index", { ...DEFAULT_SETTINGS, themeId: "liquid-glass" });
+    runLiquidGlassAdapters("forum-index");
 
     expect(communityLink).toBeTruthy();
     expect(communityLink?.textContent?.replace(/\s+/g, " ").trim()).toBe("社区");
@@ -904,7 +898,7 @@ describe("content adapters", () => {
       <div id="wp"><div id="ct"></div></div>
     `;
 
-    runAdapters("portal-home", { ...DEFAULT_SETTINGS, themeId: "liquid-glass" });
+    runLiquidGlassAdapters("portal-home");
 
     expect(document.querySelector("#mn_P2")?.classList.contains("a")).toBe(true);
     expect(document.querySelector("#mn_P2")?.getAttribute("data-chh-lg-active")).toBe("true");
@@ -947,7 +941,7 @@ describe("content adapters", () => {
 
     runAdapters("portal-home", DEFAULT_SETTINGS);
 
-    expect(document.querySelector("#portal_block_672 .swiper-slide")?.getAttribute("data-chh-lg-title")).toBe("完整标题");
+    expect(document.querySelector("#portal_block_672 .swiper-slide")?.getAttribute("data-chh-lg-title")).toBeNull();
   });
 
   it("adds stable semantic hooks for portal-home latest article cards", () => {
@@ -1092,7 +1086,7 @@ describe("liquid glass sample parity hooks", () => {
       <div id="scrolltop" style="left: 100px"><span><a class="scrolltopa"><b>返回顶部</b></a></span></div>
     `;
 
-    runAdapters("forum-index", { ...DEFAULT_SETTINGS, themeId: "liquid-glass" });
+    runLiquidGlassAdapters("forum-index");
 
     expect(document.documentElement.classList.contains("chh-liquid-glass")).toBe(true);
     expect(document.body.classList.contains("chh-liquid-glass")).toBe(true);

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { scheduleHealthSave, trackSelector } from "../../src/content/health";
+import { scheduleHealthSave, trackSelector } from "../../src/platform/health";
 
 afterEach(() => {
   vi.useRealTimers();

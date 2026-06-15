@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { detectRoute } from "../../src/content/router";
+import { detectRoute } from "../../src/foundation/route";
 
 function setPage(url: string, bodyId = "", bodyClass = ""): void {
   window.history.replaceState({}, "", url);

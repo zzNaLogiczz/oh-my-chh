@@ -487,3 +487,12 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-gl
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
 }
+
+/* Phase A root-controlled reduced motion for rank effects. */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"][data-omchh-motion="reduce"] .omchh-rank-badge,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"][data-omchh-motion="reduce"] .omchh-rank-badge *,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"][data-omchh-motion="reduce"] .omchh-rank-badge *::before,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"][data-omchh-motion="reduce"] .omchh-rank-badge *::after {
+  animation: none !important;
+  transition: none !important;
+}

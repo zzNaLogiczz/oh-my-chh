@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const readLiquidGlassRoutesCss = () =>
-  readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+  readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
 
 const getCssBlock = (css: string, selector: string, occurrence = 0) => {
   let searchFrom = 0;
@@ -40,8 +40,8 @@ const expectSmoothAmbientBackground = (css: string, themeSelector: string, rootO
 
 describe("liquid-glass theme CSS", () => {
   it("centers rank badge labels in the text lane and uses solid saint-demon gold", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/rank-badges.css"), "utf8");
-    const routesCss = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/rank-badges.css"), "utf8");
+    const routesCss = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const labelRuleStart = css.indexOf(".omchh-post-author-rank[data-omchh-rank-badge=\"heraldic\"] > .omchh-rank-badge .bname");
     const adminGoldRuleStart = css.indexOf(".omchh-rank-badge.t-envoy .bname");
     const labelRule = css.slice(labelRuleStart, css.indexOf("\n}", labelRuleStart));
@@ -60,24 +60,24 @@ describe("liquid-glass theme CSS", () => {
     expect(adminGoldRule).not.toMatch(/(?:linear|radial)-gradient|background-clip|-webkit-background-clip|-webkit-text-fill-color:\s*transparent/i);
   });
 
-  it("keeps liquid-glass as the only shipped site theme", () => {
-    const themes = readdirSync(join(process.cwd(), "src/themes"), { withFileTypes: true })
+  it("keeps the shipped site theme list aligned with the catalog", () => {
+    const themes = readdirSync(join(process.cwd(), "src/theming/themes"), { withFileTypes: true })
       .filter((entry) => entry.isDirectory() && !entry.name.startsWith("_"))
       .map((entry) => entry.name)
       .sort();
 
-    expect(themes).toEqual(["liquid-glass"]);
-    expect(existsSync(join(process.cwd(), "src/themes/aurora"))).toBe(false);
-    expect(existsSync(join(process.cwd(), "src/themes/blank"))).toBe(false);
+    expect(themes).toEqual(["flat-clean", "liquid-glass"]);
+    expect(existsSync(join(process.cwd(), "src/theming/themes/aurora"))).toBe(false);
+    expect(existsSync(join(process.cwd(), "src/theming/themes/blank"))).toBe(false);
   });
 
   it("ships all required liquid-glass theme assets", () => {
     const files = [
-      "src/themes/liquid-glass/index.css",
-      "src/themes/liquid-glass/tokens.css",
-      "src/themes/liquid-glass/routes.css",
-      "src/themes/liquid-glass/theme.json",
-      "src/themes/liquid-glass/preview.html"
+      "src/theming/themes/liquid-glass/index.css",
+      "src/theming/themes/liquid-glass/tokens.css",
+      "src/theming/themes/liquid-glass/routes.css",
+      "src/theming/themes/liquid-glass/theme.json",
+      "src/theming/themes/liquid-glass/preview.html"
     ];
 
     for (const file of files) {
@@ -94,7 +94,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("scopes route styling to the liquid-glass theme", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const declarations = Array.from(css.matchAll(/\{([^}]*)\}/g), (match) => match[1]).join("\n");
 
     expect(css).toContain('html[data-omchh-enabled=\"1\"][data-omchh-theme=\"liquid-glass\"]');
@@ -103,7 +103,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("styles the liquid-glass header shell and preserved quick menu layer", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
 
     expect(css).toContain("#chh-lg-header");
     expect(css).toContain(".chh-lg-header-glass");
@@ -111,7 +111,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("allows the shared heraldic user group badge to render inside the header account panel", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/rank-badges.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/rank-badges.css"), "utf8");
 
     expect(css).toContain("header account user-group heraldic badge");
     expect(css).toContain("#chh-lg-header #g_upmine.omchh-rank-host[data-omchh-rank-badge=\"heraldic\"]");
@@ -122,7 +122,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("resets Discuz nav positioning inside the liquid-glass header", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
 
     expect(css).toMatch(/#chh-lg-header #nv_ph[\s\S]*float:\s*none\s*!important;[\s\S]*position:\s*static\s*!important;[\s\S]*width:\s*100%\s*!important;/);
     expect(css).toMatch(/#chh-lg-header #nv[\s\S]*float:\s*none\s*!important;[\s\S]*position:\s*relative\s*!important;[\s\S]*left:\s*auto\s*!important;[\s\S]*right:\s*auto\s*!important;/);
@@ -166,7 +166,7 @@ describe("liquid-glass theme CSS", () => {
 
 
   it("ports the sample forum-home final pass", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
 
     expect(css).toContain("Sample parity: final forum index glass grid");
     expect(css).toContain("html[data-omchh-enabled=\"1\"][data-omchh-theme=\"liquid-glass\"] body.chh-liquid-glass #ct table.fl_tb > tbody > tr");
@@ -175,7 +175,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("maps the Discuz quick rail actions to distinct semantic icons", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const quickRailStart = css.lastIndexOf("quick-rail semantic action icons");
     const quickRail = css.slice(quickRailStart);
 
@@ -193,7 +193,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("ports the sample portal-home promo band", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
 
     expect(css).toContain("Sample parity: portal-home promo band");
     expect(css).toContain("body.chh-liquid-glass #frame84eS1v");
@@ -205,7 +205,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("styles portal-home top news rows and image titles from screenshot references", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
 
     expect(css).toContain("portal-home screenshot refresh: compact news rows and image-title pills");
     expect(css).toContain("body.chh-liquid-glass #portal_block_673 .acon li a");
@@ -232,7 +232,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("aligns portal-home hero band to the page width and keeps the hot card at native banner geometry", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const hero = css.slice(css.indexOf("portal-home hero alignment v8"));
 
     expect(hero).toContain("portal-home hero alignment v8: page-width parity and native hot-banner geometry");
@@ -254,7 +254,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("restyles the portal-home hot carousel with the culture-card glass treatment", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const hotRestyle = css.slice(css.indexOf("portal-home hot carousel v9"));
 
     expect(hotRestyle).toContain("portal-home hot carousel v9: culture-card glass treatment without dimension cloning");
@@ -299,7 +299,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("styles the portal-home CHH review room as a liquid-glass card grid", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
 
     expect(css).toContain("portal-home review cards: CHH评测室 liquid-glass grid");
     expect(css).toContain("body.chh-liquid-glass .chip_index_cps");
@@ -312,7 +312,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("refactors portal-home latest articles into the semantic liquid-glass card stream", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
 
     expect(css).toContain("portal-home latest articles v2: semantic Liquid Glass card stream");
     expect(css).toContain("body.chh-liquid-glass .omchh-portal-latest");
@@ -335,7 +335,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("keeps portal-home latest selections and category chips neutral and unclipped", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
 
     expect(css).toContain("portal-home latest articles v4: neutral selection and unclipped category chips");
     expect(css).toMatch(/\.omchh-portal-latest-filters a\.a,[\s\S]*\.omchh-portal-latest-filters a:hover\s*\{[\s\S]*border-color:\s*transparent\s*!important;/);
@@ -346,7 +346,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("keeps portal-home card images clipped and review media beds light", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const v5 = css.slice(css.indexOf("portal-home card media v5: restore image clipping and bright media beds"));
 
     expect(v5).toContain("portal-home card media v5: restore image clipping and bright media beds");
@@ -357,7 +357,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("wraps forumdisplay subforums with a collapsible glass shell and centered icon media", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const subforum = css.slice(css.indexOf("forumdisplay subforum v2: wrapped collapsible glass section"));
 
     expect(subforum).toContain("forumdisplay subforum v2: wrapped collapsible glass section");
@@ -371,7 +371,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("crops review thumbnails slightly so dark source edges do not read as borders", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const v6 = css.slice(css.indexOf("portal-home review media v6: edge-bleed crop"));
 
     expect(v6).toContain("portal-home review media v6: edge-bleed crop");
@@ -380,7 +380,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("locks portal media boxes to the original 390x164 crop so thumbnails do not drift", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const v7 = css.slice(css.indexOf("portal-home media v7: stable thumbnail geometry"));
 
     expect(v7).toContain("portal-home media v7: stable thumbnail geometry");
@@ -390,7 +390,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("refactors portal category list content into semantic liquid-glass article stream", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const listLayer = css.slice(css.indexOf("portal-list content area: semantic Liquid Glass article stream"));
 
     expect(listLayer).toContain("portal-list content area: semantic Liquid Glass article stream");
@@ -422,7 +422,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("refines portal-list pagination jump input and keeps hover fills neutral", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const listPolish = css.slice(css.indexOf("portal-list controls v2: glass pagination input and neutral hovers"));
 
     expect(listPolish).toContain("portal-list controls v2: glass pagination input and neutral hovers");
@@ -441,7 +441,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("styles portal-home culture and topic carousels as liquid-glass paired cards", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
 
     expect(css).toContain("portal-home culture/topic carousel cards: 文化 + 专题 liquid-glass pair");
     expect(css).toContain("body.chh-liquid-glass .chiphell_box:has(> .chip_index_wh):has(> .chip_index_zt)");
@@ -455,7 +455,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("keeps portal-home carousel controls centered and removes legacy red fills", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
 
     expect(css).toContain("portal-home culture/topic optimization: centered arrows, no red fills, text-fit captions");
     expect(css).toMatch(/#newWenhuaSwiper \.swiper-button \.button-fonts[\s\S]*align-items:\s*center\s*!important;[\s\S]*justify-content:\s*center\s*!important;/);
@@ -467,7 +467,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("keeps portal-home section title pills borderless and captions clear of carousel dots", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const ruleBody = (selectorFragment: string, fromEnd = false) => {
       const index = fromEnd ? css.lastIndexOf(selectorFragment) : css.indexOf(selectorFragment);
       expect(index).toBeGreaterThan(-1);
@@ -490,7 +490,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("keeps the exact Open Design index sample layer last", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
 
     expect(css).toContain("Exact case parity layer from index.html");
     expect(css).toContain('Source: <style id="chiphell-liquid-glass-style">');
@@ -498,7 +498,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("covers cross-route liquid-glass surfaces", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
 
     expect(css).toContain(".omchh-thread-list");
     expect(css).toContain("thread-list archive/forumdisplay visual refresh");
@@ -517,7 +517,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("redesigns thread detail posts and replies as focused liquid-glass reading cards", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const threadDetail = css.slice(css.indexOf("thread-detail v2: post reading cards and reply composer"));
 
     expect(threadDetail).toContain("thread-detail v2: post reading cards and reply composer");
@@ -540,7 +540,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("upgrades thread floor posts with a clear author rail, scrollable medals, and non-red floor marker", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const floorLayer = css.slice(css.indexOf("thread-detail post floors v3: author rail and cool liquid-glass floor marker"));
     const floorStart = floorLayer.indexOf(".omchh-post-floor");
     const floorEnd = floorLayer.indexOf(".omchh-post-floor em", floorStart);
@@ -582,7 +582,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("defines a tiered rank identity system for user and management groups", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const rankLayer = css.slice(css.indexOf("thread-detail rank identity system: tiered badges, avatar frames, and admin auras"));
 
     expect(rankLayer).toContain("thread-detail rank identity system: tiered badges, avatar frames, and admin auras");
@@ -626,7 +626,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("keeps heraldic rank badges uniformly wider and gives saint-demon labels solid gold", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/rank-badges.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/rank-badges.css"), "utf8");
     const badgeLayer = css.slice(css.indexOf("Heraldic rank badge integration"));
     const shellLayer = badgeLayer.slice(badgeLayer.indexOf("/* ---- badge shell ---- */"));
     const shellBlock = shellLayer.match(/\.omchh-rank-badge\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
@@ -653,7 +653,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("skins greater-demon as the elite overlord seal without changing badge dimensions", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/rank-badges.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/rank-badges.css"), "utf8");
     const badgeLayer = css.slice(css.indexOf("Heraldic rank badge integration"));
     const shellLayer = badgeLayer.slice(badgeLayer.indexOf("/* ---- badge shell ---- */"));
     const shellBlock = shellLayer.match(/\.omchh-rank-badge\s*\{[\s\S]*?\n\}/)?.[0] ?? "";
@@ -680,7 +680,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("reconstructs the post composer as an editorial liquid-glass workspace", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const compose = css.slice(css.indexOf("compose new-thread v2: full editorial composer reconstruction"));
 
     expect(compose).toContain("compose new-thread v2: full editorial composer reconstruction");
@@ -719,7 +719,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("skins Discuz reply popup windows with liquid-glass modal chrome", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const compose = css.slice(css.indexOf("compose new-thread v2: full editorial composer reconstruction"));
 
     expect(compose).toContain("compose v8: liquid-glass reply popup chrome");
@@ -733,7 +733,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("removes legacy Discuz fwin table frame edges from reply popups", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const compose = css.slice(css.indexOf("compose new-thread v2: full editorial composer reconstruction"));
 
     expect(compose).toContain("compose v9: remove legacy Discuz popup frame edges");
@@ -742,7 +742,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("releases Discuz fullscreen editor from glass-shell clipping contexts", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const compose = css.slice(css.indexOf("compose new-thread v2: full editorial composer reconstruction"));
 
     expect(compose).toContain("compose v6: release fullscreen from glass clipping contexts");
@@ -752,7 +752,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("applies fullscreen rules immediately from Discuz inline fixed styles", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const compose = css.slice(css.indexOf("compose new-thread v2: full editorial composer reconstruction"));
 
     expect(compose).toContain("compose v7: immediate native fullscreen before observer sync");
@@ -763,7 +763,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("hides page chrome and floating rails during compose fullscreen", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const compose = css.slice(css.indexOf("compose new-thread v2: full editorial composer reconstruction"));
 
     expect(compose).toContain("compose v8: hide page chrome during fullscreen editing");
@@ -772,7 +772,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("covers fullscreen editor leftovers with an editor-only matte layer", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const compose = css.slice(css.indexOf("compose new-thread v2: full editorial composer reconstruction"));
 
     expect(compose).toContain("compose v9: editor matte covers fullscreen leftovers");
@@ -784,7 +784,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("leaves Discuz compose editor visibility controls to the original scripts", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const compose = css.slice(css.indexOf("compose new-thread v2: full editorial composer reconstruction"));
     const rulesFor = (selector: string) =>
       Array.from(compose.matchAll(/([^{}]+)\{([^{}]*)\}/g))
@@ -802,7 +802,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("keeps forumdisplay subforum table overrides after forum-index grid rules", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
 
     const threadListRefresh = css.lastIndexOf("thread-list archive/forumdisplay visual refresh");
     const forumIndexGrid = css.lastIndexOf("table.fl_tb > tbody > tr > td:not(.fl_g)");
@@ -817,7 +817,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("aligns forumdisplay filters and column labels with thread row columns", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const toolbar = css.slice(css.indexOf("thread-list toolbar v2: hidden top pager and aligned filters"));
     const toolbarV3 = css.slice(css.indexOf("thread-list toolbar v3: popover spacing and exact column rails"));
 
@@ -840,7 +840,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("turns the forumdisplay more filter menu into a grouped glass picker", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const moreMenu = css.slice(css.indexOf("thread-list toolbar v4: grouped more filter popover"));
 
     expect(moreMenu).toContain("thread-list toolbar v4: grouped more filter popover");
@@ -853,7 +853,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("wraps pinned forumdisplay threads in a collapsible sticky-topic card layer", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const stickyCard = css.slice(css.indexOf("thread-list sticky card v5: collapsible pinned posts shell"));
 
     expect(stickyCard).toContain("thread-list sticky card v5: collapsible pinned posts shell");
@@ -870,7 +870,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("hides sticky-thread hide controls and keeps preview hover neutral", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const stickyCard = css.slice(css.indexOf("thread-list sticky card v5: collapsible pinned posts shell"));
 
     expect(stickyCard).toMatch(/\.omchh-thread-title \.closeprev\s*\{[\s\S]*display:\s*none\s*!important;/);
@@ -880,7 +880,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("keeps ajax thread previews as compact full-width preview rows", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const stickyCard = css.slice(css.indexOf("thread-list sticky card v5: collapsible pinned posts shell"));
 
     expect(css).toMatch(/body \.omchh-thread-row > tr:not\(\.threadpre\)\s*\{[\s\S]*display:\s*grid\s*!important;/);
@@ -892,7 +892,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("redesigns forumdisplay pagination as a neutral glass control bar with right-aligned actions", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const controls = css.slice(css.indexOf("thread-list pagination and quick-post v6: neutral glass controls"));
 
     expect(controls).toContain("thread-list pagination and quick-post v6: neutral glass controls");
@@ -911,7 +911,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("redesigns forumdisplay quick post as a focused liquid-glass composer", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const controls = css.slice(css.indexOf("thread-list pagination and quick-post v6: neutral glass controls"));
 
     expect(controls).toMatch(/\.omchh-quick-reply\s*\{[\s\S]*border-radius:\s*var\(--chh-lg-radius-xl\)\s*!important;[\s\S]*background:[\s\S]*radial-gradient\(circle at 100% 0,\s*color-mix\(in oklch,\s*var\(--accent\) 12%,\s*transparent\)/);
@@ -928,7 +928,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("keeps forumdisplay posting actions neutral and removes quick-post helper chrome", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const quickPost = css.slice(css.indexOf("thread-list quick-post v7: editorial liquid-glass composer redesign"));
     const controls = css.slice(css.indexOf("thread-list pagination and quick-post v6: neutral glass controls"));
 
@@ -948,7 +948,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("preserves the native quick-post editor toolbar icons", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const quickPost = css.slice(css.indexOf("thread-list quick-post v7: editorial liquid-glass composer redesign"));
 
     expect(quickPost).toMatch(/\.omchh-quick-reply \.tedt \.bar \.fpd\s*\{[\s\S]*display:\s*flex\s*!important;[\s\S]*flex-wrap:\s*wrap\s*!important;/);
@@ -960,7 +960,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("keeps thread-detail actions split and the title heading horizontal", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const threadDetail = css.slice(css.indexOf("thread-detail v2: post reading cards and reply composer"));
     const toolbarButtonReset = threadDetail.indexOf(
       ".omchh-thread-reply-action,\nhtml[data-omchh-enabled=\"1\"][data-omchh-theme=\"liquid-glass\"] body.chh-liquid-glass #ct.omchh-thread-detail .pgsbtn"
@@ -979,7 +979,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("aligns thread-detail view and reply counters without colored badge fills", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const threadDetail = css.slice(css.indexOf("thread-detail v2: post reading cards and reply composer"));
     const statStart = threadDetail.indexOf(".omchh-thread-stat-stack");
     const statEnd = threadDetail.indexOf(".omchh-thread-heading", statStart);
@@ -995,7 +995,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("refreshes thread-detail pagination and quick reply to match the forumdisplay composer", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const detailPolish = css.slice(css.indexOf("thread-detail pagination and quick-reply v4: forumdisplay composer parity"));
 
     expect(detailPolish).toContain("thread-detail pagination and quick-reply v4: forumdisplay composer parity");
@@ -1015,7 +1015,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("refreshes forumdisplay quick post into an editorial composer with disabled-state affordances", () => {
-    const css = readFileSync(join(process.cwd(), "src/themes/liquid-glass/routes.css"), "utf8");
+    const css = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/routes.css"), "utf8");
     const quickPost = css.slice(css.indexOf("thread-list quick-post v7: editorial liquid-glass composer redesign"));
 
     expect(quickPost).toContain("thread-list quick-post v7: editorial liquid-glass composer redesign");
@@ -1041,7 +1041,7 @@ describe("liquid-glass theme CSS", () => {
   });
 
   it("declares every detected route in liquid-glass metadata", () => {
-    const theme = JSON.parse(readFileSync(join(process.cwd(), "src/themes/liquid-glass/theme.json"), "utf8"));
+    const theme = JSON.parse(readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/theme.json"), "utf8"));
 
     expect(theme.routes).toEqual([
       "portal-home",
@@ -1057,10 +1057,17 @@ describe("liquid-glass theme CSS", () => {
     ]);
   });
 
-  it("keeps content preflight limited to the rich-editor bootstrap guard", () => {
-    const preflightCss = readFileSync(join(process.cwd(), "src/content/preflight.css"), "utf8").trim();
+  it("keeps content preflight limited to the shared first-paint guard", () => {
+    const preflightCss = readFileSync(join(process.cwd(), "src/platform/preflight.css"), "utf8").trim();
 
-    expect(preflightCss).toContain("Hide Discuz rich-editor textarea during the iframe bootstrap window");
+    expect(preflightCss).toContain('html:not([data-omchh-paint-ready="1"]) body');
+    expect(preflightCss).toContain('html[data-omchh-paint-ready="1"] body');
+    expect(preflightCss).not.toMatch(/#e_body:has\(#e_switchercheck:not\(:checked\)\) #e_textarea/);
+  });
+
+  it("keeps Liquid Glass rich-editor bootstrap guard in theme preflight", () => {
+    const preflightCss = readFileSync(join(process.cwd(), "src/theming/themes/liquid-glass/preflight.css"), "utf8").trim();
+
     expect(preflightCss).toMatch(/@supports selector\(:has\(\*\)\)/);
     expect(preflightCss).toMatch(/#e_body:has\(#e_switchercheck:not\(:checked\)\) #e_textarea\s*\{[\s\S]*visibility:\s*hidden\s*!important;/);
   });

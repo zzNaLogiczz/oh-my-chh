@@ -1,11 +1,14 @@
 import { CAPABILITY_CATALOG } from "../../capabilities/catalog";
 import { THEME_CATALOG } from "../../theming/catalog";
-import { DEFAULT_SETTINGS, SETTINGS_KEYS, asBool, asColorScheme, asDensity, asThemeId, normalizeSettings, type OmchhSettings } from "../schema";
+import { DEFAULT_SETTINGS, SETTINGS_KEYS, asBool, asThemeId, normalizeSettings, type OmchhSettings } from "../schema";
 
 type Settings = OmchhSettings;
 type ChromeLike = typeof chrome;
 const PREVIEW_SYNC_KEY = "omchh:preview:sync";
 const PREVIEW_LOCAL_KEY = "omchh:preview:local";
+
+const HIDDEN_POPUP_CAPABILITY_KEYS = new Set(["density", "colorScheme"]);
+const POPUP_CAPABILITY_CATALOG = CAPABILITY_CATALOG.filter((capability) => !HIDDEN_POPUP_CAPABILITY_KEYS.has(String(capability.settingKey)));
 
 const chromeApi = getChromeApi();
 
@@ -78,7 +81,6 @@ const editableControls: Array<HTMLSelectElement | HTMLInputElement> = [controls.
 
 let currentSettings: Settings = DEFAULT_SETTINGS;
 
-
 function renderThemeOptions(): void {
   controls.themeId.replaceChildren(
     ...THEME_CATALOG.map((theme) => {
@@ -95,7 +97,7 @@ function controlId(settingKey: string): string {
 }
 
 function renderCapabilityControls(): void {
-  const rows = CAPABILITY_CATALOG.map((capability) => {
+  const rows = POPUP_CAPABILITY_CATALOG.map((capability) => {
     const label = document.createElement("label");
     label.className = "field-row capability-row";
     label.htmlFor = controlId(capability.settingKey);
@@ -149,7 +151,7 @@ function capabilityControl(settingKey: string): HTMLSelectElement | HTMLInputEle
 function renderSettings(settings: Settings): void {
   currentSettings = settings;
   controls.themeId.value = settings.themeId;
-  for (const capability of CAPABILITY_CATALOG) {
+  for (const capability of POPUP_CAPABILITY_CATALOG) {
     const control = capabilityControl(String(capability.settingKey));
     const value = settings[capability.settingKey];
     if (control instanceof HTMLInputElement && control.type === "checkbox") {
@@ -166,10 +168,8 @@ function currentSettingsFromDom(): Settings {
     themeId: asThemeId(controls.themeId.value)
   };
 
-  for (const capability of CAPABILITY_CATALOG) {
+  for (const capability of POPUP_CAPABILITY_CATALOG) {
     const control = capabilityControl(String(capability.settingKey));
-    if (capability.settingKey === "density") next.density = asDensity(control.value);
-    if (capability.settingKey === "colorScheme") next.colorScheme = asColorScheme(control.value);
     if (capability.settingKey === "reduceGlass") next.reduceGlass = asBool((control as HTMLInputElement).checked, DEFAULT_SETTINGS.reduceGlass);
     if (capability.settingKey === "reduceMotion") next.reduceMotion = asBool((control as HTMLInputElement).checked, DEFAULT_SETTINGS.reduceMotion);
   }

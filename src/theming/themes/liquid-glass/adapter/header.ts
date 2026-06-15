@@ -10,9 +10,16 @@ const NAV_HOVER_ATTR = "data-chh-lg-nav-hover";
 const HEADER_ID = "chh-lg-header";
 const NAV_ACTIVE_ATTR = "data-chh-lg-active";
 
+const POINTER_UPDATE_MIN_MS = 150;
+const DEFAULT_POINTER = { x: "50vw", y: "12vh" };
+
+type GlobalStateMode = `${"pointer" | "static"}:${"press" | "quiet"}`;
+
 let pointerScheduled = false;
-let globalStateBound = false;
-let lastPointer = { x: "50vw", y: "12vh" };
+let lastPointer = { ...DEFAULT_POINTER };
+let lastPointerUpdateAt = -POINTER_UPDATE_MIN_MS;
+let globalStateMode: GlobalStateMode | undefined;
+let globalStateCleanup: (() => void) | undefined;
 let lastNavSignature = "";
 
 function makeNode<K extends keyof HTMLElementTagNameMap>(tagName: K, className: string, text?: string): HTMLElementTagNameMap[K] {
@@ -442,7 +449,21 @@ function syncPointerState(): void {
   document.documentElement.style.setProperty("--chh-pointer-y", lastPointer.y);
 }
 
+function resetPointerState(): void {
+  pointerScheduled = false;
+  lastPointer = { ...DEFAULT_POINTER };
+  lastPointerUpdateAt = -POINTER_UPDATE_MIN_MS;
+  document.documentElement.style.removeProperty("--chh-lg-pointer-x");
+  document.documentElement.style.removeProperty("--chh-lg-pointer-y");
+  document.documentElement.style.removeProperty("--chh-pointer-x");
+  document.documentElement.style.removeProperty("--chh-pointer-y");
+}
+
 function schedulePointerState(event: PointerEvent): void {
+  const now = Date.now();
+  if (now - lastPointerUpdateAt < POINTER_UPDATE_MIN_MS) return;
+  lastPointerUpdateAt = now;
+
   lastPointer = {
     x: String(event.clientX) + "px",
     y: String(event.clientY) + "px"
@@ -457,21 +478,51 @@ function pulsePressState(): void {
   window.setTimeout(() => document.documentElement.removeAttribute("data-chh-lg-pressed"), 180);
 }
 
-function bindGlobalState(): void {
-  document.documentElement.style.setProperty("--chh-lg-pointer-x", lastPointer.x);
-  document.documentElement.style.setProperty("--chh-lg-pointer-y", lastPointer.y);
-  document.documentElement.style.setProperty("--chh-pointer-x", lastPointer.x);
-  document.documentElement.style.setProperty("--chh-pointer-y", lastPointer.y);
+function globalStateModeFor(settings: AdapterContext["settings"]): GlobalStateMode {
+  const pointerMode = settings.reduceMotion || settings.reduceGlass ? "static" : "pointer";
+  const pressMode = settings.reduceMotion ? "quiet" : "press";
+  return `${pointerMode}:${pressMode}`;
+}
 
-  if (globalStateBound) {
+export function teardownLiquidGlassHeaderGlobalState(): void {
+  globalStateCleanup?.();
+  globalStateCleanup = undefined;
+  globalStateMode = undefined;
+  document.documentElement.removeAttribute("data-chh-lg-scrolled");
+  document.documentElement.removeAttribute("data-chh-lg-pressed");
+  resetPointerState();
+}
+
+function bindGlobalState(settings: AdapterContext["settings"]): void {
+  const nextMode = globalStateModeFor(settings);
+  if (globalStateMode !== nextMode) {
+    globalStateCleanup?.();
+    globalStateCleanup = undefined;
+    globalStateMode = undefined;
+    resetPointerState();
+  }
+
+  if (globalStateCleanup) {
     syncScrollState();
     return;
   }
 
-  window.addEventListener("scroll", syncScrollState, { passive: true });
-  window.addEventListener("pointermove", schedulePointerState, { passive: true });
-  window.addEventListener("pointerdown", pulsePressState, { passive: true });
-  globalStateBound = true;
+  const listeners: Array<[string, EventListener, AddEventListenerOptions]> = [
+    ["scroll", syncScrollState, { passive: true }]
+  ];
+  if (nextMode.startsWith("pointer")) listeners.push(["pointermove", schedulePointerState as EventListener, { passive: true }]);
+  if (nextMode.endsWith("press")) listeners.push(["pointerdown", pulsePressState as EventListener, { passive: true }]);
+
+  for (const [type, listener, options] of listeners) {
+    window.addEventListener(type, listener, options);
+  }
+
+  globalStateCleanup = () => {
+    for (const [type, listener, options] of listeners) {
+      window.removeEventListener(type, listener, options);
+    }
+  };
+  globalStateMode = nextMode;
   syncScrollState();
 }
 
@@ -547,7 +598,7 @@ export function enhanceLiquidGlassHeader({ settings }: AdapterContext, scope: En
   if (settings.themeId !== "liquid-glass") return;
 
   syncLiquidGlassClass();
-  bindGlobalState();
+  bindGlobalState(settings);
   buildHeaderShell(scope);
   cleanupCommunityLabel();
   syncNavActiveState();

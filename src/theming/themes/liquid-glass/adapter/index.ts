@@ -1,7 +1,7 @@
 import type { EnhancementScope } from "../../../../platform/enhancement-scope";
 import type { ThemeModule } from "../../../theme-module";
 import { DEFAULT_THEME_ID } from "../../../catalog";
-import { enhanceLiquidGlassHeader } from "./header";
+import { enhanceLiquidGlassHeader, teardownLiquidGlassHeaderGlobalState } from "./header";
 import { enhanceRankEmblems } from "./rank-emblem";
 
 function normalizedText(element: Element | null): string {
@@ -28,5 +28,8 @@ export const liquidGlassTheme: ThemeModule = {
     enhanceLiquidGlassHeader(ctx, scope);
     enhanceRankEmblems(ctx.root, scope);
     enhancePortalThemeData(ctx.root, scope);
+  },
+  teardown() {
+    teardownLiquidGlassHeaderGlobalState();
   }
 };
