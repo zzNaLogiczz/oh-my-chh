@@ -64,7 +64,7 @@ async function flattenCssImports(cssFile, seen = new Set()) {
   seen.add(cssFile);
 
   const css = await readFile(cssFile, "utf8");
-  const importPattern = /@import\s+["']\.\/([^"']+\.css)["'];?/g;
+  const importPattern = /@import\s+["']((?:\.\.?\/)[^"']+\.css)["'];?/g;
   let output = "";
   let cursor = 0;
   for (const match of css.matchAll(importPattern)) {
@@ -91,6 +91,18 @@ async function copyThemeRuntimeAssets() {
     }
     await mkdir(targetThemeRoot, { recursive: true });
     await writeFile(join(targetThemeRoot, "index.css"), flattened.trimStart());
+    const routesRoot = join(sourceThemeRoot, "routes");
+    try {
+      const routeEntries = await readdir(routesRoot, { withFileTypes: true });
+      for (const routeEntry of routeEntries) {
+        if (!routeEntry.isFile() || !routeEntry.name.endsWith(".css")) continue;
+        const routeCss = await flattenCssImports(join(routesRoot, routeEntry.name));
+        await mkdir(join(targetThemeRoot, "routes"), { recursive: true });
+        await writeFile(join(targetThemeRoot, "routes", routeEntry.name), routeCss.trimStart());
+      }
+    } catch (error) {
+      if (error?.code !== "ENOENT") throw error;
+    }
     await cp(join(sourceThemeRoot, "preflight.css"), join(targetThemeRoot, "preflight.css"));
   }
 }

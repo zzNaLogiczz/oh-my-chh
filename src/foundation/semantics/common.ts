@@ -83,9 +83,11 @@ function centerPopup(element: HTMLElement): void {
   element.dataset.omchhPopupCentered = "1";
 }
 
-function syncPopupSurfaces(root: ParentNode, adapter: string): number {
+export function syncPopupSurfaces(root: ParentNode, adapter = "common"): number {
   let count = 0;
-  root.querySelectorAll<HTMLElement>(POPUP_SURFACE_SELECTOR).forEach((element) => {
+  const rootElement = root instanceof HTMLElement && root.matches(POPUP_SURFACE_SELECTOR) ? [root] : [];
+  const descendants = Array.from(root.querySelectorAll<HTMLElement>(POPUP_SURFACE_SELECTOR));
+  [...rootElement, ...descendants].forEach((element) => {
     if (markElement(element, "omchh-popup-surface", adapter)) count += 1;
 
     if (!visiblePopup(element)) {
@@ -99,9 +101,19 @@ function syncPopupSurfaces(root: ParentNode, adapter: string): number {
   return count;
 }
 
+export function enhancePopupSurfaces(root: ParentNode, adapter = "common"): void {
+  trackSelector(adapter, POPUP_SURFACE_SELECTOR, syncPopupSurfaces(root, adapter));
+}
+
 export const enhanceCommon: ContentAdapter = (context) => {
   const { root, route, settings } = context;
   const adapter = "common";
+  if (context.mode === "incremental") {
+    for (const dirtyRoot of context.dirtyRoots ?? []) {
+      if (dirtyRoot.kind === "append-popup" || dirtyRoot.kind === "quick-menu") enhancePopupSurfaces(dirtyRoot.element, adapter);
+    }
+    return;
+  }
   markSelector(root, adapter, "#toptb", "omchh-topbar");
   markSelector(root, adapter, "#hd", "omchh-header");
   markSelector(root, adapter, "#hd", "omchh-site-chrome");
@@ -115,7 +127,7 @@ export const enhanceCommon: ContentAdapter = (context) => {
   markSelector(root, adapter, ".pg, .pgs", "omchh-pagination");
   markSelector(root, adapter, ".bm", "omchh-block");
   markSelector(root, adapter, ".bm", "omchh-module");
-  trackSelector(adapter, POPUP_SURFACE_SELECTOR, syncPopupSurfaces(root, adapter));
+  enhancePopupSurfaces(root, adapter);
   if (document.body) {
     markElement(document.body, "omchh-body", adapter);
     setData(document.body, "omchhRoute", route);
