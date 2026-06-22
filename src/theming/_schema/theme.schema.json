@@ -38,31 +38,58 @@
       "additionalProperties": false,
       "required": [
         "index",
-        "preflight",
-        "tokens",
-        "routes",
-        "preview"
+        "preflight"
       ],
       "properties": {
         "index": {
           "type": "string",
-          "pattern": "^\\./.+\\.css$"
+          "pattern": "^(?:\\./)?.+\\.css$"
         },
         "tokens": {
           "type": "string",
-          "pattern": "^\\./.+\\.css$"
+          "pattern": "^(?:\\./)?.+\\.css$"
         },
         "routes": {
-          "type": "string",
-          "pattern": "^\\./.+\\.css$"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?:\\./)?.+\\.css$"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "thread-detail": {
+                  "type": "string",
+                  "pattern": "^(?:\\./)?.+\\.css$"
+                },
+                "thread-list": {
+                  "type": "string",
+                  "pattern": "^(?:\\./)?.+\\.css$"
+                },
+                "forum-index": {
+                  "type": "string",
+                  "pattern": "^(?:\\./)?.+\\.css$"
+                },
+                "portal-home": {
+                  "type": "string",
+                  "pattern": "^(?:\\./)?.+\\.css$"
+                },
+                "compose": {
+                  "type": "string",
+                  "pattern": "^(?:\\./)?.+\\.css$"
+                }
+              }
+            }
+          ]
         },
         "preview": {
           "type": "string",
-          "pattern": "^\\./.+\\.html$"
+          "pattern": "^(?:\\./)?.+\\.html$"
         },
         "preflight": {
           "type": "string",
-          "pattern": "^\\./.+\\.css$"
+          "pattern": "^(?:\\./)?.+\\.css$"
         }
       }
     },

@@ -22,9 +22,17 @@ function enhancePortalThemeData(root: ParentNode, scope: EnhancementScope): void
     });
 }
 
+function enhanceLiquidGlassDirty(ctx: Parameters<ThemeModule["enhance"]>[0], scope: EnhancementScope): void {
+  enhanceRankEmblems(ctx.root, scope, ctx.dirtyRoots);
+}
+
 export const liquidGlassTheme: ThemeModule = {
   id: DEFAULT_THEME_ID,
   enhance(ctx, scope) {
+    if (ctx.mode === "incremental") {
+      enhanceLiquidGlassDirty(ctx, scope);
+      return;
+    }
     enhanceLiquidGlassHeader(ctx, scope);
     enhanceRankEmblems(ctx.root, scope);
     enhancePortalThemeData(ctx.root, scope);

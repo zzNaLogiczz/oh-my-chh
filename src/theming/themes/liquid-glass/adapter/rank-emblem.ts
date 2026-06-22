@@ -1,4 +1,5 @@
 import type { EnhancementScope } from "../../../../platform/enhancement-scope";
+import type { DirtyRoot } from "../../../../foundation/context";
 import { normalizeRankLabel, type RankBadgeIdentity } from "../../../../foundation/semantics/rank-identity";
 
 type RankBadgeDefinition = {
@@ -118,12 +119,48 @@ const RANK_BADGE_DEFINITIONS: Record<string, RankBadgeDefinition> = {
   }
 };
 
+function shouldUseStaticRankBadge(rankElement: Element): boolean {
+  const insideHeader = !!rankElement.closest("#chh-lg-header");
+  return !insideHeader && document.documentElement.dataset.omchhPerformance === "reduced";
+}
+
+function enhanceStaticRankBadge(rankElement: HTMLElement, scope: EnhancementScope, identity: RankBadgeIdentity, displayLabel: string): void {
+  scope.setAttr(rankElement, "data-omchh-rank-badge", "static");
+  scope.addClass(rankElement, "omchh-rank-host");
+  scope.setAttr(rankElement, "aria-label", displayLabel);
+  scope.setAttr(rankElement, "title", displayLabel);
+
+  const existingBadge = rankElement.querySelector<HTMLElement>(":scope > .omchh-rank-badge");
+  if (existingBadge) {
+    existingBadge.className = "omchh-rank-badge omchh-rank-badge--static";
+    existingBadge.textContent = displayLabel;
+    existingBadge.dataset.omchhRank = identity.rank;
+    existingBadge.dataset.omchhRankFamily = identity.family;
+    existingBadge.dataset.omchhRankTier = identity.tier;
+    existingBadge.dataset.omchhRankEffect = "0";
+    return;
+  }
+
+  const badge = document.createElement("span");
+  badge.className = "omchh-rank-badge omchh-rank-badge--static";
+  badge.dataset.omchhRank = identity.rank;
+  badge.dataset.omchhRankFamily = identity.family;
+  badge.dataset.omchhRankTier = identity.tier;
+  badge.dataset.omchhRankEffect = "0";
+  badge.textContent = displayLabel;
+  scope.replaceChildren(rankElement, badge);
+}
+
 export function enhanceRankBadge(rankElement: Element, scope: EnhancementScope, identity: RankBadgeIdentity, rawLabel: string): void {
   if (!(rankElement instanceof HTMLElement)) return;
 
   const normalizedLabel = normalizeRankLabel(rawLabel);
   if (!normalizedLabel) return;
   const displayLabel = rawLabel.replace(/\s+/g, " ").trim();
+  if (shouldUseStaticRankBadge(rankElement)) {
+    enhanceStaticRankBadge(rankElement, scope, identity, displayLabel);
+    return;
+  }
   const definition = RANK_BADGE_DEFINITIONS[identity.rank] ?? RANK_BADGE_DEFINITIONS.other;
 
   const existingBadge = rankElement.querySelector<HTMLElement>(":scope > .omchh-rank-badge");
@@ -204,11 +241,17 @@ function rankIdentityFromDataset(element: Element): RankBadgeIdentity | null {
   };
 }
 
-export function enhanceRankEmblems(root: ParentNode, scope: EnhancementScope): void {
-  root.querySelectorAll(".omchh-post-author-rank[data-omchh-rank]").forEach((rankElement) => {
-    const identity = rankIdentityFromDataset(rankElement);
-    if (!identity) return;
-    const rawLabel = rankElement.getAttribute("aria-label") ?? rankElement.textContent ?? "";
-    enhanceRankBadge(rankElement, scope, identity, rawLabel);
+export function enhanceRankEmblems(root: ParentNode, scope: EnhancementScope, dirtyRoots?: DirtyRoot[]): void {
+  const roots = dirtyRoots?.length ? dirtyRoots.map((dirtyRoot) => dirtyRoot.element) : [root];
+  roots.forEach((candidateRoot) => {
+    const rankElements = candidateRoot instanceof Element && candidateRoot.matches(".omchh-post-author-rank[data-omchh-rank]")
+      ? [candidateRoot]
+      : Array.from(candidateRoot.querySelectorAll?.(".omchh-post-author-rank[data-omchh-rank]") ?? []);
+    rankElements.forEach((rankElement) => {
+      const identity = rankIdentityFromDataset(rankElement);
+      if (!identity) return;
+      const rawLabel = rankElement.getAttribute("aria-label") ?? rankElement.textContent ?? "";
+      enhanceRankBadge(rankElement, scope, identity, rawLabel);
+    });
   });
 }

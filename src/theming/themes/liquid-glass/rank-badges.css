@@ -1,4 +1,9 @@
 /* Heraldic rank badge integration ported from /Users/zznalogic/Downloads/level/heraldic.css. */
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-post-author-rank[data-omchh-rank-badge] {
+  order: 3 !important;
+  align-self: center !important;
+}
+
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"] body.chh-liquid-glass #ct.omchh-thread-detail .omchh-post-author-rank[data-omchh-rank-badge="heraldic"] {
   display: flex !important;
   justify-content: center !important;
@@ -495,4 +500,24 @@ html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"][data-omchh-motion=
 html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"][data-omchh-motion="reduce"] .omchh-rank-badge *::after {
   animation: none !important;
   transition: none !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"][data-omchh-performance="reduced"] #ct.omchh-thread-detail .omchh-rank-badge,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"][data-omchh-performance="reduced"] #ct.omchh-thread-detail .omchh-rank-badge *,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"][data-omchh-performance="reduced"] #ct.omchh-thread-detail .omchh-rank-badge *::before,
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"][data-omchh-performance="reduced"] #ct.omchh-thread-detail .omchh-rank-badge *::after {
+  animation: none !important;
+  transition: none !important;
+  filter: none !important;
+}
+
+html[data-omchh-enabled="1"][data-omchh-theme="liquid-glass"][data-omchh-performance="reduced"] #ct.omchh-thread-detail .omchh-rank-badge--static {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75em;
+  padding: 0.12rem 0.48rem;
+  border: 1px solid color-mix(in srgb, var(--chh-lg-border, rgba(255, 255, 255, 0.28)) 80%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--chh-lg-surface, rgba(255, 255, 255, 0.16)) 86%, transparent);
+  box-shadow: none !important;
 }

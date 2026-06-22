@@ -1,3 +1,4 @@
+import type { OmchhRoute } from "../foundation/route";
 import flatCleanManifest from "./themes/flat-clean/theme.json";
 import liquidGlassManifest from "./themes/liquid-glass/theme.json";
 
@@ -13,7 +14,7 @@ export interface ThemeMetadata {
     index: string;
     preflight: string;
     tokens?: string;
-    routes?: string;
+    routes?: Partial<Record<OmchhRoute, string>>;
     preview?: string;
   };
   tokens: Record<string, string>;

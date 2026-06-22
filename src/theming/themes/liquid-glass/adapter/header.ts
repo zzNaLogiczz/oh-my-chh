@@ -21,6 +21,8 @@ let lastPointerUpdateAt = -POINTER_UPDATE_MIN_MS;
 let globalStateMode: GlobalStateMode | undefined;
 let globalStateCleanup: (() => void) | undefined;
 let lastNavSignature = "";
+let quickMenuRaf: number | undefined;
+let quickMenuCorrectionTimer: number | undefined;
 
 function makeNode<K extends keyof HTMLElementTagNameMap>(tagName: K, className: string, text?: string): HTMLElementTagNameMap[K] {
   const node = document.createElement(tagName);
@@ -283,28 +285,47 @@ function clampQuickMenu(): void {
   if (Math.abs(nextLeft - rect.left) > 1) menu.style.left = String(Math.round(nextLeft + window.scrollX)) + "px";
 }
 
+function menuVisible(menu: HTMLElement): boolean {
+  return !menu.hidden && menu.style.display !== "none" && getComputedStyle(menu).display !== "none";
+}
+
 function scheduleQuickMenuClamp(): void {
-  window.requestAnimationFrame(() => {
+  const menu = document.querySelector<HTMLElement>("#qmenu_menu");
+  if (!menu || !menuVisible(menu)) return;
+  if (quickMenuRaf !== undefined) return;
+
+  quickMenuRaf = window.requestAnimationFrame(() => {
+    quickMenuRaf = undefined;
     clampQuickMenu();
-    window.setTimeout(clampQuickMenu, 80);
+    if (quickMenuCorrectionTimer !== undefined) window.clearTimeout(quickMenuCorrectionTimer);
+    quickMenuCorrectionTimer = window.setTimeout(() => {
+      quickMenuCorrectionTimer = undefined;
+      clampQuickMenu();
+    }, 80);
   });
 }
 
-function bindQuickMenuPlacement(): void {
+function bindQuickMenuPlacement(scope: EnhancementScope): void {
   const trigger = document.querySelector<HTMLElement>("#qmenu");
   const menu = document.querySelector<HTMLElement>("#qmenu_menu");
   if (!trigger || !menu || trigger.getAttribute(QUICK_MENU_BOUND_ATTR) === "true") return;
 
-  trigger.addEventListener("pointerenter", scheduleQuickMenuClamp, { passive: true });
-  trigger.addEventListener("focus", scheduleQuickMenuClamp);
-  trigger.addEventListener("click", scheduleQuickMenuClamp);
+  scope.listen(trigger, "pointerenter", scheduleQuickMenuClamp, { passive: true });
+  scope.listen(trigger, "focus", scheduleQuickMenuClamp);
+  scope.listen(trigger, "click", scheduleQuickMenuClamp);
 
-  const menuObserver = new MutationObserver(scheduleQuickMenuClamp);
-  menuObserver.observe(menu, {
-    attributes: true,
-    attributeFilter: ["style", "class"],
-    childList: true,
-    subtree: true
+  const observer = new MutationObserver((mutations) => {
+    if (!menuVisible(menu)) return;
+    if (mutations.some((mutation) => mutation.type === "childList" || mutation.attributeName === "style" || mutation.attributeName === "class")) {
+      scheduleQuickMenuClamp();
+    }
+  });
+  scope.observe(observer, menu, { attributes: true, attributeFilter: ["style", "class"], childList: true });
+  scope.add(() => {
+    if (quickMenuRaf !== undefined) window.cancelAnimationFrame(quickMenuRaf);
+    if (quickMenuCorrectionTimer !== undefined) window.clearTimeout(quickMenuCorrectionTimer);
+    quickMenuRaf = undefined;
+    quickMenuCorrectionTimer = undefined;
   });
 
   trigger.setAttribute(QUICK_MENU_BOUND_ATTR, "true");
@@ -478,9 +499,13 @@ function pulsePressState(): void {
   window.setTimeout(() => document.documentElement.removeAttribute("data-chh-lg-pressed"), 180);
 }
 
+function performanceReduced(): boolean {
+  return document.documentElement.dataset.omchhPerformance === "reduced";
+}
+
 function globalStateModeFor(settings: AdapterContext["settings"]): GlobalStateMode {
-  const pointerMode = settings.reduceMotion || settings.reduceGlass ? "static" : "pointer";
-  const pressMode = settings.reduceMotion ? "quiet" : "press";
+  const pointerMode = settings.reduceMotion || settings.reduceGlass || performanceReduced() ? "static" : "pointer";
+  const pressMode = settings.reduceMotion || performanceReduced() ? "quiet" : "press";
   return `${pointerMode}:${pressMode}`;
 }
 
@@ -603,7 +628,7 @@ export function enhanceLiquidGlassHeader({ settings }: AdapterContext, scope: En
   cleanupCommunityLabel();
   syncNavActiveState();
   relocateHeaderMenus();
-  bindQuickMenuPlacement();
+  bindQuickMenuPlacement(scope);
   bindNavHoverPill();
   markPromoArea();
   enhanceForumDirectory();

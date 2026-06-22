@@ -1,6 +1,7 @@
 import { CAPABILITY_CATALOG } from "../../capabilities/catalog";
 import { THEME_CATALOG } from "../../theming/catalog";
 import { DEFAULT_SETTINGS, SETTINGS_KEYS, asBool, asColorScheme, asThemeId, normalizeSettings, type OmchhSettings } from "../schema";
+import { clearMonitoringLog, exportMonitoringLogText, getMonitoringLogSummary } from "../monitoring-log";
 
 type Settings = OmchhSettings;
 type ChromeLike = typeof chrome;
@@ -71,6 +72,63 @@ function storageSet(area: "sync" | "local", items: Record<string, unknown>): Pro
   });
 }
 
+function byteLength(value: string): number {
+  return new TextEncoder().encode(value).byteLength;
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes >= 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(2)} MiB`;
+  if (bytes >= 1024) return `${Math.ceil(bytes / 1024)} KiB`;
+  return `${bytes} B`;
+}
+
+function monitoringDownloadName(): string {
+  return `oh-my-chh-monitoring-${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
+}
+
+async function refreshMonitoringStatus(prefix?: string): Promise<void> {
+  try {
+    const summary = await getMonitoringLogSummary();
+    const base = `${summary.entryCount} 条，${formatBytes(summary.byteLength)} / ${formatBytes(summary.maxBytes)}`;
+    controls.monitoringStatus.textContent = prefix ? `${prefix}；${base}` : base;
+  } catch {
+    controls.monitoringStatus.textContent = "日志状态读取失败";
+  }
+}
+
+async function exportMonitoringLog(): Promise<void> {
+  controls.monitoringExport.disabled = true;
+  try {
+    const text = await exportMonitoringLogText();
+    const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = monitoringDownloadName();
+    document.body.append(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+    controls.monitoringStatus.textContent = `已导出 ${formatBytes(byteLength(text))}`;
+  } catch {
+    controls.monitoringStatus.textContent = "导出失败";
+  } finally {
+    controls.monitoringExport.disabled = false;
+  }
+}
+
+async function clearMonitoring(): Promise<void> {
+  controls.monitoringClear.disabled = true;
+  try {
+    await clearMonitoringLog();
+    await refreshMonitoringStatus("已清空");
+  } catch {
+    controls.monitoringStatus.textContent = "清空失败";
+  } finally {
+    controls.monitoringClear.disabled = false;
+  }
+}
+
 function requireElement<T extends HTMLElement>(id: string, ctor: new () => T): T {
   const element = document.getElementById(id);
   if (!(element instanceof ctor)) {
@@ -82,6 +140,9 @@ function requireElement<T extends HTMLElement>(id: string, ctor: new () => T): T
 const controls = {
   themeId: requireElement("theme-id", HTMLSelectElement),
   capabilityList: requireElement("capability-list", HTMLElement),
+  monitoringExport: requireElement("monitoring-export", HTMLButtonElement),
+  monitoringClear: requireElement("monitoring-clear", HTMLButtonElement),
+  monitoringStatus: requireElement("monitoring-status", HTMLElement),
   saveStatus: requireElement("save-status", HTMLElement)
 };
 
@@ -222,6 +283,13 @@ function bindControls(): void {
       void saveSettings();
     });
   }
+
+  controls.monitoringExport.addEventListener("click", () => {
+    void exportMonitoringLog();
+  });
+  controls.monitoringClear.addEventListener("click", () => {
+    void clearMonitoring();
+  });
 }
 
 async function init(): Promise<void> {
@@ -231,11 +299,13 @@ async function init(): Promise<void> {
 
   renderSettings(normalizeSettings(storedSettings));
   controls.saveStatus.textContent = chromeApi ? "就绪" : "预览模式";
+  await refreshMonitoringStatus();
   bindControls();
 }
 
 void init().catch(() => {
   renderSettings(DEFAULT_SETTINGS);
   controls.saveStatus.textContent = "预览模式";
+  void refreshMonitoringStatus();
   bindControls();
 });

@@ -5,11 +5,19 @@
   "description": "Latest modern-minimal liquid glass redesign with reconstructed Chiphell header, search and quick navigation surfaces.",
   "styleFamily": "liquid-glass",
   "entrypoints": {
-    "index": "./index.css",
-    "preflight": "./preflight.css",
-    "tokens": "./tokens.css",
-    "routes": "./routes.css",
-    "preview": "./preview.html"
+    "preflight": "preflight.css",
+    "index": "index.css",
+    "routes": {
+      "thread-detail": "routes/thread-detail.css",
+      "thread-list": "routes/thread-list.css",
+      "forum-index": "routes/forum-index.css",
+      "portal-home": "routes/portal-home.css",
+      "compose": "routes/compose.css",
+      "settings": "routes/settings.css",
+      "messages": "routes/messages.css",
+      "profile": "routes/profile.css",
+      "article-view": "routes/article-view.css"
+    }
   },
   "tokens": {},
   "capabilities": {

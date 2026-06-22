@@ -5,6 +5,7 @@ import { DEFAULT_THEME_ID, getThemeMetadata, THEME_CATALOG, type ThemeMetadata }
 
 export const THEME_LINK_ID = "omchh-theme-css";
 export const PREFLIGHT_LINK_ID = "omchh-theme-preflight";
+export const ROUTE_THEME_LINK_ID = "omchh-theme-route-css";
 export const ASSET_LOAD_TIMEOUT_MS = 800;
 
 export type ResolvedColorScheme = "light" | "dark";
@@ -154,12 +155,23 @@ function swapLink(id: string, path: string, opts: { blockFirstPaint?: boolean })
   return waitForPaint(state, opts);
 }
 
-export async function ensureThemeAssets(themeId: string, opts: { blockFirstPaint?: boolean } = {}): Promise<boolean> {
+function removeManagedLink(id: string): void {
+  pendingLinks.delete(id);
+  document.querySelector<HTMLLinkElement>(`link#${id}`)?.remove();
+}
+
+export async function ensureThemeAssets(themeId: string, opts: { blockFirstPaint?: boolean; route?: OmchhRoute } = {}): Promise<boolean> {
   const meta = getThemeMetadata(themeId) ?? getThemeMetadata(DEFAULT_THEME_ID)!;
   const links = [
     swapLink(PREFLIGHT_LINK_ID, themeEntrypointPath(meta.id, meta.entrypoints.preflight), opts),
     swapLink(THEME_LINK_ID, themeEntrypointPath(meta.id, meta.entrypoints.index), opts)
   ];
+  const routeEntry = opts.route ? meta.entrypoints.routes?.[opts.route] : undefined;
+  if (routeEntry) {
+    links.push(swapLink(ROUTE_THEME_LINK_ID, themeEntrypointPath(meta.id, routeEntry), opts));
+  } else {
+    removeManagedLink(ROUTE_THEME_LINK_ID);
+  }
   const results = await Promise.allSettled(links);
   return results.every((result) => result.status === "fulfilled" && result.value);
 }

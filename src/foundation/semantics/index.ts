@@ -31,10 +31,22 @@ export function runSharedAdapters(
   root: ParentNode = document,
   trackSelector: SelectorTracker = noopSelectorTracker
 ): void {
-  const context: AdapterContext = { route, settings, root };
+  const context: AdapterContext = { route, settings, root, mode: "full" };
   withSelectorTracker(trackSelector, () => {
     enhanceCommon(context);
     routeAdapters[route]?.(context);
+  });
+}
+
+export function runDirtyAdapters(
+  context: AdapterContext,
+  dirtyRoots = context.dirtyRoots ?? [],
+  trackSelector: SelectorTracker = noopSelectorTracker
+): void {
+  const incrementalContext: AdapterContext = { ...context, mode: "incremental", dirtyRoots };
+  withSelectorTracker(trackSelector, () => {
+    enhanceCommon(incrementalContext);
+    routeAdapters[incrementalContext.route]?.(incrementalContext);
   });
 }
 

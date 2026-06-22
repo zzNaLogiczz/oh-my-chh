@@ -19,6 +19,9 @@ export interface SelectorHealthReport {
 const checks = new Map<string, SelectorHealthCheck>();
 let saveTimer: number | undefined;
 const HEALTH_STORAGE_KEY = "omchh:lastHealth";
+const DEFAULT_HEALTH_DELAY_MS = 250;
+const DIAGNOSTICS_HEALTH_MIN_INTERVAL_MS = 5000;
+let lastDiagnosticsSaveAt = 0;
 
 function getLocalStorage(): chrome.storage.StorageArea | undefined {
   try {
@@ -33,7 +36,15 @@ export function trackSelector(adapter: string, selector: string, count: number, 
   checks.set(`${adapter}:${selector}`, { adapter, selector, count, required });
 }
 
-export function scheduleHealthSave(route: OmchhRoute): void {
+export function scheduleHealthSave(route: OmchhRoute, opts: { full?: boolean; diagnostics?: boolean } = {}): void {
+  const full = opts.full !== false;
+  const diagnostics = opts.diagnostics === true;
+  if (!full && !diagnostics) return;
+
+  const now = Date.now();
+  if (!full && diagnostics && now - lastDiagnosticsSaveAt < DIAGNOSTICS_HEALTH_MIN_INTERVAL_MS) return;
+  if (diagnostics) lastDiagnosticsSaveAt = now;
+
   const storage = getLocalStorage();
   if (!storage) return;
   if (saveTimer) window.clearTimeout(saveTimer);
@@ -61,5 +72,5 @@ export function scheduleHealthSave(route: OmchhRoute): void {
     } catch (error) {
       warnForUnexpectedExtensionError("[oh-my-chh] Failed to save selector health report.", error);
     }
-  }, 250);
+  }, DEFAULT_HEALTH_DELAY_MS);
 }

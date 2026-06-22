@@ -99,6 +99,14 @@ function markComposeActions(root: ParentNode, adapter: string): number {
 export const enhanceCompose: ContentAdapter = (context) => {
   const { root, settings } = context;
   const adapter = "compose";
+  if (context.mode === "incremental") {
+    for (const dirtyRoot of context.dirtyRoots ?? []) {
+      if (dirtyRoot.kind !== "compose-editor") continue;
+      trackSelector(adapter, "compose editor dynamic state", syncComposeEditorState(dirtyRoot.element, adapter));
+      trackSelector(adapter, COMPOSE_ACTION_SELECTOR, markComposeActions(dirtyRoot.element, adapter));
+    }
+    return;
+  }
   const selectors: Array<[string, string, boolean]> = [
     ["#postform", "omchh-compose-form", true],
     ["#editorbox", "omchh-compose-shell", true],

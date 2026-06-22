@@ -148,8 +148,35 @@ function enhanceStickyThreadCard(table: Element | null, adapter: string): void {
   syncStickyCard(table, adapter);
 }
 
-export const enhanceThreadList: ContentAdapter = ({ root }) => {
+function enhanceThreadRow(row: Element, index: number, adapter: string): void {
+  markElement(row, "omchh-thread-row", adapter);
+  setData(row, "omchhThreadKind", row.id.startsWith("stickthread_") ? "sticky" : "normal");
+  setData(row, "omchhThreadIndex", String(index));
+
+  const threadCells = firstDirectChild(row, "tr");
+  if (!threadCells) return;
+  markElement(firstDirectChild(threadCells, "td.icn"), "omchh-thread-icon", adapter);
+  markElement(firstDirectChild(threadCells, "th"), "omchh-thread-title", adapter);
+  markElement(firstDirectChild(threadCells, "td.num"), "omchh-thread-stats", adapter);
+  const byCells = directChildrenMatching(threadCells, "td.by");
+  if (byCells[0]) markElement(byCells[0], "omchh-thread-author", adapter);
+  if (byCells.length > 1) markElement(byCells[byCells.length - 1], "omchh-thread-lastpost", adapter);
+}
+
+function threadRowIndex(row: Element): number {
+  return Array.from(document.querySelectorAll("#threadlisttableid tbody[id^='stickthread_'], #threadlisttableid tbody[id^='normalthread_']")).indexOf(row);
+}
+
+export const enhanceThreadList: ContentAdapter = (context) => {
+  const { root } = context;
   const adapter = "thread-list";
+  if (context.mode === "incremental") {
+    for (const dirtyRoot of context.dirtyRoots ?? []) {
+      if (dirtyRoot.kind === "thread-list-row") enhanceThreadRow(dirtyRoot.element, Math.max(0, threadRowIndex(dirtyRoot.element)), adapter);
+      if (dirtyRoot.kind === "quick-reply" && context.settings.enhanceQuickReply) markAll(dirtyRoot.element, "#f_pst", "omchh-quick-reply", adapter);
+    }
+    return;
+  }
   const selectors: Array<[string, string, boolean]> = [
     [".bml.pbn", "omchh-forum-heading", false],
     [".bml.pbn .bm_h h1", "omchh-forum-heading-title", false],
@@ -221,18 +248,7 @@ export const enhanceThreadList: ContentAdapter = ({ root }) => {
 
   const rows = root.querySelectorAll("#threadlisttableid tbody[id^='stickthread_'], #threadlisttableid tbody[id^='normalthread_']");
   rows.forEach((row, index) => {
-    markElement(row, "omchh-thread-row", adapter);
-    setData(row, "omchhThreadKind", row.id.startsWith("stickthread_") ? "sticky" : "normal");
-    setData(row, "omchhThreadIndex", String(index));
-
-    const threadCells = firstDirectChild(row, "tr");
-    if (!threadCells) return;
-    markElement(firstDirectChild(threadCells, "td.icn"), "omchh-thread-icon", adapter);
-    markElement(firstDirectChild(threadCells, "th"), "omchh-thread-title", adapter);
-    markElement(firstDirectChild(threadCells, "td.num"), "omchh-thread-stats", adapter);
-    const byCells = directChildrenMatching(threadCells, "td.by");
-    if (byCells[0]) markElement(byCells[0], "omchh-thread-author", adapter);
-    if (byCells.length > 1) markElement(byCells[byCells.length - 1], "omchh-thread-lastpost", adapter);
+    enhanceThreadRow(row, index, adapter);
   });
   trackSelector(adapter, "#threadlisttableid tbody[id^='stickthread_'], #threadlisttableid tbody[id^='normalthread_']", rows.length, true);
 

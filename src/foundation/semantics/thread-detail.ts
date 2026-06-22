@@ -104,29 +104,43 @@ function enhancePostActions(table: Element, adapter: string): void {
   markAll(table, ".pob a", "omchh-post-action", adapter);
 }
 
+function postIndex(shell: Element): number {
+  let index = 0;
+  let previous = shell.previousElementSibling;
+  while (previous) {
+    if (previous.matches("div[id^='post_']")) index += 1;
+    previous = previous.previousElementSibling;
+  }
+  return index;
+}
+
+function enhancePostShell(shell: Element, index: number, adapter: string): void {
+  markElement(shell, "omchh-post-shell", adapter);
+  setData(shell, "omchhPostIndex", String(index));
+  setData(shell, "omchhPostRole", index === 0 ? "original" : "reply");
+
+  const table = firstDirectChild(shell, "table.plhin");
+  markElement(table, "omchh-post", adapter);
+  setData(table, "omchhPostIndex", String(index));
+  setData(table, "omchhPostRole", index === 0 ? "original" : "reply");
+
+  const firstRow = firstDirectChild(firstDirectChild(table, "tbody"), "tr");
+  const authorCell = firstDirectChild(firstRow, "td.pls");
+  const contentCell = firstDirectChild(firstRow, "td.plc");
+  enhancePostAuthor(authorCell, adapter);
+  enhancePostContent(contentCell, adapter);
+  if (table) enhancePostActions(table, adapter);
+}
+
 function enhancePosts(postList: Element | null, adapter: string): void {
   const shells = directChildrenMatching(postList, "div[id^='post_']");
   shells.forEach((shell, index) => {
-    markElement(shell, "omchh-post-shell", adapter);
-    setData(shell, "omchhPostIndex", String(index));
-    setData(shell, "omchhPostRole", index === 0 ? "original" : "reply");
-
-    const table = firstDirectChild(shell, "table.plhin");
-    markElement(table, "omchh-post", adapter);
-    setData(table, "omchhPostIndex", String(index));
-    setData(table, "omchhPostRole", index === 0 ? "original" : "reply");
-
-    const firstRow = firstDirectChild(firstDirectChild(table, "tbody"), "tr");
-    const authorCell = firstDirectChild(firstRow, "td.pls");
-    const contentCell = firstDirectChild(firstRow, "td.plc");
-    enhancePostAuthor(authorCell, adapter);
-    enhancePostContent(contentCell, adapter);
-    if (table) enhancePostActions(table, adapter);
+    enhancePostShell(shell, index, adapter);
   });
   trackSelector(adapter, "#postlist > div[id^='post_']", shells.length);
 }
 
-function enhanceQuickReply(root: ParentNode, adapter: string): void {
+export function enhanceQuickReply(root: ParentNode, adapter = "thread-detail"): void {
   const count = markAll(root, "#f_pst", "omchh-quick-reply", adapter);
   trackSelector(adapter, "#f_pst", count);
 
@@ -147,9 +161,25 @@ function enhanceQuickReply(root: ParentNode, adapter: string): void {
   markElement(firstDescendant(quickReply, "#fastpostsubmit"), "omchh-thread-reply-submit", adapter);
 }
 
+function enhanceDirtyThreadDetail(context: Parameters<ContentAdapter>[0]): void {
+  const adapter = "thread-detail";
+  for (const dirtyRoot of context.dirtyRoots ?? []) {
+    if (dirtyRoot.kind === "post") {
+      enhancePostShell(dirtyRoot.element, postIndex(dirtyRoot.element), adapter);
+    }
+    if (dirtyRoot.kind === "quick-reply") {
+      enhanceQuickReply(dirtyRoot.element, adapter);
+    }
+  }
+}
+
 export const enhanceThreadDetail: ContentAdapter = (context) => {
   const { root } = context;
   const adapter = "thread-detail";
+  if (context.mode === "incremental") {
+    enhanceDirtyThreadDetail(context);
+    return;
+  }
   const selectors: Array<[string, string, boolean]> = [
     ["#postlist", "omchh-post-list", true]
   ];

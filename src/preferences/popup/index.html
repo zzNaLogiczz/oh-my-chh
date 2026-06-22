@@ -37,8 +37,21 @@
 
       </form>
 
+      <section class="settings-card monitoring-card" aria-labelledby="monitoring-title">
+        <div class="section-heading">
+          <p class="eyebrow">本地监控</p>
+          <h2 id="monitoring-title">性能日志</h2>
+        </div>
+        <p class="monitoring-copy">记录刷新耗时和异常摘要，仅保存在本机 Chrome 本地存储；导出文件严格不超过 5 MiB。</p>
+        <div class="monitoring-actions">
+          <button type="button" id="monitoring-export">导出日志</button>
+          <button type="button" id="monitoring-clear" class="secondary">清空日志</button>
+        </div>
+        <p class="monitoring-status" id="monitoring-status" role="status" aria-live="polite">日志状态读取中…</p>
+      </section>
+
       <footer class="privacy-note">
-        <strong>隐私：</strong>主题设置保存在 Chrome 同步存储；插件不会向远程服务发送页面内容或账号数据。
+        <strong>隐私：</strong>主题设置保存在 Chrome 同步存储；性能日志仅保存在 Chrome 本地存储，可在本弹窗导出或清空；插件不会向远程服务发送页面内容或账号数据。
       </footer>
 
       <p class="save-status" id="save-status" role="status" aria-live="polite">就绪</p>
