@@ -6,18 +6,7 @@
   "styleFamily": "liquid-glass",
   "entrypoints": {
     "preflight": "preflight.css",
-    "index": "index.css",
-    "routes": {
-      "thread-detail": "routes/thread-detail.css",
-      "thread-list": "routes/thread-list.css",
-      "forum-index": "routes/forum-index.css",
-      "portal-home": "routes/portal-home.css",
-      "compose": "routes/compose.css",
-      "settings": "routes/settings.css",
-      "messages": "routes/messages.css",
-      "profile": "routes/profile.css",
-      "article-view": "routes/article-view.css"
-    }
+    "index": "index.css"
   },
   "tokens": {},
   "capabilities": {

@@ -1,5 +1,5 @@
 import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { dirname, isAbsolute, join, normalize, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { build } from "vite";
 
@@ -59,22 +59,51 @@ await copyFile("src/platform/preflight.css", join(dist, "content/preflight.css")
 await copyFile("src/preferences/popup/index.html", join(dist, "popup/index.html"));
 await copyFile("src/preferences/popup/popup.css", join(dist, "popup/popup.css"));
 
-async function flattenCssImports(cssFile, seen = new Set()) {
-  if (seen.has(cssFile)) return "";
-  seen.add(cssFile);
+async function flattenCssImports(cssFile, seen = new Set(), options = {}) {
+  const resolvedCssFile = resolve(cssFile);
+  if (seen.has(resolvedCssFile)) return "";
+  seen.add(resolvedCssFile);
 
-  const css = await readFile(cssFile, "utf8");
+  const css = await readFile(resolvedCssFile, "utf8");
   const importPattern = /@import\s+["']((?:\.\.?\/)[^"']+\.css)["'];?/g;
   let output = "";
   let cursor = 0;
   for (const match of css.matchAll(importPattern)) {
+    const importPath = resolve(dirname(resolvedCssFile), match[1]);
+    if (options.forbiddenImports?.has(importPath)) {
+      throw new Error(options.forbiddenImportMessage?.(match[1]) ?? `Forbidden CSS import: ${match[1]}`);
+    }
     output += css.slice(cursor, match.index);
     output += `\n/* inlined ${match[1]} */\n`;
-    output += await flattenCssImports(join(dirname(cssFile), match[1]), seen);
+    output += await flattenCssImports(importPath, seen, options);
     cursor = (match.index ?? 0) + match[0].length;
   }
   output += css.slice(cursor);
   return output;
+}
+
+function isInsideDirectory(parent, child) {
+  const childRelativePath = relative(parent, child);
+  return childRelativePath === "" || (!childRelativePath.startsWith("..") && !isAbsolute(childRelativePath));
+}
+
+function resolveThemeRouteEntrypoint(routeEntry, sourceThemeRoot, targetThemeRoot) {
+  if (typeof routeEntry !== "string" || !routeEntry.endsWith(".css")) {
+    throw new Error(`Invalid theme route entrypoint: ${String(routeEntry)}`);
+  }
+
+  const normalizedRouteEntry = normalize(routeEntry);
+  if (routeEntry !== normalizedRouteEntry || isAbsolute(routeEntry) || normalizedRouteEntry.startsWith("..")) {
+    throw new Error(`Invalid theme route entrypoint: ${routeEntry}`);
+  }
+
+  const sourceRouteCss = resolve(sourceThemeRoot, normalizedRouteEntry);
+  const targetRouteCss = resolve(targetThemeRoot, normalizedRouteEntry);
+  if (!isInsideDirectory(resolve(sourceThemeRoot), sourceRouteCss) || !isInsideDirectory(resolve(targetThemeRoot), targetRouteCss)) {
+    throw new Error(`Invalid theme route entrypoint: ${routeEntry}`);
+  }
+
+  return { normalizedRouteEntry, sourceRouteCss, targetRouteCss };
 }
 
 async function copyThemeRuntimeAssets() {
@@ -91,18 +120,29 @@ async function copyThemeRuntimeAssets() {
     }
     await mkdir(targetThemeRoot, { recursive: true });
     await writeFile(join(targetThemeRoot, "index.css"), flattened.trimStart());
-    const routesRoot = join(sourceThemeRoot, "routes");
+
+    const themeManifestPath = join(sourceThemeRoot, "theme.json");
+    let themeManifest = {};
     try {
-      const routeEntries = await readdir(routesRoot, { withFileTypes: true });
-      for (const routeEntry of routeEntries) {
-        if (!routeEntry.isFile() || !routeEntry.name.endsWith(".css")) continue;
-        const routeCss = await flattenCssImports(join(routesRoot, routeEntry.name));
-        await mkdir(join(targetThemeRoot, "routes"), { recursive: true });
-        await writeFile(join(targetThemeRoot, "routes", routeEntry.name), routeCss.trimStart());
-      }
+      themeManifest = JSON.parse(await readFile(themeManifestPath, "utf8"));
     } catch (error) {
       if (error?.code !== "ENOENT") throw error;
     }
+
+    const routeEntrypoints = themeManifest.entrypoints?.routes && typeof themeManifest.entrypoints.routes === "object"
+      ? Object.values(themeManifest.entrypoints.routes)
+      : [];
+
+    for (const routeEntry of routeEntrypoints) {
+      const { normalizedRouteEntry, sourceRouteCss, targetRouteCss } = resolveThemeRouteEntrypoint(routeEntry, sourceThemeRoot, targetThemeRoot);
+      const routeCss = await flattenCssImports(sourceRouteCss, new Set(), {
+        forbiddenImports: new Set([resolve(sourceThemeRoot, "routes.css")]),
+        forbiddenImportMessage: () => `Route CSS must not inline the full ${entry.name} routes.css bundle: ${normalizedRouteEntry}`
+      });
+      await mkdir(dirname(targetRouteCss), { recursive: true });
+      await writeFile(targetRouteCss, routeCss.trimStart());
+    }
+
     await cp(join(sourceThemeRoot, "preflight.css"), join(targetThemeRoot, "preflight.css"));
   }
 }

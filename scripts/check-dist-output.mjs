@@ -47,6 +47,11 @@ if (forbiddenFiles.length > 0) {
   fail(`Forbidden debug/source artifacts in dist:\n${forbiddenFiles.join("\n")}`);
 }
 
+const liquidGlassRoutes = files.filter((file) => file.startsWith("dist/themes/liquid-glass/routes/"));
+if (liquidGlassRoutes.length > 0) {
+  fail(`Liquid Glass 0.1.6 baseline must not ship route CSS files:\n${liquidGlassRoutes.join("\n")}`);
+}
+
 const manifest = JSON.parse(readFileSync(join(dist, "manifest.json"), "utf8"));
 if (manifest.content_scripts[0].js[0] !== "content/main.js") fail("manifest js path changed");
 if (manifest.content_scripts[0].css[0] !== "content/preflight.css") fail("manifest css path changed");
