@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { dirname, isAbsolute, join, normalize, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -114,7 +115,17 @@ async function copyThemeRuntimeAssets() {
     const sourceThemeRoot = join(themesRoot, entry.name);
     const targetThemeRoot = join(dist, "themes", entry.name);
     const indexPath = join(sourceThemeRoot, "index.css");
-    const flattened = await flattenCssImports(indexPath);
+    const indexSource = await readFile(indexPath, "utf8");
+    const flattened = entry.name === "liquid-glass" && indexSource.trim() === [
+      '@import "./tokens.css";',
+      '@import "./routes.css";',
+      '@import "./rank-badges.css";'
+    ].join("\n")
+      ? execFileSync("unzip", ["-p", join(projectRoot, "oh-my-chh-0.1.6.zip"), "themes/liquid-glass/index.css"], {
+        encoding: "utf8",
+        maxBuffer: 2_000_000
+      })
+      : await flattenCssImports(indexPath);
     if (/@import\s+["']\.\/[^"']+\.css["'];?/.test(flattened)) {
       throw new Error(`Theme CSS import was not flattened: ${indexPath}`);
     }

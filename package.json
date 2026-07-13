@@ -13,6 +13,8 @@
     "lint:dist": "node scripts/check-dist-output.mjs",
     "lint:ts-unused": "tsc --noEmit --noUnusedLocals --noUnusedParameters --pretty false",
     "report:css-duplicates": "node scripts/report-css-duplicates.mjs",
+    "verify:liquid-equivalence": "node scripts/check-liquid-css-equivalence.mjs",
+    "verify:liquid-performance": "node scripts/trace-liquid-css-performance.mjs",
     "verify": "npm run lint:css && npm run lint:imports && npm run typecheck && npm run lint:ts-unused && npm test && npm run build && npm run lint:dist"
   },
   "devDependencies": {
