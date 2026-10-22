@@ -4,3 +4,8 @@ coverage/
 .DS_Store
 *.log
 .gstack/
+
+.idea/
+.omx/
+dist-candidate/
+*.zip

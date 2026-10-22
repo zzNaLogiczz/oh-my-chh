@@ -1,6 +1,6 @@
 /* First-paint guard: Chromium injects content CSS before the document_start script.
-   Keep the original Discuz body hidden until settings, theme assets, root attributes,
-   and the initial DOM adapter pass are ready. */
+   Keep the original Discuz body hidden until the stored skin is known: the original
+   skin releases it immediately, the Excel skin covers the page and never releases it. */
 html:not([data-omchh-paint-ready="1"]) body {
   visibility: hidden !important;
 }

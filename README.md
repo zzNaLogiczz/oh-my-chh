@@ -1,13 +1,15 @@
 # oh-my-chh
 
-Manifest V3 Chrome/Edge extension prototype for reskinning `https://www.chiphell.com/*` with the Liquid Glass theme.
+Manifest V3 Chrome/Edge extension for `https://www.chiphell.com/*` with two skins, picked in the toolbar popup:
+
+- **原版** — the extension leaves Chiphell untouched.
+- **Excel 伪装** — opening Chiphell shows an Excel-style window instead: forum index, channel/sub-channel navigation, thread lists, thread details (posts in a comments pane, with text replies to the thread or to a single floor), portal articles and search, with back / up / paging controls. A boss key switches instantly to a workbook you import.
 
 ## Scope
 
-- Host-limited content script: `https://www.chiphell.com/*` only.
-- No remote code, no tracking, no cookie/form capture.
-- Current theme: `liquid-glass` (`Liquid Glass`). Previous visual directions are removed, and old stored theme IDs are normalized to the new theme.
-- DOM adapters add semantic `omchh-*` classes and data attributes to existing Discuz nodes instead of replacing business-critical form/link nodes.
+- Host-limited content script: `https://www.chiphell.com/*` only; `storage` is the only permission.
+- No remote code, no tracking, no cookie/form capture. See `PRIVACY.md`.
+- The Excel skin renders inside an extension-origin iframe; the imported workbook never leaves `chrome.storage.local`.
 
 ## Development
 
@@ -18,12 +20,8 @@ npm run verify
 
 Build output lands in `dist/`. Load `dist/` as an unpacked extension in Chrome or Microsoft Edge.
 
-## Manual QA targets
+## Layout
 
-- `https://www.chiphell.com/portal.php`
-- `https://www.chiphell.com/forum.php`
-- `https://www.chiphell.com/forum-146-1.html`
-- `https://www.chiphell.com/article-34976-1.html`
-- `https://www.chiphell.com/space-uid-2.html`
-
-Logged-in-only pages such as thread detail and compose require manual fixture/export validation in a logged-in browser.
+- `src/platform/bootstrap.ts` — content script: reads the skin, hands the page to the Excel host when needed.
+- `src/preferences/popup/` — toolbar popup (skin picker + the selected skin's settings).
+- `src/remake/excel/` — Excel skin: `host/` (content-script side), `app/` (iframe app), `parse/` (Discuz page parsers), `options/` (workbook import page), `workbook/` (xlsx normalization and storage).

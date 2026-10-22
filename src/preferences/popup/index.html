@@ -3,59 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>oh-my-chh 设置</title>
+    <title>oh-my-chh</title>
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
-    <main class="popup-shell" aria-labelledby="popup-title">
-      <header class="hero-card" aria-describedby="popup-subtitle">
-        <p class="eyebrow">OH-MY-CHH</p>
-        <h1 id="popup-title">Chiphell 美化设置</h1>
-        <p id="popup-subtitle">
-          默认启用 Liquid Glass；设置只保存在浏览器内。
-        </p>
-      </header>
-
-      <form class="settings-card" id="settings-form">
-        <section class="section" aria-labelledby="appearance-title">
-          <div class="section-heading">
-            <p class="eyebrow">风格</p>
-            <h2 id="appearance-title">外观</h2>
-          </div>
-
-          <label class="field-row" for="theme-id">
-            <span>
-              <strong>选择主题</strong>
-              <small>Liquid Glass：新版页头、快捷导航和整体视觉风格。</small>
-            </span>
-            <select id="theme-id" name="themeId" aria-label="选择主题">
-              <option value="liquid-glass">Liquid Glass（新版）</option>
-            </select>
-          </label>
-          <div class="capability-list" id="capability-list" aria-label="主题信号开关"></div>
-        </section>
-
-      </form>
-
-      <section class="settings-card monitoring-card" aria-labelledby="monitoring-title">
-        <div class="section-heading">
-          <p class="eyebrow">本地监控</p>
-          <h2 id="monitoring-title">性能日志</h2>
-        </div>
-        <p class="monitoring-copy">记录刷新耗时和异常摘要，仅保存在本机 Chrome 本地存储；导出文件严格不超过 5 MiB。</p>
-        <div class="monitoring-actions">
-          <button type="button" id="monitoring-export">导出日志</button>
-          <button type="button" id="monitoring-clear" class="secondary">清空日志</button>
-        </div>
-        <p class="monitoring-status" id="monitoring-status" role="status" aria-live="polite">日志状态读取中…</p>
-      </section>
-
-      <footer class="privacy-note">
-        <strong>隐私：</strong>主题设置保存在 Chrome 同步存储；性能日志仅保存在 Chrome 本地存储，可在本弹窗导出或清空；插件不会向远程服务发送页面内容或账号数据。
-      </footer>
-
-      <p class="save-status" id="save-status" role="status" aria-live="polite">就绪</p>
-    </main>
+    <div id="root"></div>
     <script type="module" src="popup.js"></script>
   </body>
 </html>
