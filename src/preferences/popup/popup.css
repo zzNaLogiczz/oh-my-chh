@@ -1,272 +1,129 @@
+/* oh-my-chh 弹窗：中性的通用设置样式（不沿用任何皮肤的风格），唯一的强调色取自插件图标的深石板蓝
+   页面边缘不画边框：弹窗外框由 Chrome 绘制，扩展改不了 */
 :root {
-  color-scheme: light;
-  --bg: #eef2f7;
-  --ink: #17191d;
-  --muted: #687385;
-  --muted-2: #8994a6;
-  --panel: rgba(255, 255, 255, 0.84);
-  --panel-strong: #ffffff;
-  --dark: #111316;
-  --dark-2: #202632;
-  --rule: rgba(23, 25, 29, 0.12);
-  --rule-on-dark: rgba(255, 255, 255, 0.14);
-  --accent: #007aff;
-  --accent-2: #8b3a2a;
-  --good: #34c759;
-  --warn: #ff9500;
-  --shadow: 0 18px 50px rgba(23, 33, 55, 0.16);
-  --mono: "SF Mono", "JetBrains Mono", ui-monospace, monospace;
-  --sans: "SF Pro Text", "PingFang SC", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  font-family: var(--sans);
-  font-size: 14px;
+  color-scheme: light dark;
+  --bg: #f4f5f7;
+  --card: #ffffff;
+  --ink: #0f172a;
+  --ink-2: #475569;
+  --ink-3: #94a3b8;
+  --line: #e2e8f0;
+  --line-2: #eef1f5;
+  --fill: #f1f5f9;
+  --accent: #1e293b;
+  --on-accent: #ffffff;
+  --ring: rgba(30, 41, 59, .18);
+  --danger: #dc2626;
+  --radius: 10px;
+  --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111317; --card: #1a1d22; --ink: #e5e7eb; --ink-2: #a1a8b3; --ink-3: #6b7280;
+    --line: #2a2f36; --line-2: #23272d; --fill: #23272d;
+    --accent: #e2e8f0; --on-accent: #111317; --ring: rgba(226, 232, 240, .22); --danger: #f87171;
+  }
+  /* 深色底上图标的深蓝底色会融进背景，加一圈描边 */
+  .pp-logo { box-shadow: 0 0 0 1px var(--line); }
 }
 
 * { box-sizing: border-box; }
+html, body { margin: 0; overflow-x: hidden; background: var(--bg); }
+body { width: 340px; color: var(--ink); font: 13px/1.4 var(--font); -webkit-font-smoothing: antialiased; }
+button { margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-html {
-  width: 380px;
-  min-width: 340px;
-  background: var(--bg);
+.pp { display: grid; gap: 12px; padding: 14px 14px 12px; }
+
+/* 页头：插件图标 + 名称 + 版本；右侧轻提示“已保存” */
+.pp-head { display: flex; align-items: center; gap: 8px; min-height: 24px; }
+.pp-logo { flex: none; width: 22px; height: 22px; border-radius: 6px; }
+.pp-brand { font-size: 14px; font-weight: 650; letter-spacing: -.1px; }
+.pp-version { color: var(--ink-3); font: 11px/1 var(--mono); }
+.pp-toast {
+  margin-left: auto; padding: 3px 8px; border-radius: 999px; background: var(--fill); color: var(--ink-2);
+  font-size: 11.5px; font-weight: 600; opacity: 0; transform: translateY(-2px); transition: opacity .2s, transform .2s;
 }
+.pp-toast.is-visible { opacity: 1; transform: none; }
+.pp-toast.is-error { background: color-mix(in srgb, var(--danger) 12%, transparent); color: var(--danger); }
 
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(90% 60% at 12% -10%, rgba(255, 184, 132, 0.38), transparent 62%),
-    radial-gradient(76% 56% at 98% 0%, rgba(95, 183, 255, 0.36), transparent 60%),
-    radial-gradient(80% 56% at 45% 110%, rgba(186, 136, 255, 0.24), transparent 62%),
-    var(--bg);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+/* 设置分组：白卡片 + 发丝分隔线；分组标题是所属皮肤的名字 */
+.pp-section { display: grid; gap: 6px; }
+.pp-section[hidden] { display: none; }
+.pp-caption { margin: 0; padding: 0 4px; color: var(--ink-3); font-size: 11.5px; font-weight: 600; }
+.pp-group { padding: 0 12px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
+.pp-section:not([hidden]) .pp-group { animation: pp-in .16s ease-out; }
+.pp-row { display: flex; align-items: center; gap: 8px; min-height: 42px; }
+.pp-row + .pp-row { border-top: 1px solid var(--line-2); }
+.pp-label { flex: none; }
+.pp-value { flex: 1; min-width: 0; overflow: hidden; color: var(--ink-2); text-align: right; text-overflow: ellipsis; white-space: nowrap; }
+.pp-value.is-empty { color: var(--ink-3); }
+.pp-link { flex: none; padding: 4px 8px; border-radius: 6px; font-weight: 600; }
+.pp-link:hover { background: var(--fill); }
+
+/* 下拉框：原生 select 去掉系统外观，右侧画一个 V 形箭头 */
+.pp-select { position: relative; margin-left: auto; }
+.pp-select::after {
+  content: ""; position: absolute; top: 50%; right: 11px; width: 6px; height: 6px; margin-top: -5px; pointer-events: none;
+  border: solid var(--ink-2); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg);
 }
-
-button,
-select,
-input { font: inherit; }
-
-button {
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
-  padding: 8px 12px;
-  color: #fff;
-  background: var(--accent);
-  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.18);
-  cursor: pointer;
+.pp-select select {
+  appearance: none; min-width: 132px; height: 30px; padding: 0 30px 0 10px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--card); color: var(--ink); font: inherit; font-weight: 500; cursor: pointer; transition: border-color .15s, box-shadow .15s;
 }
+.pp-select select:hover { border-color: color-mix(in srgb, var(--ink) 25%, var(--line)); }
+.pp-select select:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
 
-button.secondary {
-  color: var(--ink);
-  background: var(--panel-strong);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+/* 窗口标题：平时像文字，悬停 / 聚焦才像输入框；后缀“- Excel”提示标签页上的实际标题 */
+.pp-title { flex: 1; display: flex; align-items: center; justify-content: flex-end; gap: 4px; min-width: 0; }
+.pp-title input {
+  width: 100%; min-width: 0; padding: 5px 7px; border: 1px solid transparent; border-radius: 7px;
+  background: transparent; color: var(--ink-2); font: inherit; text-align: right; transition: border-color .15s, box-shadow .15s;
 }
+.pp-title input:hover { border-color: var(--line); }
+.pp-title input:focus { outline: none; border-color: var(--accent); background: var(--card); box-shadow: 0 0 0 3px var(--ring); color: var(--ink); text-align: left; }
+.pp-suffix { flex: none; color: var(--ink-3); font-size: 12px; }
 
-button:disabled {
-  cursor: progress;
-  opacity: 0.62;
+/* 快捷键：键帽；点一下进入录制 */
+.pp-keys { display: inline-flex; align-items: center; gap: 4px; min-height: 30px; margin-left: auto; padding: 3px; border: 1px dashed transparent; border-radius: 8px; transition: border-color .15s, background .15s; }
+.pp-keys:hover { border-color: var(--line); }
+.pp-keys kbd {
+  display: inline-grid; place-items: center; min-width: 23px; height: 23px; padding: 0 6px; color: var(--ink);
+  background: var(--fill); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 6px; font: 600 11.5px/1 var(--mono);
 }
+.pp-keys.is-recording { border-color: var(--accent); background: var(--fill); animation: pp-pulse 1.2s ease-in-out infinite; }
+.pp-keys.is-invalid { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 8%, transparent); animation: pp-shake .26s ease; }
+.pp-keys.is-recording:focus-visible { outline: none; }
+.pp-keys-hint { padding: 0 6px; color: var(--ink); font-size: 12px; font-weight: 600; white-space: nowrap; }
+.pp-keys.is-invalid .pp-keys-hint { color: var(--danger); }
 
-.popup-shell {
-  display: grid;
-  gap: 12px;
-  min-height: 100vh;
-  padding: 14px;
+/* 开关 */
+.pp-switch {
+  appearance: none; position: relative; flex: none; width: 34px; height: 20px; margin: 0 0 0 auto; border-radius: 999px;
+  background: var(--line); cursor: pointer; transition: background .18s;
 }
-
-.hero-card,
-.settings-card,
-.monitoring-card,
-.privacy-note {
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 20px;
-  background: var(--panel);
-  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(22px) saturate(150%);
-  -webkit-backdrop-filter: blur(22px) saturate(150%);
+.pp-switch::before {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .25); transition: transform .18s, background .18s;
 }
+.pp-switch:checked { background: var(--accent); }
+.pp-switch:checked::before { background: var(--on-accent); transform: translateX(14px); }
 
-.hero-card {
-  padding: 16px 16px 14px;
-  color: #f5f7fb;
-  background:
-    linear-gradient(135deg, rgba(17, 19, 22, 0.96), rgba(32, 38, 50, 0.96)),
-    var(--dark);
-  border-color: rgba(255, 255, 255, 0.08);
+/* 高级：默认折叠 */
+.pp-advanced summary {
+  display: inline-flex; align-items: center; gap: 5px; padding: 2px 4px; border-radius: 6px; color: var(--ink-3);
+  font-size: 12px; cursor: pointer; list-style: none; user-select: none;
 }
-
-.eyebrow {
-  margin: 0;
-  color: var(--muted-2);
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+.pp-advanced summary::-webkit-details-marker { display: none; }
+.pp-advanced summary::before {
+  content: ""; width: 5px; height: 5px; border: solid currentColor; border-width: 0 1.5px 1.5px 0; transform: rotate(-45deg); transition: transform .15s;
 }
+.pp-advanced[open] summary::before { transform: rotate(45deg); }
+.pp-advanced summary:hover { color: var(--ink-2); }
+.pp-advanced .pp-group { margin-top: 8px; }
 
-.hero-card .eyebrow { color: #8d98a8; }
-
-h1,
-h2 {
-  margin: 0;
-  letter-spacing: -0.035em;
-}
-
-h1 {
-  margin-top: 8px;
-  font-size: 26px;
-  line-height: 1;
-}
-
-h2 {
-  margin-top: 4px;
-  font-size: 17px;
-}
-
-p { line-height: 1.45; }
-
-.hero-card p:last-child {
-  margin: 9px 0 0;
-  color: #b8c1cf;
-  font-size: 12px;
-}
-
-.settings-card { padding: 4px 14px; }
-
-.monitoring-card { padding: 4px 14px 14px; }
-
-.monitoring-copy {
-  margin: 4px 0 10px;
-  color: var(--muted);
-  font-size: 11px;
-}
-
-.monitoring-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.monitoring-status {
-  min-height: 16px;
-  margin: 10px 0 0;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 10px;
-}
-
-.section-heading {
-  padding: 12px 0 4px;
-}
-
-.field-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  min-height: 58px;
-  padding: 10px 0;
-  border-top: 1px solid rgba(127, 127, 127, 0.14);
-}
-
-.field-row:first-of-type { border-top: 0; }
-
-.field-row span { min-width: 0; }
-
-strong {
-  display: block;
-  font-size: 13px;
-  letter-spacing: -0.01em;
-}
-
-small {
-  display: block;
-  margin-top: 3px;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.35;
-}
-
-select {
-  min-width: 126px;
-  max-width: 146px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
-  padding: 8px 30px 8px 10px;
-  color: var(--ink);
-  background: var(--panel-strong);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-}
-
-select:focus-visible {
-  outline: 3px solid rgba(0, 122, 255, 0.28);
-  outline-offset: 3px;
-}
-
-.capability-list {
-  display: contents;
-}
-
-input[type="checkbox"][role="switch"] {
-  width: 42px;
-  height: 24px;
-  margin: 0;
-  appearance: none;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 999px;
-  background: #d5dbe5;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
-  cursor: pointer;
-  transition: background 0.16s ease;
-}
-
-input[type="checkbox"][role="switch"]::before {
-  display: block;
-  width: 18px;
-  height: 18px;
-  margin: 2px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
-  content: "";
-  transition: transform 0.16s ease;
-}
-
-input[type="checkbox"][role="switch"]:checked {
-  background: var(--accent);
-}
-
-input[type="checkbox"][role="switch"]:checked::before {
-  transform: translateX(18px);
-}
-
-.privacy-note {
-  padding: 12px 14px;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.45;
-}
-
-.privacy-note strong {
-  display: inline;
-  color: var(--ink);
-  font-size: inherit;
-}
-
-.save-status {
-  min-height: 16px;
-  margin: -4px 2px 0;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 10px;
-  text-align: right;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-  }
-}
+@keyframes pp-in { from { opacity: 0; transform: translateY(-4px); } }
+@keyframes pp-pulse { 50% { box-shadow: 0 0 0 3px var(--ring); } }
+@keyframes pp-shake { 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+@media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }

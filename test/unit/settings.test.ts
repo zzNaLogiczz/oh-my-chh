@@ -42,23 +42,29 @@ describe("settings subscription", () => {
   });
 });
 
-describe("theme setting validation", () => {
-  it("defaults color scheme to explicit light mode", () => {
-    expect(DEFAULT_SETTINGS.colorScheme).toBe("light");
+describe("loading stored settings", () => {
+  it("reads the retired displayMode key so existing Excel users land on the Excel skin", async () => {
+    const get = vi.fn().mockResolvedValue({ displayMode: "excel" });
+    vi.stubGlobal("chrome", { storage: { sync: { get } } });
+
+    await expect(loadSettings()).resolves.toEqual({ skin: "excel", debugLog: false });
+    expect(get.mock.calls[0][0]).toEqual(expect.arrayContaining(["skin", "debugLog", "displayMode"]));
   });
 
-  it("keeps known theme IDs and falls back to the catalog default for unknown IDs", async () => {
-    const get = vi.fn()
-      .mockResolvedValueOnce({ themeId: "liquid-glass", density: "comfortable" })
-      .mockResolvedValueOnce({ themeId: "unknown-theme", density: "comfortable" });
-
+  it("notifies subscribers only for current settings keys", async () => {
+    const listeners: Array<(changes: Record<string, unknown>, area: string) => void> = [];
     vi.stubGlobal("chrome", {
       storage: {
-        sync: { get }
+        sync: { get: vi.fn().mockResolvedValue({ skin: "excel" }) },
+        onChanged: { addListener: (fn: never) => listeners.push(fn), removeListener: vi.fn() }
       }
     });
-
-    await expect(loadSettings()).resolves.toMatchObject({ themeId: "liquid-glass", density: "comfortable", colorScheme: "light" });
-    await expect(loadSettings()).resolves.toMatchObject({ themeId: DEFAULT_SETTINGS.themeId, density: "comfortable", colorScheme: "light" });
+    const callback = vi.fn();
+    onSettingsChanged(callback);
+    listeners[0]({ reduceGlass: { newValue: true } }, "sync");
+    listeners[0]({ skin: { newValue: "excel" } }, "local");
+    expect(callback).not.toHaveBeenCalled();
+    listeners[0]({ skin: { newValue: "excel" } }, "sync");
+    await vi.waitFor(() => expect(callback).toHaveBeenCalledWith({ skin: "excel", debugLog: false }));
   });
 });

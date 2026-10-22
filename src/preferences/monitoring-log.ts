@@ -360,7 +360,19 @@ function scheduleFlush(delayMs: number): void {
   }, delayMs);
 }
 
+// 生产默认关闭信息级日志写入（Phase A perf）：每次刷新的 storage 序列化/写入是纯背景开销。
+let monitoringEnabled = false;
+
+export function setMonitoringEnabled(enabled: boolean): void {
+  monitoringEnabled = enabled;
+}
+
+export function isMonitoringEnabled(): boolean {
+  return monitoringEnabled;
+}
+
 export function enqueueMonitoringEvent(input: MonitoringEventInput): void {
+  if (!monitoringEnabled && input.level !== "error") return;
   const entry = normalizeMonitoringEntry(input);
   queueAggregate(entry);
   if (shouldPersistEntry(entry)) pendingEntries.push(entry);

@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "oh-my-chh",
   "short_name": "oh-my-chh",
-  "version": "0.1.7",
-  "description": "Enhances the Chiphell forum interface and browsing experience with customizable UI themes.",
+  "version": "0.2.0",
+  "description": "Chiphell（chh）论坛专用美化插件，可自由选择多款样式。",
   "permissions": [
     "storage"
   ],
@@ -34,10 +34,9 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "themes/*/index.css",
-        "themes/*/preflight.css",
-        "themes/*/routes/*.css",
-        "themes/*/fonts/*"
+        "excel/app.html",
+        "excel/app.js",
+        "excel/app.css"
       ],
       "matches": [
         "https://www.chiphell.com/*"
@@ -49,5 +48,9 @@
     "32": "icons/chh-icon-32.png",
     "48": "icons/chh-icon-48.png",
     "128": "icons/chh-icon-128.png"
+  },
+  "options_ui": {
+    "page": "excel/options.html",
+    "open_in_tab": true
   }
 }

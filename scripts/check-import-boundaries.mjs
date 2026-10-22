@@ -37,67 +37,46 @@ function inDir(rel, dir) {
   return rel === dir || rel.startsWith(`${dir}/`);
 }
 
-function isThemingImplementation(rel) {
-  return inDir(rel, "src/theming/themes") || rel === "src/theming/registry.ts" || rel === "src/theming/theme-module.ts";
-}
+const EXCEL = "src/remake/excel";
 
-function isCatalog(rel) {
-  return rel === "src/theming/catalog.ts" || rel === "src/capabilities/catalog.ts";
-}
-
-function isPreferencesPlatformException(fromRel, targetRel) {
-  return fromRel === "src/preferences/settings.ts" && targetRel === "src/platform/extension-context.ts";
-}
-
+/**
+ * 三个运行上下文各自打包，互相 import 会把不该有的代码带进别的包：
+ * - content script（src/platform、excel/host）：页面里运行，不能带 UI 和 exceljs
+ * - Excel iframe 应用（excel/app）：扩展源页面，不能依赖页面宿主
+ * - 工具栏弹窗（preferences/popup）：只读写设置，不碰页面侧代码
+ * exceljs 运行时只允许进工作簿导入页（excel/options），其他地方只能 import type。
+ */
 function checkImport(fromFile, targetFile, specifier) {
   if (!targetFile || !targetFile.startsWith(srcRoot)) return;
   const fromRel = toPosix(relative(projectRoot, fromFile));
   const targetRel = toPosix(relative(projectRoot, targetFile));
+  const deny = (reason) => errors.push(`${fromRel}: ${reason} ${specifier} -> ${targetRel}`);
 
-  if (inDir(fromRel, "src/foundation") && (
-    inDir(targetRel, "src/theming") ||
-    inDir(targetRel, "src/capabilities") ||
-    inDir(targetRel, "src/preferences") ||
-    inDir(targetRel, "src/platform") ||
-    inDir(targetRel, "src/features")
-  )) {
-    errors.push(`${fromRel}: foundation must not import upper context ${specifier} -> ${targetRel}`);
+  if (inDir(fromRel, `${EXCEL}/app`) && (inDir(targetRel, `${EXCEL}/host`) || inDir(targetRel, "src/platform"))) {
+    deny("Excel iframe app must not import content-script code");
   }
-
-  if (inDir(fromRel, "src/preferences") && !isCatalog(targetRel) && !isPreferencesPlatformException(fromRel, targetRel) && (
-    isThemingImplementation(targetRel) ||
-    inDir(targetRel, "src/capabilities/registry") ||
-    inDir(targetRel, "src/features") ||
-    inDir(targetRel, "src/foundation") ||
-    inDir(targetRel, "src/platform")
-  )) {
-    errors.push(`${fromRel}: preferences/popup may import schema and catalogs, not implementation ${specifier} -> ${targetRel}`);
+  if ((inDir(fromRel, `${EXCEL}/host`) || inDir(fromRel, "src/platform")) &&
+    (inDir(targetRel, `${EXCEL}/app`) || inDir(targetRel, `${EXCEL}/options`) || inDir(targetRel, "src/preferences/popup"))) {
+    deny("content script must not import extension-page UI");
   }
-
-  if (inDir(fromRel, "src/capabilities") && targetRel.endsWith(".css")) {
-    errors.push(`${fromRel}: capabilities must not import css ${specifier}`);
+  if (inDir(fromRel, "src/preferences/popup") && (inDir(targetRel, "src/platform") || inDir(targetRel, `${EXCEL}/host`) || inDir(targetRel, `${EXCEL}/app`))) {
+    deny("popup must not import page-side code");
   }
 }
 
-async function checkNoCapabilityCss() {
-  const dir = join(srcRoot, "capabilities");
-  if (!existsSync(dir)) return;
-  const entries = await readdir(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    if (entry.isFile() && entry.name.endsWith(".css")) {
-      errors.push(`src/capabilities/${entry.name}: capabilities must not contain CSS files`);
-    }
-  }
+function checkExcelJs(fromFile, statement, specifier) {
+  const fromRel = toPosix(relative(projectRoot, fromFile));
+  if (specifier !== "exceljs" || /^import\s+type\s/.test(statement) || inDir(fromRel, `${EXCEL}/options`)) return;
+  errors.push(`${fromRel}: exceljs may only be loaded at runtime by the import page (use import type elsewhere)`);
 }
 
 for (const file of await walk(srcRoot)) {
   const source = await readFile(file, "utf8");
   for (const match of source.matchAll(importPattern)) {
     checkImport(file, resolveImport(file, match[1]), match[1]);
+    checkExcelJs(file, match[0], match[1]);
   }
 }
-
-await checkNoCapabilityCss();
 
 if (errors.length) {
   console.error(errors.join("\n"));

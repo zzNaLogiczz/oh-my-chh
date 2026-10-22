@@ -1,62 +1,46 @@
 // @vitest-environment node
 import { execFileSync } from "node:child_process";
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
-function buildExtension(): void {
-  execFileSync(process.execPath, ["scripts/build-extension.mjs"], {
-    cwd: process.cwd(),
-    stdio: "pipe"
-  });
-}
+const dist = join(process.cwd(), "dist");
+const read = (path: string) => readFileSync(join(dist, path), "utf8");
+const size = (path: string) => statSync(join(dist, path)).size;
 
-function distFiles(dir = join(process.cwd(), "dist")): string[] {
+function distFiles(dir = dist): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const fullPath = join(dir, entry.name);
-    return entry.isDirectory() ? distFiles(fullPath) : [fullPath.replace(`${process.cwd()}/`, "")];
+    return entry.isDirectory() ? distFiles(fullPath) : [fullPath.replace(`${dist}/`, "")];
   });
 }
 
-describe("extension build output", () => {
+// 整个文件共用一次完整构建；全量并发跑时 CPU 满载，构建需要宽裕的超时
+describe("extension build output", { timeout: 60_000 }, () => {
+  beforeAll(() => {
+    execFileSync(process.execPath, ["scripts/build-extension.mjs"], { cwd: process.cwd(), stdio: "pipe" });
+  }, 60_000);
+
   it("bundles the manifest content script as a classic self-contained script", () => {
-    buildExtension();
-
-    const contentScript = readFileSync(join(process.cwd(), "dist/content/main.js"), "utf8");
-
+    const contentScript = read("content/main.js");
     expect(contentScript).not.toMatch(/^\s*import\s/m);
     expect(contentScript).not.toMatch(/^\s*export\s/m);
     expect(contentScript).not.toContain("../assets/");
   });
 
-  it("keeps Phase A dist assets within current-line performance budgets after a fresh build", () => {
-    buildExtension();
-
-    expect(statSync(join(process.cwd(), "dist/themes/liquid-glass/index.css")).size).toBeLessThanOrEqual(1_250_000);
-    expect(statSync(join(process.cwd(), "dist/content/main.js")).size).toBeLessThanOrEqual(130_000);
+  it("keeps every bundle within its budget and exceljs inside the import page only", () => {
+    // 内容脚本只剩皮肤判断 + Excel 宿主（遮罩、页面解析、抓取）
+    expect(size("content/main.js")).toBeLessThanOrEqual(80_000);
+    expect(size("popup/popup.js")).toBeLessThanOrEqual(40_000);
+    expect(size("excel/app.js")).toBeLessThanOrEqual(200_000);
+    expect(size("excel/options.js")).toBeLessThanOrEqual(1_600_000);
+    for (const bundle of ["content/main.js", "popup/popup.js", "excel/app.js"]) expect(read(bundle)).not.toMatch(/exceljs/i);
   });
 
-  it("ships only runtime theme assets and omits debug/source artifacts by default", () => {
-    buildExtension();
-
+  it("ships no retired theme, island or home-remake artifacts and no sources", () => {
     const files = distFiles();
-
-    expect(files).toEqual(expect.arrayContaining([
-      "dist/content/main.js",
-      "dist/content/preflight.css",
-      "dist/popup/index.html",
-      "dist/popup/popup.css",
-      "dist/popup/popup.js",
-      "dist/themes/liquid-glass/index.css",
-      "dist/themes/liquid-glass/preflight.css",
-      "dist/themes/flat-clean/index.css",
-      "dist/themes/flat-clean/preflight.css"
-    ]));
-    expect(files.filter((file) => /\.(?:ts|md|map)$/.test(file))).toEqual([]);
-    expect(files.filter((file) => file.includes("/adapter/"))).toEqual([]);
-    expect(files).not.toContain("dist/themes/liquid-glass/routes.css");
-    expect(files).not.toContain("dist/themes/liquid-glass/tokens.css");
-    expect(files).not.toContain("dist/themes/liquid-glass/rank-badges.css");
-    expect(files).not.toContain("dist/themes/liquid-glass/preview.html");
+    expect(files.filter((file) => file.startsWith("themes/"))).toEqual([]);
+    expect(existsSync(join(dist, "content/remake-home.js"))).toBe(false);
+    expect(files.filter((file) => /\.(?:ts|tsx|md|map)$/.test(file))).toEqual([]);
   });
 });
