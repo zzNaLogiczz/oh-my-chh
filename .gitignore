@@ -9,3 +9,8 @@ coverage/
 .omx/
 dist-candidate/
 *.zip
+
+# 开发文档（方案、规格、计划、调研）只留本地；docs/ 下只提交 GitHub Pages 发布的隐私政策页
+docs/*
+!docs/index.md
+!docs/privacy.md
