@@ -1,0 +1,190 @@
+/* Excel 伪装皮肤：只用系统字体，零外部资源 */
+:root {
+  color-scheme: light;
+  --xl-font: "等线", "DengXian", "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+  --xl-green: #217346;
+  --xl-green-dark: #185c37;
+  --xl-chrome: #f3f3f3;
+  --xl-line: #d4d4d4;
+  --xl-grid-line: #e1e1e1;
+  --xl-head: #f3f3f3;
+  --xl-head-active: #d3f0e0;
+  --xl-text: #222;
+  --xl-muted: #666;
+  --xl-comment: #8a6fb0;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #fff; }
+body { font: 12px/1.4 var(--xl-font); color: var(--xl-text); }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: default; }
+
+.xl-app { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 30px 26px 82px 26px minmax(0, 1fr) 26px 22px; height: 100vh; }
+
+/* 标题栏 */
+.xl-titlebar { display: flex; align-items: center; gap: 16px; padding: 0 10px; background: var(--xl-green); color: #fff; font-size: 12px; }
+.xl-qat { opacity: .9; letter-spacing: 2px; }
+.xl-title { flex: 1; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xl-account { opacity: .85; }
+.xl-winctl { letter-spacing: 6px; opacity: .9; }
+
+/* 功能区 */
+.xl-tabs { position: relative; display: flex; align-items: flex-end; gap: 2px; padding: 0 6px; background: var(--xl-green); }
+.xl-tab { height: 24px; padding: 0 12px; color: #fff; border-radius: 3px 3px 0 0; }
+.xl-tab:hover { background: rgba(255, 255, 255, .12); }
+.xl-tab.is-active { background: var(--xl-chrome); color: var(--xl-green-dark); font-weight: 600; }
+.xl-tab-file { background: var(--xl-green-dark); }
+.xl-filemenu { position: absolute; top: 26px; left: 6px; z-index: 30; min-width: 220px; padding: 6px 0; background: #fff; border: 1px solid var(--xl-line); box-shadow: 0 6px 18px rgba(0, 0, 0, .18); }
+.xl-filemenu-item { display: block; width: 100%; text-align: left; padding: 7px 16px; }
+.xl-filemenu-item:hover { background: #e9f2ec; }
+.xl-panels { display: flex; background: var(--xl-chrome); border-bottom: 1px solid var(--xl-line); overflow: hidden; }
+/* 组不收缩；窗口太窄放不下的组整组换到被裁掉的第二行，而不是半截露在右边 */
+.xl-panel { display: flex; flex: 1; flex-wrap: wrap; align-content: flex-start; min-width: 0; height: 100%; padding: 4px 6px 0; overflow: hidden; }
+.xl-panel[hidden] { display: none; }
+.xl-group { display: grid; flex: none; grid-template-rows: 1fr 16px; height: 77px; padding: 0 8px; border-right: 1px solid var(--xl-line); }
+.xl-group-items { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 2px 4px; max-width: 260px; }
+.xl-cmd { padding: 3px 6px; border-radius: 2px; white-space: nowrap; }
+.xl-cmd:hover { background: #dcdcdc; }
+.xl-cmd:disabled { color: #a6a6a6; }
+.xl-cmd:disabled:hover { background: none; }
+/* 导航组：论坛工作表专用，固定在功能区最左侧 */
+.xl-navgroup { margin: 4px 0 0 6px; }
+.xl-navgroup[hidden] { display: none; }
+.xl-navgroup .xl-group-items { flex-direction: column; flex-wrap: nowrap; max-width: none; }
+.xl-navrow { display: flex; align-items: center; gap: 2px 4px; }
+.xl-pagebox { display: inline-flex; align-items: center; gap: 3px; }
+.xl-page-input { width: 52px; height: 19px; padding: 0 4px; border: 1px solid #c6c6c6; background: #fff; font: inherit; text-align: center; }
+.xl-page-input:focus { outline: 1px solid var(--xl-green); border-color: var(--xl-green); }
+.xl-page-input:disabled { background: #f3f3f3; color: #a6a6a6; }
+.xl-check { display: inline-flex; align-items: center; gap: 2px; }
+.xl-group-label { text-align: center; color: var(--xl-muted); font-size: 11px; }
+
+/* 编辑栏 */
+.xl-formula { display: flex; align-items: stretch; background: #fff; border-bottom: 1px solid var(--xl-line); }
+.xl-namebox { width: 90px; padding: 4px 6px; border-right: 1px solid var(--xl-line); }
+.xl-formula-sep { padding: 4px 4px; color: #aaa; }
+.xl-fx { padding: 4px 10px; color: var(--xl-muted); font-style: italic; border-right: 1px solid var(--xl-line); }
+.xl-formula-text { flex: 1; padding: 4px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* 主体：网格 + 批注窗格 */
+.xl-body { position: relative; display: flex; min-width: 0; min-height: 0; }
+.xl-view { flex: 1; display: flex; min-width: 0; min-height: 0; }
+.xl-view[hidden] { display: none; }
+.xl-grid { flex: 1; min-width: 0; overflow: auto; outline: none; background: #fff; }
+.xl-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: max-content; }
+.xl-table th, .xl-table td { height: 20px; padding: 0 4px; border-right: 1px solid var(--xl-grid-line); border-bottom: 1px solid var(--xl-grid-line); white-space: nowrap; overflow: hidden; text-overflow: clip; vertical-align: bottom; }
+.xl-table thead th { position: sticky; top: 0; z-index: 3; }
+.xl-colhead, .xl-rowhead, .xl-corner { background: var(--xl-head); color: #444; font-weight: 400; text-align: center; border-color: var(--xl-line) !important; }
+.xl-rowhead { position: sticky; left: 0; z-index: 2; font-size: 11px; }
+.xl-corner { position: sticky; left: 0; top: 0; z-index: 4 !important; }
+.xl-head-active { background: var(--xl-head-active); color: var(--xl-green-dark); font-weight: 600; }
+.xl-table td { background: #fff; cursor: cell; }
+.xl-frozen-row { position: sticky; z-index: 1; }
+.xl-frozen-col { position: sticky; z-index: 1; }
+.xl-rowhead.xl-frozen-row { z-index: 3; }
+.xl-sel { outline: 2px solid var(--xl-green); outline-offset: -2px; }
+.xl-link { cursor: pointer; }
+.xl-has-comment { position: relative; }
+.xl-has-comment::after { content: ""; position: absolute; top: 0; right: 0; border-left: 6px solid transparent; border-top: 6px solid var(--xl-comment); }
+
+/* 批注窗格 */
+.xl-comments { width: clamp(280px, 30vw, 380px); flex: none; display: flex; flex-direction: column; border-left: 1px solid var(--xl-line); background: #fafafa; }
+.xl-comments-head { display: flex; justify-content: space-between; padding: 8px 12px; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--xl-line); }
+.xl-comments-list { position: relative; flex: 1; overflow: auto; padding: 8px 10px; }
+.xl-card { position: relative; margin-bottom: 8px; padding: 8px 10px; background: #fff; border: 1px solid #e1e1e1; border-radius: 4px; }
+.xl-card.is-current { border-color: var(--xl-green); box-shadow: 0 0 0 1px var(--xl-green); }
+.xl-card-head { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.xl-avatar { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; flex: none; }
+.xl-avatar-fallback { display: inline-flex; align-items: center; justify-content: center; background: var(--xl-comment); color: #fff; font-size: 11px; }
+.xl-card-author { font-weight: 600; }
+.xl-card-time { margin-left: auto; color: #888; font-size: 11px; }
+.xl-card-more { padding: 0 4px; color: #888; border-radius: 2px; }
+.xl-card-more:hover { background: #eee; }
+.xl-card-menu { position: absolute; top: 28px; right: 8px; z-index: 5; padding: 4px 0; background: #fff; border: 1px solid var(--xl-line); box-shadow: 0 4px 12px rgba(0, 0, 0, .15); }
+.xl-card-menu button { display: block; padding: 5px 14px; white-space: nowrap; }
+.xl-card-menu button:hover { background: #e9f2ec; }
+.xl-card p { margin: 3px 0; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+.xl-card .xl-muted { color: #999; }
+.xl-quote { margin: 4px 0; padding: 2px 8px; border-left: 3px solid #d0d0d0; color: #666; }
+.xl-quote-head { color: #999; font-size: 11px; }
+.xl-thumb { display: block; max-width: 100%; max-height: 140px; margin: 4px 0; border: 1px solid #eee; cursor: zoom-in; }
+.xl-thumb.is-full { max-height: none; cursor: zoom-out; }
+.xl-chip { display: inline-block; margin: 2px 4px 2px 0; padding: 0 6px; border: 1px solid var(--xl-line); border-radius: 3px; background: #f7f9fc; color: #185abd; font-size: 11px; }
+
+/* 答复框（仿 Excel 线程批注）：选中的卡片底部出现“答复…”，窗格底部是回复楼主的框 */
+.xl-reply-stub { display: none; width: 100%; height: 26px; margin-top: 6px; padding: 0 8px; text-align: left; color: #8a8a8a; background: #fff; border: 1px solid #d0d0d0; border-radius: 4px; cursor: text; }
+.xl-reply-stub:hover { border-color: var(--xl-green); }
+.xl-card.is-current .xl-reply-stub { display: block; }
+.xl-card.is-replying .xl-reply-stub { display: none; }
+.xl-comments-foot { flex: none; padding: 8px 10px; background: #fafafa; border-top: 1px solid var(--xl-line); }
+.xl-compose { background: #fff; border: 1px solid #c8c8c8; border-radius: 4px; transition: border-color .12s, box-shadow .12s; }
+.xl-compose.is-inline { margin-top: 6px; }
+.xl-compose:focus-within { border-color: var(--xl-green); box-shadow: 0 0 0 1px var(--xl-green); }
+.xl-compose textarea {
+  display: block; width: 100%; min-height: 28px; padding: 6px 8px 2px; border: 0; outline: none; resize: none; overflow-y: auto;
+  background: transparent; color: var(--xl-text); font: inherit; line-height: 1.5;
+}
+.xl-compose textarea::placeholder { color: #8a8a8a; }
+.xl-compose.is-busy textarea { color: #888; }
+.xl-compose-bar { display: flex; align-items: center; gap: 4px; min-height: 26px; padding: 0 4px 3px 8px; }
+/* 底部框没聚焦、没内容、没有提示时收成一行，像 Excel 的“新批注”占位框 */
+.xl-compose:not(.is-inline):not(:focus-within):not(.has-text):not(.is-busy):has(.xl-compose-note:empty) .xl-compose-bar { display: none; }
+.xl-compose-note { flex: 1; min-width: 0; color: var(--xl-muted); font-size: 11px; line-height: 1.4; overflow-wrap: anywhere; }
+.xl-compose-note.is-error { color: #c42b1c; }
+.xl-compose-link { color: var(--xl-green); font-weight: 600; cursor: pointer; }
+.xl-compose-link:hover { text-decoration: underline; }
+.xl-compose-send, .xl-compose-cancel { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 26px; height: 22px; border-radius: 3px; }
+.xl-compose-send { color: var(--xl-green); }
+.xl-compose-send:disabled { color: #bdbdbd; }
+.xl-compose-cancel { color: #777; font-size: 11px; }
+.xl-compose-send:not(:disabled):hover, .xl-compose-cancel:hover { background: #e9f2ec; }
+
+/* 工作表标签与状态栏 */
+.xl-sheets { display: flex; align-items: stretch; gap: 1px; padding: 0 8px; background: var(--xl-chrome); border-top: 1px solid var(--xl-line); overflow: hidden; }
+.xl-sheet-nav { align-self: center; padding: 0 10px 0 2px; color: #999; letter-spacing: 4px; }
+.xl-sheet-tab { padding: 0 16px; white-space: nowrap; border-right: 1px solid var(--xl-line); }
+.xl-sheet-tab:hover { background: #e6e6e6; }
+.xl-sheet-tab.is-active { background: #fff; color: var(--xl-green-dark); font-weight: 600; box-shadow: inset 0 -2px 0 var(--xl-green); }
+.xl-sheet-add { align-self: center; padding: 0 10px; color: #777; }
+.xl-status { display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: var(--xl-chrome); border-top: 1px solid var(--xl-line); color: #444; font-size: 11px; }
+.xl-status-right { color: #666; letter-spacing: 1px; }
+
+/* 查找框与提示框 */
+.xl-dialog { position: absolute; z-index: 40; top: 60px; left: 50%; width: 420px; transform: translateX(-50%); background: #fff; border: 1px solid #b9b9b9; box-shadow: 0 8px 28px rgba(0, 0, 0, .22); }
+.xl-dialog-title { display: flex; justify-content: space-between; padding: 6px 10px; background: #fff; border-bottom: 1px solid #e6e6e6; }
+.xl-dialog-body { padding: 14px 16px; }
+.xl-dialog-row { display: flex; align-items: center; gap: 8px; }
+.xl-dialog-row input { flex: 1; height: 24px; padding: 0 6px; border: 1px solid #b9b9b9; font: inherit; }
+.xl-dialog-row input:focus { outline: 1px solid var(--xl-green); }
+.xl-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.xl-btn { min-width: 76px; height: 24px; padding: 0 10px; border: 1px solid #adadad; background: #e1e1e1; }
+.xl-btn:hover { border-color: var(--xl-green); background: #e5f1ea; }
+.xl-btn-primary { border-color: var(--xl-green); }
+.xl-cell-editor { position: absolute; z-index: 6; padding: 0 3px; border: 2px solid var(--xl-green); font: inherit; outline: none; background: #fff; }
+/* 导入工作簿按 Excel 默认 11pt 渲染（未单独设置字号的格子） */
+.xl-workbook .xl-table td { font-size: 11pt; }
+
+/* 看大图：整个窗口的深色幕布，图片居中；底部胶囊条显示文件名、序号与缩放切换 */
+.xl-lightbox { position: fixed; inset: 0; z-index: 60; display: grid; grid-template-rows: minmax(0, 1fr) auto; background: rgba(14, 18, 16, .9); outline: none; animation: xl-lb-in .14s ease-out; }
+.xl-lb-stage { display: grid; min-height: 0; overflow: auto; padding: 56px 76px 14px; scrollbar-color: rgba(255, 255, 255, .3) transparent; }
+.xl-lb-img { margin: auto; max-width: calc(100vw - 152px); max-height: calc(100vh - 128px); object-fit: contain; background: #fff; border-radius: 3px; box-shadow: 0 18px 60px rgba(0, 0, 0, .55); cursor: zoom-in; animation: xl-lb-pop .18s ease-out; }
+.xl-lightbox.is-actual .xl-lb-img { max-width: none; max-height: none; cursor: zoom-out; }
+.xl-lightbox.is-loading .xl-lb-img, .xl-lightbox.is-error .xl-lb-img { visibility: hidden; }
+.xl-lb-status { position: absolute; inset: 0; display: grid; place-items: center; color: #cdd5d0; font-size: 13px; letter-spacing: 1px; pointer-events: none; }
+.xl-lightbox button { cursor: pointer; }
+.xl-lightbox button:focus-visible { outline: 2px solid #5fd18f; outline-offset: 2px; }
+.xl-lb-close, .xl-lb-prev, .xl-lb-next { position: absolute; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, .1); color: #fff; line-height: 1; transition: background .15s; }
+.xl-lb-close:hover, .xl-lb-prev:hover, .xl-lb-next:hover { background: rgba(255, 255, 255, .24); }
+.xl-lb-close { top: 14px; right: 16px; font-size: 15px; }
+.xl-lb-prev, .xl-lb-next { top: 50%; margin-top: -20px; padding-bottom: 3px; font-size: 30px; }
+.xl-lb-prev { left: 18px; }
+.xl-lb-next { right: 18px; }
+.xl-lightbox.is-single .xl-lb-prev, .xl-lightbox.is-single .xl-lb-next { display: none; }
+.xl-lb-bar { justify-self: center; display: flex; align-items: center; gap: 14px; max-width: min(720px, calc(100vw - 32px)); margin: 0 16px 18px; padding: 5px 6px 5px 16px; border-radius: 999px; background: rgba(0, 0, 0, .5); color: #e9ece9; font-size: 12px; }
+.xl-lb-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.xl-lb-count { flex: none; color: #a5b0aa; font-variant-numeric: tabular-nums; }
+.xl-lb-zoom { flex: none; padding: 3px 11px; border-radius: 999px; background: rgba(255, 255, 255, .13); color: #fff; }
+.xl-lb-zoom:hover { background: rgba(255, 255, 255, .24); }
+@keyframes xl-lb-in { from { opacity: 0; } }
+@keyframes xl-lb-pop { from { opacity: 0; transform: scale(.97); } }
+@media (prefers-reduced-motion: reduce) { .xl-lightbox, .xl-lb-img { animation: none; } }

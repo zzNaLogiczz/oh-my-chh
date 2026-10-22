@@ -1,28 +1,29 @@
 {
   "name": "oh-my-chh",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Enhances the Chiphell forum interface and browsing experience with customizable UI themes.",
+  "description": "Chiphell（chh）论坛专用美化插件，可自由选择多款样式。",
   "scripts": {
     "build": "node scripts/build-extension.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "lint:css": "node scripts/check-css-scope.mjs",
     "lint:imports": "node scripts/check-import-boundaries.mjs",
     "lint:dist": "node scripts/check-dist-output.mjs",
     "lint:ts-unused": "tsc --noEmit --noUnusedLocals --noUnusedParameters --pretty false",
-    "report:css-duplicates": "node scripts/report-css-duplicates.mjs",
-    "verify:liquid-equivalence": "node scripts/check-liquid-css-equivalence.mjs",
-    "verify:liquid-performance": "node scripts/trace-liquid-css-performance.mjs",
-    "verify": "npm run lint:css && npm run lint:imports && npm run typecheck && npm run lint:ts-unused && npm test && npm run build && npm run lint:dist"
+    "verify": "npm run lint:imports && npm run typecheck && npm run lint:ts-unused && npm test && npm run build && npm run lint:dist"
   },
   "devDependencies": {
     "@types/chrome": "latest",
     "@types/node": "latest",
-    "jsdom": "latest",
-    "typescript": "latest",
-    "vite": "latest",
-    "vitest": "latest"
+    "jsdom": "29.1.1",
+    "typescript": "6.0.3",
+    "vite": "8.0.14",
+    "vitest": "4.1.7"
+  },
+  "dependencies": {
+    "exceljs": "4.4.0",
+    "jszip": "3.10.2",
+    "ssf": "0.11.2"
   }
 }

@@ -1,13 +1,16 @@
 import { warnForUnexpectedExtensionError } from "../platform/extension-context";
 import { DEFAULT_SETTINGS, SETTINGS_KEYS, normalizeSettings, type OmchhSettings } from "./schema";
 
+/** 读取时连同旧版 displayMode 一起取，交给 normalizeSettings 迁移 */
+const READ_KEYS = [...SETTINGS_KEYS, "displayMode"];
+
 export { DEFAULT_SETTINGS, normalizeSettings, type OmchhSettings } from "./schema";
 
 export async function loadSettings(): Promise<OmchhSettings> {
   try {
     const storage = globalThis.chrome?.storage?.sync;
     if (!storage) return DEFAULT_SETTINGS;
-    const values = await storage.get(DEFAULT_SETTINGS as unknown as Record<string, unknown>);
+    const values = await storage.get(READ_KEYS);
     return normalizeSettings(values as Record<string, unknown>);
   } catch (error) {
     warnForUnexpectedExtensionError("[oh-my-chh] Failed to load settings; using defaults.", error);
